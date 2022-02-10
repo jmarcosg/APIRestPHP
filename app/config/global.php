@@ -11,6 +11,9 @@ require ROOT_PATH . 'app/utils/funciones.php';
 $dotenv = \Dotenv\Dotenv::createImmutable(ROOT_PATH);
 $dotenv->load();
 
+/* Modo produccion: true */
+define('PROD', $_ENV['PROD'] == 'true' ? true : false);
+
 /* ######################### */
 
 /* Headers */
@@ -19,4 +22,9 @@ include_once 'headers.php';
 /* Tokens */
 include 'tokens.php';
 
-$rm = $_SERVER['REQUEST_METHOD'];
+/* Database */
+include 'db.php';
+
+/* Database */
+include 'tables.php';
+
