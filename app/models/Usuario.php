@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Models;
+
+use App\Connections\BaseDatos;
+
 /**
  * This is the model class for table "wapUsuario".
  *
@@ -43,6 +47,18 @@ class Usuario
             cargarLogFile('store_user', $msg, get_class(), __FUNCTION__);
         }
         return $result;
+    }
+
+
+    public static function list($param = [], $ops = [])
+    {
+        $conn = new BaseDatos();
+        $resource = $conn->search(WAP_USUARIO, $param, $ops);
+        $usuarios = [];
+        while ($row = odbc_fetch_array($resource)) {
+            $usuarios[] = $row;
+        }
+        return $usuarios;
     }
 
     public static function get($params)

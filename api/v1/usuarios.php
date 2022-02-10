@@ -1,15 +1,19 @@
 <?php
 
 include '../../app/config/global.php';
+
+use App\Controllers\UsuarioController;
+
 $token = getBearerToken();
 
-if ($token == TOTEM_KEY) {
+if ($token == USUARIO_KEY) {
 	if ($rm == 'GET') {
 		if (isset($_GET['id'])) {
 			echo 'asdas';
 			exit();
 		} else {
-			/* echo getBearerToken(); */
+			$usuarioController = new UsuarioController();
+			$usuarios = $usuarioController->index();			
 			exit();
 		}
 	}

@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Controllers;
+
+
+use App\Models\Usuario;
+
 class UsuarioController
 {
     /* Guarda un formulario */
@@ -8,6 +13,11 @@ class UsuarioController
         $form = new Usuario();
         $form->set(...array_values($res));
         return $form->save();
+    }
+
+    public static function index($param = [], $ops = [])
+    {
+        return Usuario::list($param, $ops);
     }
 
     /* Busca un usuario */

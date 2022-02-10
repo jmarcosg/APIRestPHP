@@ -1,4 +1,7 @@
 <?php
+
+namespace App\Connections;
+
 class BaseDatos
 {
 
@@ -57,6 +60,7 @@ class BaseDatos
             return false;
         };
     }
+
     public function searchOrderBy($table, $param = [], $ops = [], $orderBy, $order)
     {
         $this->connect();
@@ -81,6 +85,7 @@ class BaseDatos
             return false;
         };
     }
+
     public function store($table, $params)
     {
         $this->connect();
