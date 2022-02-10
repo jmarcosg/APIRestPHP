@@ -52,3 +52,8 @@ function getAuthorizationHeader()
     }
     return $headers;
 }
+
+function sendRes(array $res)
+{
+    echo json_encode($res);
+}
