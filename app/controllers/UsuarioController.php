@@ -17,18 +17,21 @@ class UsuarioController
 
     public static function index($param = [], $ops = [])
     {
-        return Usuario::list($param, $ops);
+        $usuario = new Usuario();
+        return $usuario->list($param, $ops);
     }
 
     /* Busca un usuario */
     static public function get($params)
     {
-        return Usuario::get($params);
+        $usuario = new Usuario();
+        return $usuario->get($params);
     }
 
     /* Actualiza un form */
     public static function update($table, $res, $id, $column)
     {
-        return Usuario::update($table, $res, $id, $column);
+        $usuario = new Usuario();
+        return $usuario->update($table, $res, $id, $column);
     }
 }

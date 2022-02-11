@@ -1,3 +1,3 @@
 <?php
 
-define('WAP_USUARIO', 'wapUsuarios');
+define('WAP_USUARIOS', 'wapUsuarios');
