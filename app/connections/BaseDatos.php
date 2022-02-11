@@ -11,13 +11,11 @@ class BaseDatos
     private $user;
     private $pass;
     public $db;
-    public $msj_error;
     private $conn;
     private $charset;
 
     public function __construct()
     {
-
         $this->host = DB_HOST;
         $this->user = DB_USER;
         $this->pass = DB_PASS;

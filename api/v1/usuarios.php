@@ -48,7 +48,7 @@ if ($token == USUARIO_KEY) {
 
 	header("HTTP/1.1 400 Bad Request");
 } else {
-	sendRes(['error' => 'Problema']);
+	sendRes(null, 'Token de seguridad erroneo', null);
 }
 
 //En caso de que ninguna de las opciones anteriores se haya ejecutado
