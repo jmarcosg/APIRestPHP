@@ -24,7 +24,3 @@ include 'tokens.php';
 
 /* Database */
 include 'db.php';
-
-/* Database */
-include 'tables.php';
-

@@ -8,13 +8,23 @@ $token = getBearerToken();
 
 if ($token == USUARIO_KEY) {
 	if ($rm == 'GET') {
-		if (isset($_GET['id'])) {
-			echo 'asdas';
+		if (isset($_GET) && count($_GET) > 0) {
+			$usuarioController = new UsuarioController();
+			$usuario = $usuarioController->get($_GET);
+			if (!$usuario instanceof ErrorException) {
+				sendRes($usuario);
+				exit();
+			} else {
+				sendRes(null, $usuario->getMessage(), $_GET);
+				exit();
+			};
+			sendRes(null, 'no se encontro el usuario', $_GET);
 			exit();
 		} else {
 			$usuarioController = new UsuarioController();
-			$usuarios = $usuarioController->index();			
-			exit();
+			$usuarios = $usuarioController->index();
+			sendRes($usuarios);
+			header("HTTP/1.1 200 OK");
 		}
 	}
 

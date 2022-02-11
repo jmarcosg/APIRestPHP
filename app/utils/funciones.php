@@ -17,6 +17,13 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
+/* Permite hacer catch de los warning. */
+set_error_handler(
+    function ($severity, $message, $file, $line) {
+        throw new ErrorException($message, $severity, $severity, $file, $line);
+    }
+);
+
 function verEstructura($e)
 {
     echo "<pre>";
@@ -55,20 +62,25 @@ function getAuthorizationHeader()
     return $headers;
 }
 
-function sendRes(array $res)
+function sendRes($res, string $error = null, array $params = null)
 {
-    echo json_encode($res);
+    if ($error) {
+        echo json_encode(['data' => null, 'error' => $error, 'params' => $params]);
+    } else {
+        echo json_encode(['data' => $res, 'error' => $error]);
+    }
 }
 
-function cargarLogFile($tipo, $msg, $class, $function)
+function cargarLogFileEE($subPath, ErrorException $e, $class, $function)
 {
-    $path = LOG_PATH . $tipo . "/";
+    $path = LOG_PATH . $subPath . "/";
 
     if (!file_exists($path)) mkdir($path, 0755, true);
-
-    $msg = " | $msg | Clase: $class | Function: $function";
+    $errorMsg = $e->getMessage();
+    $errorLine = $e->getLine();
+    $msg = date("d/m/Y H:i:s") . " | $errorMsg | Line: $errorLine | Clase: $class | Function: $function";
 
     $logFile = fopen($path . date("Ymd") . ".log", 'a') or die("Error creando archivo");
-    fwrite($logFile, "\n" . date("d/m/Y H:i:s") . "$msg") or die("Error escribiendo en el archivo");
+    fwrite($logFile, "\n" . "$msg") or die("Error escribiendo en el archivo");
     fclose($logFile);
 }

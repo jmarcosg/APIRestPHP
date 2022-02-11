@@ -2,6 +2,8 @@
 
 namespace App\Connections;
 
+use ErrorException;
+
 class BaseDatos
 {
 
@@ -38,27 +40,33 @@ class BaseDatos
      */
     public function search($table, $param = [], $ops = [])
     {
-        $this->connect();
-        $where = " 1=1 ";
-        $values = array();
-        foreach ($param as $key => $value) {
-            $op = "=";
-            if (isset($value)) {
-                if (isset($ops[$key])) {
-                    $op = $ops[$key];
+        /* Probamos hacer la conexion a la base */
+        try {
+            $this->connect();
+            $where = " 1=1 ";
+            $values = array();
+            foreach ($param as $key => $value) {
+                $op = "=";
+                if (isset($value)) {
+                    if (isset($ops[$key])) {
+                        $op = $ops[$key];
+                    }
+                    $where .= " AND " . $key . $op . $value;
+                    $values[] = $value;
                 }
-                $where .= " AND " . $key . $op . $value;
-                $values[] = $value;
             }
+        } catch (\Throwable $th) {
+            return $th;
         }
 
-        $sql = "SELECT * FROM " . $table . " WHERE " . $where;
-        $query = odbc_exec($this->conn, $sql);
-        if ($query) {
+        /* Probamos ejecutar la query correctamente */
+        try {
+            $sql = "SELECT * FROM " . $table . " WHERE " . $where;
+            $query = odbc_exec($this->conn, $sql);
             return $query;
-        } else {
-            return false;
-        };
+        } catch (\Throwable $th) {
+            return $th;
+        }
     }
 
     public function searchOrderBy($table, $param = [], $ops = [], $orderBy, $order)

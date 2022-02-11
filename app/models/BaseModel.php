@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use ErrorException;
+
 use App\Connections\BaseDatos;
 
 class BaseModel
@@ -17,24 +19,20 @@ class BaseModel
         /* Guardamos los errores */
         if ($conn->getError()) {
             $error =  $conn->getError() . ' | Error al guardar el usuario';
-            cargarLogFile('store_user', $error, get_class(), __FUNCTION__);
         } else {
             $msg = "Usuario: $result creado correctamente.";
-            cargarLogFile('store_user', $msg, get_class(), __FUNCTION__);
         }
         return $result;
     }
 
     public function list($param = [], $ops = [])
     {
-        $class = get_class($this);
         $conn = new BaseDatos();
         $resource = $conn->search($this->table, $param, $ops);
+
         $usuarios = [];
-        $error = $conn->getError();
-        while ($row = odbc_fetch_array($resource)) {
-            $usuarios[] = $row;
-        }
+        while ($row = odbc_fetch_array($resource)) $usuarios[] = $row;
+
         return $usuarios;
     }
 
@@ -42,14 +40,14 @@ class BaseModel
     {
         $conn = new BaseDatos();
         $result = $conn->search($this->table, $params);
-        $usuario = $conn->fetch_assoc($result);
 
-        /* Guardamos los errores */
-        if ($conn->getError()) {
-            $error =  $conn->getError() . ' | Error a obtener la solicitud: ' . $params['id'];
-            cargarLogFile('get_user', $error, get_class(), __FUNCTION__);
+        if (!$result instanceof ErrorException) {
+            $result = $conn->fetch_assoc($result);
+        } else {
+            cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
         }
-        return $usuario;
+
+        return $result;
     }
 
     public function update($res, $id, $column)
@@ -58,10 +56,10 @@ class BaseModel
         $result = $conn->update($this->table, $res, $id, $column);
 
         /* Guardamos los errores */
-        if ($conn->getError()) {
+        /* if ($conn->getError()) {
             $error =  $conn->getError() . ' | Error a modificar un formulario ' . $id;
-            cargarLogFile('get_user', $error, get_class(), __FUNCTION__);
-        }
+            cargarLogFileEE('get_user', $error, get_class(), __FUNCTION__);
+        } */
         return $result;
     }
 }

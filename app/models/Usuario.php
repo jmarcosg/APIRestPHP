@@ -14,7 +14,8 @@ class Usuario extends BaseModel
     public $personaId;
     public $usuario;
     public $clave;
-    protected $table = WAP_USUARIOS;
+    protected $table = 'wapUsuarios';
+    protected $logPath = 'v1/usuario';
 
     public function __construct()
     {
