@@ -2,8 +2,6 @@
 
 namespace App\Connections;
 
-use ErrorException;
-
 class BaseDatos
 {
     private $conn_string;
