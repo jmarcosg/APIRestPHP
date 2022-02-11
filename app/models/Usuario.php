@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 /**
  * This is the model class for table "wapUsuario".
  *
@@ -11,23 +12,24 @@ namespace App\Models;
  */
 class Usuario extends BaseModel
 {
-    public $personaId;
-    public $usuario;
-    public $clave;
     protected $table = 'wapUsuarios';
     protected $logPath = 'v1/usuario';
 
+    public $PersonaID;
+    public $Usuario;
+    public $Clave;
+
     public function __construct()
     {
-        $this->personaId = "";
-        $this->usuario = "";
-        $this->clave = "";
+        $this->PersonaID = "";
+        $this->Usuario = "";
+        $this->Clave = "";
     }
 
-    public function set($personaId = null, $usuario = null, $clave = null)
+    public function set(array $req)
     {
-        $this->personaId = $personaId;
-        $this->usuario = $usuario;
-        $this->clave = $clave;
+        $this->PersonaID = array_key_exists('PersonaID', $req) ? $req['PersonaID'] : null;
+        $this->Usuario = array_key_exists('Usuario', $req) ? $req['Usuario'] : null;
+        $this->Clave = array_key_exists('Clave', $req) ? $req['Clave'] : null;
     }
 }

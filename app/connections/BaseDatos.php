@@ -6,7 +6,6 @@ use ErrorException;
 
 class BaseDatos
 {
-
     private $conn_string;
     private $user;
     private $pass;
@@ -38,7 +37,6 @@ class BaseDatos
      */
     public function search($table, $param = [], $ops = [])
     {
-        /* Probamos hacer la conexion a la base */
         try {
             $this->connect();
             $where = " 1=1 ";
@@ -57,7 +55,6 @@ class BaseDatos
             return $th;
         }
 
-        /* Probamos ejecutar la query correctamente */
         try {
             $sql = "SELECT * FROM " . $table . " WHERE " . $where;
             $query = odbc_exec($this->conn, $sql);
@@ -94,15 +91,22 @@ class BaseDatos
 
     public function store($table, $params)
     {
-        $this->connect();
-        $count = count($params);
-        $strKeys = "(" . implode(" ,", array_keys($params)) . ")";
-        $strVals = "(?" . str_repeat(",?", $count - 1) . ")";
-        $sql = "INSERT INTO $table$strKeys VALUES " . $strVals;
+        try {
+            $this->connect();
+            $count = count($params);
+            $strKeys = "(" . implode(" ,", array_keys($params)) . ")";
+            $strVals = "(?" . str_repeat(",?", $count - 1) . ")";
+            $sql = "INSERT INTO $table$strKeys VALUES " . $strVals;
+        } catch (\Throwable $th) {
+            return $th;
+        }
 
-        /* Ejecutamos la consulta */
-        $query = $this->prepare($sql);
-        return $this->executeQuery($query, $params, true);
+        try {
+            $query = $this->prepare($sql);
+            return $this->executeQuery($query, $params, true);
+        } catch (\Throwable $th) {
+            return $th;
+        }
     }
 
     public function update($table, $params, $id, $column = 'id')
@@ -149,7 +153,7 @@ class BaseDatos
         $ret = odbc_execute($stmt, $parameters);
         if ($alta) {
             $r = odbc_exec($this->conn, "SELECT @@IDENTITY AS ID");
-            $rc = odbc_fetch_into($r, $row);
+            odbc_fetch_into($r, $row);
             $ret = $row[0];
         }
         return $ret;

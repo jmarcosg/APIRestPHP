@@ -7,9 +7,10 @@ use App\Controllers\UsuarioController;
 $token = getBearerToken();
 
 if ($token == USUARIO_KEY) {
+	$usuarioController = new UsuarioController();
+
 	if ($rm == 'GET') {
-		if (isset($_GET) && count($_GET) > 0) {
-			$usuarioController = new UsuarioController();
+		if (isset($_GET) && count($_GET) > 0) {			
 			$usuario = $usuarioController->get($_GET);
 			if (!$usuario instanceof ErrorException) {
 				sendRes($usuario);
@@ -21,7 +22,6 @@ if ($token == USUARIO_KEY) {
 			sendRes(null, 'no se encontro el usuario', $_GET);
 			exit();
 		} else {
-			$usuarioController = new UsuarioController();
 			$usuarios = $usuarioController->index();
 			sendRes($usuarios);
 			header("HTTP/1.1 200 OK");
@@ -30,6 +30,8 @@ if ($token == USUARIO_KEY) {
 
 	// Crear un nuevo post
 	if ($rm == 'POST') {
+		$usuario = $usuarioController->store($_POST);
+		sendRes($usuario);
 		header("HTTP/1.1 200 OK");
 		exit();
 	}

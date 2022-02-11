@@ -16,13 +16,11 @@ class BaseModel
         $conn = new BaseDatos();
         $result = $conn->store($this->table, $array);
 
-        /* Guardamos los errores */
-        if ($conn->getError()) {
-            $error =  $conn->getError() . ' | Error al guardar el usuario';
+        if (!$result instanceof ErrorException) {
+            return $result;
         } else {
-            $msg = "Usuario: $result creado correctamente.";
+            cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
         }
-        return $result;
     }
 
     public function list($param = [], $ops = [])

@@ -10,9 +10,10 @@ class UsuarioController
     /* Guarda un formulario */
     public function store($res)
     {
-        $form = new Usuario();
-        $form->set(...array_values($res));
-        return $form->save();
+        $usuario = new Usuario();
+        $usuario->set($res);
+        $id = $usuario->save();
+        return $usuario->get(['ReferenciaID' => $id]);
     }
 
     public function index($param = [], $ops = [])
