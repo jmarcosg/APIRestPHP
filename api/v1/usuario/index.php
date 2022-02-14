@@ -34,15 +34,19 @@ if ($token == USUARIO_KEY && $rm == 'GET') {
 			header("HTTP/1.1 400 Error");
 		};
 	}
-
 	exit();
 }
 
 /* Metodo POST */
 if ($token == USUARIO_KEY &&  $rm == 'POST') {
 	$usuario = $usuarioController->store($_POST);
-	sendRes(['ReferenciaID' => $usuario]);
-	header("HTTP/1.1 200 OK");
+	if (!$usuario instanceof ErrorException) {
+		sendRes(['ReferenciaID' => $usuario]);
+		header("HTTP/1.1 201 OK");
+	} else {
+		sendRes(null, $usuario->getMessage(), $_GET);
+		header("HTTP/1.1 400 Error");
+	};
 	exit();
 }
 

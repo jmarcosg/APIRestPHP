@@ -16,11 +16,8 @@ class BaseModel
         $conn = new BaseDatos();
         $result = $conn->store($this->table, $array);
 
-        if (!$result instanceof ErrorException) {
-            return $result;
-        } else {
-            cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
-        }
+        if ($result instanceof ErrorException) cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+        return $result;
     }
 
     public function list($param = [], $ops = [])
@@ -48,7 +45,6 @@ class BaseModel
         } else {
             cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
         }
-
         return $result;
     }
 
