@@ -13,24 +13,26 @@ if ($token == USUARIO_KEY) {
 		if (isset($_GET) && count($_GET) > 0) {
 			$usuario = $usuarioController->get($_GET);
 			if (!$usuario instanceof ErrorException) {
-				sendRes($usuario);
-				exit();
+				if ($usuario) {
+					sendRes($usuario);
+					header("HTTP/1.1 200 OK");
+				} else {
+					sendRes(null, 'No se encontro el usuario', $_GET);
+					header("HTTP/1.1 403 Not Found");
+				}
 			} else {
 				sendRes(null, $usuario->getMessage(), $_GET);
-				exit();
+				header("HTTP/1.1 403 Not Found");
 			};
-			sendRes(null, 'no se encontro el usuario', $_GET);
-			exit();
 		} else {
 			$usuarios = $usuarioController->index(['TOP' => 10]);
 			if (!$usuarios instanceof ErrorException) {
 				sendRes($usuarios);
-				exit();
+				header("HTTP/1.1 201 OK");
 			} else {
 				sendRes(null, $usuarios->getMessage(), $_GET);
-				exit();
+				header("HTTP/1.1 400 Error");
 			};
-			header("HTTP/1.1 200 OK");
 		}
 	}
 
@@ -58,5 +60,4 @@ if ($token == USUARIO_KEY) {
 } else {
 	sendRes(null, 'Token de seguridad erroneo', null);
 }
-
-//En caso de que ninguna de las opciones anteriores se haya ejecutado
+exit();

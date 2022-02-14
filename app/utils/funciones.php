@@ -84,3 +84,8 @@ function cargarLogFileEE($subPath, ErrorException $e, $class, $function)
     fwrite($logFile, "\n" . "$msg") or die("Error escribiendo en el archivo");
     fclose($logFile);
 }
+
+function isErrorException($object)
+{
+    return $object instanceof ErrorException;
+}
