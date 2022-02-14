@@ -40,7 +40,8 @@ class BaseDatos
             $where = " 1=1 ";
             $values = array();
             foreach ($param as $key => $value) {
-                $op = "=";
+                if ($key == 'TOP') continue;
+                    $op = "=";
                 if (isset($value)) {
                     if (isset($ops[$key])) {
                         $op = $ops[$key];
@@ -54,7 +55,8 @@ class BaseDatos
         }
 
         try {
-            $sql = "SELECT * FROM " . $table . " WHERE " . $where;
+            $limit = array_key_exists('TOP', $param) ? 'TOP ' . $param['TOP'] : '';
+            $sql = "SELECT $limit * FROM " . $table . " WHERE " . $where;
             $query = odbc_exec($this->conn, $sql);
             return $query;
         } catch (\Throwable $th) {

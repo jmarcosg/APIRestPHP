@@ -26,12 +26,16 @@ class BaseModel
     public function list($param = [], $ops = [])
     {
         $conn = new BaseDatos();
-        $resource = $conn->search($this->table, $param, $ops);
+        $result = $conn->search($this->table, $param, $ops);
 
-        $usuarios = [];
-        while ($row = odbc_fetch_array($resource)) $usuarios[] = $row;
-
-        return $usuarios;
+        if (!$result instanceof ErrorException) {
+            $data = [];
+            while ($row = odbc_fetch_array($result)) $data[] = $row;
+            return $data;
+        } else {
+            cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            return $result;
+        }
     }
 
     public function get($params)

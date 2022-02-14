@@ -1,6 +1,6 @@
 <?php
 
-include '../../app/config/global.php';
+include '../../../app/config/global.php';
 
 use App\Controllers\UsuarioController;
 
@@ -10,7 +10,7 @@ if ($token == USUARIO_KEY) {
 	$usuarioController = new UsuarioController();
 
 	if ($rm == 'GET') {
-		if (isset($_GET) && count($_GET) > 0) {			
+		if (isset($_GET) && count($_GET) > 0) {
 			$usuario = $usuarioController->get($_GET);
 			if (!$usuario instanceof ErrorException) {
 				sendRes($usuario);
@@ -22,8 +22,14 @@ if ($token == USUARIO_KEY) {
 			sendRes(null, 'no se encontro el usuario', $_GET);
 			exit();
 		} else {
-			$usuarios = $usuarioController->index();
-			sendRes($usuarios);
+			$usuarios = $usuarioController->index(['TOP' => 10]);
+			if (!$usuarios instanceof ErrorException) {
+				sendRes($usuarios);
+				exit();
+			} else {
+				sendRes(null, $usuarios->getMessage(), $_GET);
+				exit();
+			};
 			header("HTTP/1.1 200 OK");
 		}
 	}
@@ -31,7 +37,7 @@ if ($token == USUARIO_KEY) {
 	// Crear un nuevo post
 	if ($rm == 'POST') {
 		$usuario = $usuarioController->store($_POST);
-		sendRes($usuario);
+		sendRes(['ReferenciaID' => $usuario]);
 		header("HTTP/1.1 200 OK");
 		exit();
 	}

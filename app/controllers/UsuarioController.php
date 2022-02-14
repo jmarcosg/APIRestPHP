@@ -12,8 +12,7 @@ class UsuarioController
     {
         $usuario = new Usuario();
         $usuario->set($res);
-        $id = $usuario->save();
-        return $usuario->get(['ReferenciaID' => $id]);
+        return $usuario->save();
     }
 
     public function index($param = [], $ops = [])

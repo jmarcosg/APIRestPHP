@@ -4,7 +4,7 @@
 include_once 'paths.php';
 
 /* AutoLoad composer & local */
-require '../../vendor/autoload.php';
+require ROOT_PATH . 'vendor/autoload.php';
 require ROOT_PATH . 'app/utils/funciones.php';
 
 /* Carga del DOTENV */
