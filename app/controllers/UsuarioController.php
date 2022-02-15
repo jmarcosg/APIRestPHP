@@ -34,4 +34,11 @@ class UsuarioController
         $usuario = new Usuario();
         return $usuario->update($table, $res, $id, $column);
     }
+
+    /* Actualiza un form */
+    public function delete($params)
+    {
+        $usuario = new Usuario();
+        return $usuario->delete($params);
+    }
 }

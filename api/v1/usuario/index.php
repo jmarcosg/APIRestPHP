@@ -52,7 +52,14 @@ if ($token == USUARIO_KEY &&  $rm == 'POST') {
 
 /* Metodo DELETE */
 if ($token == USUARIO_KEY &&  $rm == 'DELETE') {
-	header("HTTP/1.1 200 OK");
+	$usuario = $usuarioController->delete($_GET);
+	if (!$usuario instanceof ErrorException) {
+		sendRes($_GET);
+		header("HTTP/1.1 201 OK");
+	} else {
+		sendRes(null, $usuario->getMessage(), $_GET);
+		header("HTTP/1.1 400 Error");
+	};
 	exit();
 }
 

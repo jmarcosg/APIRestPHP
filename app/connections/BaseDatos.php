@@ -41,7 +41,7 @@ class BaseDatos
             $values = array();
             foreach ($param as $key => $value) {
                 if ($key == 'TOP') continue;
-                    $op = "=";
+                $op = "=";
                 if (isset($value)) {
                     if (isset($ops[$key])) {
                         $op = $ops[$key];
@@ -50,11 +50,7 @@ class BaseDatos
                     $values[] = $value;
                 }
             }
-        } catch (\Throwable $th) {
-            return $th;
-        }
 
-        try {
             $limit = array_key_exists('TOP', $param) ? 'TOP ' . $param['TOP'] : '';
             $sql = "SELECT $limit * FROM " . $table . " WHERE " . $where;
             $query = odbc_exec($this->conn, $sql);
@@ -97,11 +93,7 @@ class BaseDatos
             $strKeys = "(" . implode(" ,", array_keys($params)) . ")";
             $strVals = "(?" . str_repeat(",?", $count - 1) . ")";
             $sql = "INSERT INTO $table$strKeys VALUES " . $strVals;
-        } catch (\Throwable $th) {
-            return $th;
-        }
 
-        try {
             $query = $this->prepare($sql);
             return $this->executeQuery($query, $params, true);
         } catch (\Throwable $th) {
@@ -127,6 +119,31 @@ class BaseDatos
         return $this->executeQuery($query, $values);
     }
 
+    public function delete($table, $param = [], $ops = [])
+    {
+        try {
+            $this->connect();
+            $where = " 1=1 ";
+            $values = array();
+            foreach ($param as $key => $value) {
+                $op = "=";
+                if (isset($value)) {
+                    if (isset($ops[$key])) {
+                        $op = $ops[$key];
+                    }
+                    $where .= " AND " . $key . $op . $value;
+                    $values[] = $value;
+                }
+            }
+
+            $sql = "DELETE FROM " . $table . " WHERE " . $where;
+            $query = $this->prepare($sql);
+            return $this->executeQuery($query, $param);
+        } catch (\Throwable $th) {
+            return $th;
+        }
+    }
+
     private function prepare($sql)
     {
         return odbc_prepare($this->conn, $sql);
@@ -149,7 +166,7 @@ class BaseDatos
      */
     function executeQuery($stmt, $parameters, $alta = false)
     {
-        $temp = odbc_exec($this->conn, "SET NOCOUNT ON");
+        odbc_exec($this->conn, "SET NOCOUNT ON");
         $ret = odbc_execute($stmt, $parameters);
         if ($alta) {
             $r = odbc_exec($this->conn, "SELECT @@IDENTITY AS ID");

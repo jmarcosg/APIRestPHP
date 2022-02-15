@@ -60,4 +60,13 @@ class BaseModel
         } */
         return $result;
     }
+
+    public function delete($params)
+    {
+        $conn = new BaseDatos();
+        $result = $conn->delete($this->table, $params);
+
+        if ($result instanceof ErrorException) cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+        return $result;
+    }
 }

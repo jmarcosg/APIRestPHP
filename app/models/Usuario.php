@@ -14,6 +14,7 @@ class Usuario extends BaseModel
 {
     protected $table = 'wapUsuarios';
     protected $logPath = 'v1/usuario';
+    protected $identity = 'ReferenciaID';
 
     public $PersonaID;
     public $Usuario;
