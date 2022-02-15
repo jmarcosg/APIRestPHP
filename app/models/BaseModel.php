@@ -20,7 +20,7 @@ class BaseModel
             while ($row = odbc_fetch_array($result)) $data[] = $row;
             return $data;
         } else {
-            cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
             return $result;
         }
     }
@@ -33,7 +33,7 @@ class BaseModel
         if (!$result instanceof ErrorException) {
             $result = $conn->fetch_assoc($result);
         } else {
-            cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
         }
         return $result;
     }
@@ -44,7 +44,9 @@ class BaseModel
         $conn = new BaseDatos();
         $result = $conn->store($this->table, $array);
 
-        if ($result instanceof ErrorException) cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+        if ($result instanceof ErrorException) {
+            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+        }
         return $result;
     }
 
@@ -56,7 +58,9 @@ class BaseModel
         $conn = new BaseDatos();
         $result = $conn->update($this->table, $req, $id, $this->identity);
 
-        if ($result instanceof ErrorException) cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+        if ($result instanceof ErrorException) {
+            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+        }
 
         return $result;
     }
@@ -66,7 +70,9 @@ class BaseModel
         $conn = new BaseDatos();
         $result = $conn->delete($this->table, $params);
 
-        if ($result instanceof ErrorException) cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+        if ($result instanceof ErrorException) {
+            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+        }
         return $result;
     }
 }

@@ -71,7 +71,7 @@ function sendRes($res, string $error = null, array $params = null)
     }
 }
 
-function cargarLogFileEE($subPath, ErrorException $e, $class, $function)
+function logFileEE($subPath, ErrorException $e, $class, $function)
 {
     $path = LOG_PATH . $subPath . "/";
 
