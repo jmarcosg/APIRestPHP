@@ -29,10 +29,10 @@ class UsuarioController
     }
 
     /* Actualiza un form */
-    public function update($table, $res, $id, $column)
+    public function update($req)
     {
         $usuario = new Usuario();
-        return $usuario->update($table, $res, $id, $column);
+        return $usuario->update($req);
     }
 
     /* Actualiza un form */

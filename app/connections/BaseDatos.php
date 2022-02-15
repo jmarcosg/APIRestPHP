@@ -103,20 +103,24 @@ class BaseDatos
 
     public function update($table, $params, $id, $column = 'id')
     {
-        $this->connect();
-        $strKeyValues = '';
-        $values = [];
-        foreach ($params as $key => $value) {
-            $strKeyValues .= "$key = ?,";
-            $values[] = $value;
+        try {
+            $this->connect();
+            $strKeyValues = '';
+            $values = [];
+            foreach ($params as $key => $value) {
+                $strKeyValues .= "$key = ?,";
+                $values[] = $value;
+            }
+            $values[] = $id;
+
+            $strKeyValues = trim($strKeyValues, ',');
+
+            $sql = "UPDATE $table SET $strKeyValues WHERE $column=?";
+            $query = $this->prepare($sql);
+            return $this->executeQuery($query, $values);
+        } catch (\Throwable $th) {
+            return $th;
         }
-        $values[] = $id;
-
-        $strKeyValues = trim($strKeyValues, ',');
-
-        $sql = "UPDATE $table SET $strKeyValues WHERE $column=?";
-        $query = $this->prepare($sql);
-        return $this->executeQuery($query, $values);
     }
 
     public function delete($table, $param = [], $ops = [])

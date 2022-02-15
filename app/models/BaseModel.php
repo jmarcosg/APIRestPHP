@@ -48,16 +48,16 @@ class BaseModel
         return $result;
     }
 
-    public function update($res, $id, $column)
+    public function update($req)
     {
-        $conn = new BaseDatos();
-        $result = $conn->update($this->table, $res, $id, $column);
+        $id = $req[$this->identity];
+        unset($req[$this->identity]);
 
-        /* Guardamos los errores */
-        /* if ($conn->getError()) {
-            $error =  $conn->getError() . ' | Error a modificar un formulario ' . $id;
-            cargarLogFileEE('get_user', $error, get_class(), __FUNCTION__);
-        } */
+        $conn = new BaseDatos();
+        $result = $conn->update($this->table, $req, $id, $this->identity);
+
+        if ($result instanceof ErrorException) cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+
         return $result;
     }
 

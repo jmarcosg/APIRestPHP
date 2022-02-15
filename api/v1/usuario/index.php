@@ -50,6 +50,20 @@ if ($token == USUARIO_KEY &&  $rm == 'POST') {
 	exit();
 }
 
+/* Metodo PUT */
+if ($token == USUARIO_KEY && $rm == 'PUT') {
+	parse_str(file_get_contents('php://input'), $_PUT);
+	$usuario = $usuarioController->update($_PUT);
+	if (!$usuario instanceof ErrorException) {
+		sendRes($_PUT);
+		header("HTTP/1.1 201 OK");
+	} else {
+		sendRes(null, $usuario->getMessage(), $_GET);
+		header("HTTP/1.1 400 Error");
+	};
+	exit();
+}
+
 /* Metodo DELETE */
 if ($token == USUARIO_KEY &&  $rm == 'DELETE') {
 	$usuario = $usuarioController->delete($_GET);
@@ -60,12 +74,6 @@ if ($token == USUARIO_KEY &&  $rm == 'DELETE') {
 		sendRes(null, $usuario->getMessage(), $_GET);
 		header("HTTP/1.1 400 Error");
 	};
-	exit();
-}
-
-/* Metodo PUT */
-if ($token == USUARIO_KEY && $rm == 'PUT') {
-	header("HTTP/1.1 200 OK");
 	exit();
 }
 
