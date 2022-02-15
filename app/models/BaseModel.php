@@ -10,16 +10,6 @@ class BaseModel
 {
     protected $table;
 
-    public function save()
-    {
-        $array = json_decode(json_encode($this), true);
-        $conn = new BaseDatos();
-        $result = $conn->store($this->table, $array);
-
-        if ($result instanceof ErrorException) cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
-        return $result;
-    }
-
     public function list($param = [], $ops = [])
     {
         $conn = new BaseDatos();
@@ -45,6 +35,16 @@ class BaseModel
         } else {
             cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
         }
+        return $result;
+    }
+
+    public function save()
+    {
+        $array = json_decode(json_encode($this), true);
+        $conn = new BaseDatos();
+        $result = $conn->store($this->table, $array);
+
+        if ($result instanceof ErrorException) cargarLogFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
         return $result;
     }
 

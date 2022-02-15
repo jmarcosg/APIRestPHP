@@ -38,7 +38,7 @@ if ($token == USUARIO_KEY && $rm == 'GET') {
 }
 
 /* Metodo POST */
-if ($token == USUARIO_KEY &&  $rm == 'POST') {
+if ($token == USUARIO_KEY && $rm == 'POST') {
 	$usuario = $usuarioController->store($_POST);
 	if (!$usuario instanceof ErrorException) {
 		sendRes(['ReferenciaID' => $usuario]);
@@ -65,7 +65,7 @@ if ($token == USUARIO_KEY && $rm == 'PUT') {
 }
 
 /* Metodo DELETE */
-if ($token == USUARIO_KEY &&  $rm == 'DELETE') {
+if ($token == USUARIO_KEY && $rm == 'DELETE') {
 	$usuario = $usuarioController->delete($_GET);
 	if (!$usuario instanceof ErrorException) {
 		sendRes($_GET);

@@ -60,31 +60,6 @@ class BaseDatos
         }
     }
 
-    public function searchOrderBy($table, $param = [], $ops = [], $orderBy, $order)
-    {
-        $this->connect();
-        $where = " 1=1 ";
-        $values = array();
-        foreach ($param as $key => $value) {
-            $op = "=";
-            if (isset($value)) {
-                if (isset($ops[$key])) {
-                    $op = $ops[$key];
-                }
-                $where .= " AND " . $key . $op . $value;
-                $values[] = $value;
-            }
-        }
-
-        $sql = "SELECT * FROM " . $table . " WHERE " . $where . " ORDER BY " . $orderBy . " " . $order;
-        $query = odbc_exec($this->conn, $sql);
-        if ($query) {
-            return $query;
-        } else {
-            return false;
-        };
-    }
-
     public function store($table, $params)
     {
         try {

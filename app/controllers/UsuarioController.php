@@ -7,14 +7,7 @@ use App\Models\Usuario;
 
 class UsuarioController
 {
-    /* Guarda un formulario */
-    public function store($res)
-    {
-        $usuario = new Usuario();
-        $usuario->set($res);
-        return $usuario->save();
-    }
-
+    /* Buscar todos los usuarios */
     public function index($param = [], $ops = [])
     {
         $usuario = new Usuario();
@@ -26,6 +19,14 @@ class UsuarioController
     {
         $usuario = new Usuario();
         return $usuario->get($params);
+    }
+
+    /* Guarda un formulario */
+    public function store($res)
+    {
+        $usuario = new Usuario();
+        $usuario->set($res);
+        return $usuario->save();
     }
 
     /* Actualiza un form */
