@@ -5,7 +5,7 @@ use App\Controllers\UsuarioController;
 $usuarioController = new UsuarioController();
 
 /* Metodo GET */
-if ($token == USUARIO_KEY && $url['method'] == 'GET') {	
+if ($token == USUARIO_KEY && $url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0) {
 		$usuario = $usuarioController->get($_GET);
 		if (!$usuario instanceof ErrorException) {
@@ -34,7 +34,7 @@ if ($token == USUARIO_KEY && $url['method'] == 'GET') {
 }
 
 /* Metodo POST */
-if ($token == USUARIO_KEY && $rm == 'POST') {
+if ($token == USUARIO_KEY && $url['method'] == 'POST') {
 	$usuario = $usuarioController->store($_POST);
 	if (!$usuario instanceof ErrorException) {
 		sendRes(['ReferenciaID' => $usuario]);
@@ -47,7 +47,7 @@ if ($token == USUARIO_KEY && $rm == 'POST') {
 }
 
 /* Metodo PUT */
-if ($token == USUARIO_KEY && $rm == 'PUT') {
+if ($token == USUARIO_KEY && $url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
 	$usuario = $usuarioController->update($_PUT);
 	if (!$usuario instanceof ErrorException) {
@@ -61,7 +61,7 @@ if ($token == USUARIO_KEY && $rm == 'PUT') {
 }
 
 /* Metodo DELETE */
-if ($token == USUARIO_KEY && $rm == 'DELETE') {
+if ($token == USUARIO_KEY && $url['method'] == 'DELETE') {
 	$usuario = $usuarioController->delete($_GET);
 	if (!$usuario instanceof ErrorException) {
 		sendRes($_GET);
