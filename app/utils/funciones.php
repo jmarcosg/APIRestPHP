@@ -1,7 +1,5 @@
 <?php
 
-$rm = $_SERVER['REQUEST_METHOD'];
-
 spl_autoload_register(function ($class_name) {
     $directorys = array(
         APP_PATH . '/controllers/',
@@ -24,11 +22,12 @@ set_error_handler(
     }
 );
 
-function verEstructura($e)
+function verEstructura($e, $die = false)
 {
     echo "<pre>";
     print_r($e);
     echo "</pre>";
+    if ($die) die();
 }
 
 function getBearerToken()
@@ -46,6 +45,7 @@ function getBearerToken()
 function getAuthorizationHeader()
 {
     $headers = null;
+
     if (isset($_SERVER['Authorization'])) {
         $headers = trim($_SERVER["Authorization"]);
     } else if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI

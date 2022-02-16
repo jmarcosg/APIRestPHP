@@ -24,3 +24,6 @@ include 'tokens.php';
 
 /* Database */
 include 'db.php';
+
+/* Configuracion de la URL */
+include 'url.php';

@@ -1,15 +1,11 @@
 <?php
 
-include '../../../app/config/global.php';
-
 use App\Controllers\UsuarioController;
-
-$token = getBearerToken();
 
 $usuarioController = new UsuarioController();
 
 /* Metodo GET */
-if ($token == USUARIO_KEY && $rm == 'GET') {
+if ($token == USUARIO_KEY && $url['method'] == 'GET') {	
 	if (isset($_GET) && count($_GET) > 0) {
 		$usuario = $usuarioController->get($_GET);
 		if (!$usuario instanceof ErrorException) {
