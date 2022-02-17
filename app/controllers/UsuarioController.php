@@ -30,10 +30,10 @@ class UsuarioController
     }
 
     /* Actualiza un form */
-    public function update($req)
+    public function update($req, $id)
     {
         $usuario = new Usuario();
-        return $usuario->update($req);
+        return $usuario->update($req, $id);
     }
 
     /* Actualiza un form */

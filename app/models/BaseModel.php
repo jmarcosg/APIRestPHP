@@ -50,9 +50,8 @@ class BaseModel
         return $result;
     }
 
-    public function update($req)
+    public function update($req, $id)
     {
-        $id = $req[$this->identity];
         unset($req[$this->identity]);
 
         $conn = new BaseDatos();
