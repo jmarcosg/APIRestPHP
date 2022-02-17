@@ -14,6 +14,9 @@ $dotenv->load();
 /* Modo produccion: true */
 define('PROD', $_ENV['PROD'] == 'true' ? true : false);
 
+/* Entorno: local - producción */
+define('ENV', $_ENV['ENV']);
+
 /* ######################### */
 
 /* Headers */
