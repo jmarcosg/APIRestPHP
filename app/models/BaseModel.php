@@ -64,10 +64,10 @@ class BaseModel
         return $result;
     }
 
-    public function delete($params)
+    public function delete($id)
     {
         $conn = new BaseDatos();
-        $result = $conn->delete($this->table, $params);
+        $result = $conn->delete($this->table, [$this->identity => $id]);
 
         if ($result instanceof ErrorException) {
             logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);

@@ -37,9 +37,9 @@ class UsuarioController
     }
 
     /* Actualiza un form */
-    public function delete($params)
+    public function delete($id)
     {
         $usuario = new Usuario();
-        return $usuario->delete($params);
+        return $usuario->delete($id);
     }
 }

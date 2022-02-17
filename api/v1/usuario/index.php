@@ -53,11 +53,11 @@ if ($token == USUARIO_KEY && $url['method'] == 'PUT') {
 
 /* Metodo DELETE */
 if ($token == USUARIO_KEY && $url['method'] == 'DELETE') {
-	$usuario = $usuarioController->delete($_GET);
+	$usuario = $usuarioController->delete($url['id']);
 	if (!$usuario instanceof ErrorException) {
-		sendRes($_GET);
+		sendRes($url['id']);
 	} else {
-		sendRes(null, $usuario->getMessage(), $_GET);
+		sendRes(null, $usuario->getMessage(), $url['id']);
 	};
 	exit();
 }
