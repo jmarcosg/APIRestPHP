@@ -10,10 +10,10 @@ namespace App\Models;
  * @property string $clave
  * 
  */
-class Usuario extends BaseModel
+class WapUsuario extends BaseModel
 {
     protected $table = 'wapUsuarios';
-    protected $logPath = 'v1/usuario';
+    protected $logPath = 'v1/wapUsuarios';
     protected $identity = 'ReferenciaID';
 
     public $PersonaID;
