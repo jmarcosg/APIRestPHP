@@ -15,6 +15,7 @@ class DeportesUsuario extends BaseModel
     protected $table = 'deportes_usuarios';
     protected $logPath = 'v1/deportes_usuarios';
     protected $identity = 'id';
+    protected $softDeleted = 'deleted_at';
 
     public $id_wappersonas;
     public $nombre;

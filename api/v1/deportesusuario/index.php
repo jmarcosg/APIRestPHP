@@ -57,7 +57,7 @@ if ($token == USUARIO_KEY && $url['method'] == 'DELETE') {
 	if (!$deportesUsuario instanceof ErrorException) {
 		sendRes($url['id']);
 	} else {
-		sendRes(null, $deportesUsuario->getMessage(), $url['id']);
+		sendRes(null, $deportesUsuario->getMessage(), ['id' => $url['id']]);
 	};
 	exit();
 }

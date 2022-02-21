@@ -9,6 +9,7 @@ use App\Connections\BaseDatos;
 class BaseModel
 {
     protected $table;
+    protected $softDeleted = false;
 
     public function list($param = [], $ops = [])
     {
@@ -67,7 +68,20 @@ class BaseModel
     public function delete($id)
     {
         $conn = new BaseDatos();
-        $result = $conn->delete($this->table, [$this->identity => $id]);
+
+        if (!$this->softDeleted) {
+            /* Si el modelo no tiene el softdeleted, borramos el recurso completo de la DB */
+            $result = $conn->delete($this->table, [$this->identity => $id]);
+        } else {
+            /* Si el modelo tiene el softdeleted, modificamos la columna que afecta al softdeleted */
+            $deleted_at = date("Y-m-d H:i:s", time());
+            $data = $this->get([$this->identity => $id]);
+            if (!isset($data[$this->softDeleted]) && $data[$this->softDeleted] == null) {
+                $result = $this->update([$this->softDeleted => $deleted_at], $id);
+            } else {
+                $result = new ErrorException('El recurso ya se encuentra eliminado');
+            }
+        }
 
         if ($result instanceof ErrorException) {
             logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
