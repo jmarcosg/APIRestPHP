@@ -3,43 +3,43 @@
 namespace App\Controllers;
 
 
-use App\Models\WapPersona;
+use App\Models\DeportesUsuario;
 
-class WapPersonaController
+class DeportesUsuarioController
 {
     /* Buscar todos los usuarios */
     public function index($param = [], $ops = [])
     {
-        $wapPersona = new WapPersona();
-        return $wapPersona->list($param, $ops);
+        $deportesUsuario = new DeportesUsuario();
+        return $deportesUsuario->list($param, $ops);
     }
 
     /* Busca un usuario */
     public function get($params)
     {
-        $wapPersona = new WapPersona();
-        return $wapPersona->get($params);
+        $deportesUsuario = new DeportesUsuario();
+        return $deportesUsuario->get($params);
     }
 
     /* Guarda un formulario */
     public function store($res)
     {
-        $wapPersona = new WapPersona();
-        $wapPersona->set($res);
-        return $wapPersona->save();
+        $deportesUsuario = new DeportesUsuario();
+        $deportesUsuario->set($res);
+        return $deportesUsuario->save();
     }
 
     /* Actualiza un form */
     public function update($req, $id)
     {
-        $wapPersona = new WapPersona();
-        return $wapPersona->update($req, $id);
+        $deportesUsuario = new DeportesUsuario();
+        return $deportesUsuario->update($req, $id);
     }
 
     /* Actualiza un form */
     public function delete($id)
     {
-        $wapPersona = new WapPersona();
-        return $wapPersona->delete($id);
+        $deportesUsuario = new DeportesUsuario();
+        return $deportesUsuario->delete($id);
     }
 }

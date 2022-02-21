@@ -1,28 +1,28 @@
 <?php
 
-use App\Controllers\WapPersonaController;
+use App\Controllers\DeportesUsuarioController;
 
-$wapPersonaController = new WapPersonaController();
+$deportesUsuarioController = new DeportesUsuarioController();
 
 /* Metodo GET */
 if ($token == USUARIO_KEY && $url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0) {
-		$wapPersona = $wapPersonaController->get($_GET);
-		if (!$wapPersona instanceof ErrorException) {
-			if ($wapPersona) {
-				sendRes($wapPersona);
+		$deportesUsuario = $deportesUsuarioController->get($_GET);
+		if (!$deportesUsuario instanceof ErrorException) {
+			if ($deportesUsuario) {
+				sendRes($deportesUsuario);
 			} else {
 				sendRes(null, 'No se encontro el usuario', $_GET);
 			}
 		} else {
-			sendRes(null, $wapPersona->getMessage(), $_GET);
+			sendRes(null, $deportesUsuario->getMessage(), $_GET);
 		};
 	} else {
-		$wapPersona = $wapPersonaController->index(['TOP' => 10]);
-		if (!$wapPersona instanceof ErrorException) {
-			sendRes($wapPersona);
+		$deportesUsuario = $deportesUsuarioController->index(['TOP' => 10]);
+		if (!$deportesUsuario instanceof ErrorException) {
+			sendRes($deportesUsuario);
 		} else {
-			sendRes(null, $wapPersona->getMessage(), $_GET);
+			sendRes(null, $deportesUsuario->getMessage(), $_GET);
 		};
 	}
 	exit();
@@ -30,11 +30,11 @@ if ($token == USUARIO_KEY && $url['method'] == 'GET') {
 
 /* Metodo POST */
 if ($token == USUARIO_KEY && $url['method'] == 'POST') {
-	$wapPersona = $wapPersonaController->store($_POST);
-	if (!$wapPersona instanceof ErrorException) {
-		sendRes(['ReferenciaID' => $wapPersona]);
+	$deportesUsuario = $deportesUsuarioController->store($_POST);
+	if (!$deportesUsuario instanceof ErrorException) {
+		sendRes(['ReferenciaID' => $deportesUsuario]);
 	} else {
-		sendRes(null, $wapPersona->getMessage(), $_GET);
+		sendRes(null, $deportesUsuario->getMessage(), $_GET);
 	};
 	exit();
 }
@@ -42,22 +42,22 @@ if ($token == USUARIO_KEY && $url['method'] == 'POST') {
 /* Metodo PUT */
 if ($token == USUARIO_KEY && $url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
-	$wapPersona = $wapPersonaController->update($_PUT, $url['id']);
-	if (!$wapPersona instanceof ErrorException) {
+	$deportesUsuario = $deportesUsuarioController->update($_PUT, $url['id']);
+	if (!$deportesUsuario instanceof ErrorException) {
 		sendRes($_PUT);
 	} else {
-		sendRes(null, $wapPersona->getMessage(), $_GET);
+		sendRes(null, $deportesUsuario->getMessage(), $_GET);
 	};
 	exit();
 }
 
 /* Metodo DELETE */
 if ($token == USUARIO_KEY && $url['method'] == 'DELETE') {
-	$wapPersona = $wapPersonaController->delete($url['id']);
-	if (!$wapPersona instanceof ErrorException) {
+	$deportesUsuario = $deportesUsuarioController->delete($url['id']);
+	if (!$deportesUsuario instanceof ErrorException) {
 		sendRes($url['id']);
 	} else {
-		sendRes(null, $wapPersona->getMessage(), $url['id']);
+		sendRes(null, $deportesUsuario->getMessage(), $url['id']);
 	};
 	exit();
 }

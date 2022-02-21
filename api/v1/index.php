@@ -10,6 +10,9 @@ switch ($url['path']) {
 	case 'wappersona':
 		include './wappersona/index.php';
 		break;
+	case 'deportesusuario':
+		include './deportesusuario/index.php';
+		break;
 	default:
 		sendRes(null, 'no existe el endpoint', null);
 		break;
