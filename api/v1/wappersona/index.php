@@ -1,28 +1,28 @@
 <?php
 
-use App\Controllers\WapUsuarioController;
+use App\Controllers\WapPersonaController;
 
-$wapUsuarioController = new WapUsuarioController();
+$wapPersonaController = new WapPersonaController();
 
 /* Metodo GET */
 if ($token == USUARIO_KEY && $url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0) {
-		$wapUsuario = $wapUsuarioController->get($_GET);
-		if (!$wapUsuario instanceof ErrorException) {
-			if ($wapUsuario) {
-				sendRes($wapUsuario);
+		$wapPersona = $wapPersonaController->get($_GET);
+		if (!$wapPersona instanceof ErrorException) {
+			if ($wapPersona) {
+				sendRes($wapPersona);
 			} else {
 				sendRes(null, 'No se encontro el usuario', $_GET);
 			}
 		} else {
-			sendRes(null, $wapUsuario->getMessage(), $_GET);
+			sendRes(null, $wapPersona->getMessage(), $_GET);
 		};
 	} else {
-		$wapUsuario = $wapUsuarioController->index(['TOP' => 10]);
-		if (!$wapUsuario instanceof ErrorException) {
-			sendRes($wapUsuario);
+		$wapPersona = $wapPersonaController->index(['TOP' => 10]);
+		if (!$wapPersona instanceof ErrorException) {
+			sendRes($wapPersona);
 		} else {
-			sendRes(null, $wapUsuario->getMessage(), $_GET);
+			sendRes(null, $wapPersona->getMessage(), $_GET);
 		};
 	}
 	exit();
@@ -30,11 +30,11 @@ if ($token == USUARIO_KEY && $url['method'] == 'GET') {
 
 /* Metodo POST */
 if ($token == USUARIO_KEY && $url['method'] == 'POST') {
-	$wapUsuario = $wapUsuarioController->store($_POST);
-	if (!$wapUsuario instanceof ErrorException) {
-		sendRes(['ReferenciaID' => $wapUsuario]);
+	$wapPersona = $wapPersonaController->store($_POST);
+	if (!$wapPersona instanceof ErrorException) {
+		sendRes(['ReferenciaID' => $wapPersona]);
 	} else {
-		sendRes(null, $wapUsuario->getMessage(), $_GET);
+		sendRes(null, $wapPersona->getMessage(), $_GET);
 	};
 	exit();
 }
@@ -42,22 +42,22 @@ if ($token == USUARIO_KEY && $url['method'] == 'POST') {
 /* Metodo PUT */
 if ($token == USUARIO_KEY && $url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
-	$wapUsuario = $wapUsuarioController->update($_PUT, $url['id']);
-	if (!$wapUsuario instanceof ErrorException) {
+	$wapPersona = $wapPersonaController->update($_PUT, $url['id']);
+	if (!$wapPersona instanceof ErrorException) {
 		sendRes($_PUT);
 	} else {
-		sendRes(null, $wapUsuario->getMessage(), $_GET);
+		sendRes(null, $wapPersona->getMessage(), $_GET);
 	};
 	exit();
 }
 
 /* Metodo DELETE */
 if ($token == USUARIO_KEY && $url['method'] == 'DELETE') {
-	$wapUsuario = $wapUsuarioController->delete($url['id']);
-	if (!$wapUsuario instanceof ErrorException) {
+	$wapPersona = $wapPersonaController->delete($url['id']);
+	if (!$wapPersona instanceof ErrorException) {
 		sendRes($url['id']);
 	} else {
-		sendRes(null, $wapUsuario->getMessage(), $url['id']);
+		sendRes(null, $wapPersona->getMessage(), $url['id']);
 	};
 	exit();
 }

@@ -3,34 +3,34 @@
 namespace App\Models;
 
 /**
- * This is the model class for table "wapUsuario".
+ * This is the model class for table "wapPersona".
  *
- * @property int $personaId
- * @property int $usuario
- * @property string $clave
+ * @property int $RenaperID
+ * @property int $CiudadanoID
+ * @property int $Documento
  * 
  */
-class WapUsuario extends BaseModel
+class WapPersona extends BaseModel
 {
-    protected $table = 'wapUsuarios';
-    protected $logPath = 'v1/wapUsuarios';
+    protected $table = 'wapPersonas';
+    protected $logPath = 'v1/wapPersonas';
     protected $identity = 'ReferenciaID';
 
-    public $PersonaID;
-    public $Usuario;
-    public $Clave;
+    public $RenaperID;
+    public $CiudadanoID;
+    public $Documento;
 
     public function __construct()
     {
-        $this->PersonaID = "";
-        $this->Usuario = "";
-        $this->Clave = "";
+        $this->RenaperID = "";
+        $this->CiudadanoID = "";
+        $this->Documento = "";
     }
 
     public function set(array $req)
     {
-        $this->PersonaID = array_key_exists('PersonaID', $req) ? $req['PersonaID'] : null;
-        $this->Usuario = array_key_exists('Usuario', $req) ? $req['Usuario'] : null;
-        $this->Clave = array_key_exists('Clave', $req) ? $req['Clave'] : null;
+        $this->RenaperID = array_key_exists('RenaperID', $req) ? $req['RenaperID'] : null;
+        $this->CiudadanoID = array_key_exists('CiudadanoID', $req) ? $req['CiudadanoID'] : null;
+        $this->Documento = array_key_exists('Documento', $req) ? $req['Documento'] : null;
     }
 }

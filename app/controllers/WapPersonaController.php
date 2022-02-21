@@ -3,43 +3,43 @@
 namespace App\Controllers;
 
 
-use App\Models\WapUsuario;
+use App\Models\WapPersona;
 
-class WapUsuarioController
+class WapPersonaController
 {
     /* Buscar todos los usuarios */
     public function index($param = [], $ops = [])
     {
-        $wapUsuario = new WapUsuario();
-        return $wapUsuario->list($param, $ops);
+        $wapPersona = new WapPersona();
+        return $wapPersona->list($param, $ops);
     }
 
     /* Busca un usuario */
     public function get($params)
     {
-        $wapUsuario = new WapUsuario();
-        return $wapUsuario->get($params);
+        $wapPersona = new WapPersona();
+        return $wapPersona->get($params);
     }
 
     /* Guarda un formulario */
     public function store($res)
     {
-        $wapUsuario = new WapUsuario();
-        $wapUsuario->set($res);
-        return $wapUsuario->save();
+        $wapPersona = new WapPersona();
+        $wapPersona->set($res);
+        return $wapPersona->save();
     }
 
     /* Actualiza un form */
     public function update($req, $id)
     {
-        $wapUsuario = new WapUsuario();
-        return $wapUsuario->update($req, $id);
+        $wapPersona = new WapPersona();
+        return $wapPersona->update($req, $id);
     }
 
     /* Actualiza un form */
     public function delete($id)
     {
-        $wapUsuario = new WapUsuario();
-        return $wapUsuario->delete($id);
+        $wapPersona = new WapPersona();
+        return $wapPersona->delete($id);
     }
 }
