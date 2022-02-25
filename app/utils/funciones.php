@@ -89,3 +89,16 @@ function isErrorException($object)
 {
     return $object instanceof ErrorException;
 }
+
+function compararFechas($string, $get, $format = 'd/m/Y')
+{
+    $now = new DateTime();
+    $date = DateTime::createFromFormat($format, $string);
+
+    $array = [
+        'now' => $now,
+        'date' => $date,
+        'dif' => $date->diff($now)->$get,
+    ];
+    return $array;
+}
