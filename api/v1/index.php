@@ -25,6 +25,9 @@ switch ($url['path']) {
 	case 'login':
 		include './login/index.php';
 		break;
+	case 'licenciaconducir':
+		include './licenciaconducir/index.php';
+		break;
 	default:
 		sendRes(null, 'no existe el endpoint', null);
 		break;
