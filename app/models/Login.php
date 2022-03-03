@@ -19,7 +19,7 @@ class Login
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://weblogin.muninqn.gov.ar/api/webLogin2',
+                CURLOPT_URL => WEBLOGIN2,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,

@@ -18,6 +18,7 @@ define('PROD', $_ENV['PROD'] == 'true' ? true : false);
 define('ENV', $_ENV['ENV']);
 
 /* ######################### */
+define('WEBLOGIN2', PROD ? 'localhost/api/webLogin2' : 'https://weblogin.muninqn.gov.ar/api/webLogin2');
 
 /* Headers */
 include_once 'headers.php';
