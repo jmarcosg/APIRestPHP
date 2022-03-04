@@ -48,6 +48,7 @@ class Login
     {
         $sql =
             "SELECT 
+            (SELECT AppID FROM  wapUsuariosPerfiles WHERE ReferenciaID = $referenciaId AND AppID = 19) as legajo,
             (
                 SELECT
                 TOP 1
@@ -58,19 +59,14 @@ class Login
                     LEFT JOIN libretas_solicitudes sol ON sol.id_usuario_solicitante = usu.id
                 WHERE wu.ReferenciaID = $referenciaId ORDER BY id DESC
             ) AS libreta,
-            (
-                SELECT 
-                    insumo
-                FROM licLicencias
-                    WHERE Licencia = $doc
-            ) as licencia,
+            (SELECT insumo FROM licLicencias WHERE Licencia = $doc) as licencia,
             (
             SELECT 
                 a.PATENTE as patente
             FROM dbo.wapUsuarios wu
                 LEFT JOIN AC_ACARREO a ON a.ID_PERSONA = wu.PersonaID
             WHERE wu.ReferenciaID = $referenciaId and a.BORRADO_LOGICO = 'NO'
-            ) as patente";
+            ) as acarreo";
 
         try {
             $conn = new BaseDatos();

@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\Login;
-use App\Models\Empleado;
 
 use ErrorException;
 
@@ -24,16 +23,18 @@ class LoginController
             ];
 
             /* Obtenemos los datos del legajo, si es que tiene */
-            $emp = new Empleado();
-            $genero = $userData->value->profile->genero->textID;
+            /* $emp = new Empleado();
+            $genero = $userData->value->profile->genero->textID; */
+
             $dni = $userData->value->profile->documento;
-            $empData = $emp->getByDocumentoAndGender($dni, $genero);
+
+            /* $empData = $emp->getByDocumentoAndGender($dni, $genero);
 
             if ($empData && !$empData instanceof ErrorException) {
                 $data['legajo'] = $empData;
             } else {
                 $data['legajo'] = null;
-            }
+            } */
 
             $referenciaId = $userData->value->profile->wapUsuarioID;
             $data['fetch'] = $this->viewFetch($referenciaId, $dni);
@@ -50,9 +51,10 @@ class LoginController
         $user = new Login();
         $data = $user->viewFetch($referenciaId, $dni);
 
-        $data['patente'] = $data['patente'] != null ? true : false;
-        $data['licencia'] = $data['licencia'] == null || $data['licencia'] == -1 ? false : true;
+        $data['legajo'] = $data['libreta'] != null ? true : false;
         $data['libreta'] = $data['libreta'] != null ? true : false;
+        $data['licencia'] = $data['licencia'] == null || $data['licencia'] == -1 ? false : true;
+        $data['acarreo'] = $data['acarreo'] != null ? true : false;
 
         return $data;
     }
