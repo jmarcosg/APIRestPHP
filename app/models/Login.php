@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Connections\BaseDatos;
 use ErrorException;
 
 class Login
@@ -38,6 +39,44 @@ class Login
             } else {
                 return new ErrorException('Problema con el inicio de sesion');
             }
+        } catch (\Throwable $th) {
+            return $th;
+        }
+    }
+
+    function viewFetch($referenciaId, $doc)
+    {
+        $sql =
+            "SELECT 
+            (
+                SELECT
+                TOP 1
+                    sol.id as id
+                FROM wapUsuarios wu
+                    LEFT JOIN wapPersonas per ON per.ReferenciaID = wu.PersonaID
+                    LEFT JOIN libretas_usuarios usu ON usu.id_wappersonas = per.ReferenciaID
+                    LEFT JOIN libretas_solicitudes sol ON sol.id_usuario_solicitante = usu.id
+                WHERE wu.ReferenciaID = $referenciaId ORDER BY id DESC
+            ) AS libreta,
+            (
+                SELECT 
+                    insumo
+                FROM licLicencias
+                    WHERE Licencia = $doc
+            ) as licencia,
+            (
+            SELECT 
+                a.PATENTE as patente
+            FROM dbo.wapUsuarios wu
+                LEFT JOIN AC_ACARREO a ON a.ID_PERSONA = wu.PersonaID
+            WHERE wu.ReferenciaID = $referenciaId and a.BORRADO_LOGICO = 'NO'
+            ) as patente";
+
+        try {
+            $conn = new BaseDatos();
+            $query =  $conn->query($sql);
+            $result = $conn->fetch_assoc($query);
+            return $result;
         } catch (\Throwable $th) {
             return $th;
         }

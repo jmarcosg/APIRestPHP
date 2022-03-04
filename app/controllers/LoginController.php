@@ -35,9 +35,25 @@ class LoginController
                 $data['legajo'] = null;
             }
 
+            $referenciaId = $userData->value->profile->wapUsuarioID;
+            $data['fetch'] = $this->viewFetch($referenciaId, $dni);
+
             return $data;
         } else {
             return new ErrorException($userData->error);
         }
+    }
+
+    public function viewFetch($referenciaId, $dni)
+    {
+        /* Sirve para derterminar que vamos a llamar desde el front */
+        $user = new Login();
+        $data = $user->viewFetch($referenciaId, $dni);
+
+        $data['patente'] = $data['patente'] != null ? true : false;
+        $data['licencia'] = $data['licencia'] == null || $data['licencia'] == -1 ? false : true;
+        $data['libreta'] = $data['libreta'] != null ? true : false;
+
+        return $data;
     }
 }
