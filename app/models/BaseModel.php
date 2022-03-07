@@ -89,7 +89,7 @@ class BaseModel
         return $result;
     }
 
-    public function executeSqlQuery($sql)
+    public function executeSqlQuery(string $sql)
     {
         try {
             $conn = new BaseDatos();
