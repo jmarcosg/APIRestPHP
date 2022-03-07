@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use App\Connections\BaseDatos;
 use ErrorException;
 
-class Login
+class Login extends BaseModel
 {
+    protected $logPath = 'v1/login';
+
     public function getUserData($user, $pass)
     {
         try {
@@ -68,13 +69,12 @@ class Login
             WHERE wu.ReferenciaID = $referenciaId and a.BORRADO_LOGICO = 'NO'
             ) as acarreo";
 
-        try {
-            $conn = new BaseDatos();
-            $query =  $conn->query($sql);
-            $result = $conn->fetch_assoc($query);
-            return $result;
-        } catch (\Throwable $th) {
-            return $th;
+        $result = $this->executeSqlQuery($sql);
+
+        if ($result instanceof ErrorException) {
+            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
         }
+
+        return $result;
     }
 }

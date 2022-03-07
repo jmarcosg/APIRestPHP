@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use App\Connections\BaseDatos;
+use ErrorException;
 
-class Empleado
+class Empleado extends BaseModel
 {
+    protected $logPath = 'v1/empleado';
+
     public function getByDocumentoAndGender($doc, $gender)
     {
         $sql =
@@ -15,13 +17,12 @@ class Empleado
             FROM PERSONAL.su.dbo.mae 
             WHERE doc = '0$doc' AND sexo = '$gender'";
 
-        try {
-            $conn = new BaseDatos();
-            $query =  $conn->query($sql);
-            $result = $conn->fetch_assoc($query);
-            return $result;
-        } catch (\Throwable $th) {
-            return $th;
+        $result = $this->executeSqlQuery($sql);
+
+        if ($result instanceof ErrorException) {
+            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
         }
+
+        return $result;
     }
 }

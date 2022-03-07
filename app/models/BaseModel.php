@@ -88,4 +88,16 @@ class BaseModel
         }
         return $result;
     }
+
+    public function executeSqlQuery($sql)
+    {
+        try {
+            $conn = new BaseDatos();
+            $query =  $conn->query($sql);
+            $result = $conn->fetch_assoc($query);
+            return $result;
+        } catch (\Throwable $th) {
+            return $th;
+        }
+    }
 }

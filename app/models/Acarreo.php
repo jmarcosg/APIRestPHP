@@ -4,10 +4,10 @@ namespace App\Models;
 
 use ErrorException;
 
-use App\Connections\BaseDatos;
-
-class Acarreo
+class Acarreo extends BaseModel
 {
+    protected $logPath = 'v1/acarreo';
+
     public function getByReferenciaId($id)
     {
         $sql =
@@ -23,13 +23,12 @@ class Acarreo
                 LEFT JOIN AC_PLAYA p ON p.ID_PLAYA= a.ID_PLAYA
             WHERE wu.ReferenciaID = $id and a.BORRADO_LOGICO = 'NO'";
 
-        try {
-            $conn = new BaseDatos();
-            $query =  $conn->query($sql);
-            $result = $conn->fetch_assoc($query);
-            return $result;
-        } catch (\Throwable $th) {
-            return $th;
+        $result = $this->executeSqlQuery($sql);
+
+        if ($result instanceof ErrorException) {
+            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
         }
+
+        return $result;
     }
 }

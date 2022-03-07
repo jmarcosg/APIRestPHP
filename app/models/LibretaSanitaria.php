@@ -4,10 +4,10 @@ namespace App\Models;
 
 use ErrorException;
 
-use App\Connections\BaseDatos;
-
-class LibretaSanitaria
+class LibretaSanitaria extends BaseModel
 {
+    protected $logPath = 'v1/libreta-sanitaria';
+    
     public function getSolicitudesWhereId($id)
     {
         $sql =
@@ -21,15 +21,14 @@ class LibretaSanitaria
                 LEFT JOIN libretas_solicitudes sol ON sol.id_usuario_solicitante = usu.id
             WHERE wu.ReferenciaID = $id ORDER BY id DESC";
 
-        try {
-            $conn = new BaseDatos();
-            $query =  $conn->query($sql);
-            $result = $conn->fetch_assoc($query);
-            $result = $this->changeResultFormat($result);
-            return $result;
-        } catch (\Throwable $th) {
-            return $th;
+        $result = $this->executeSqlQuery($sql);
+
+        if ($result instanceof ErrorException) {
+            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
         }
+
+        $result = $this->changeResultFormat($result);
+        return $result;
     }
 
     private function changeResultFormat(array $result)
