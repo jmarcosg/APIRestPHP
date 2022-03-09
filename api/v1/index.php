@@ -28,6 +28,9 @@ switch ($url['path']) {
 	case 'licenciaconducir':
 		include './licenciaconducir/index.php';
 		break;
+	case 'totemsdata':
+		include './totemsdata/index.php';
+		break;
 	default:
 		sendRes(null, 'no existe el endpoint', null);
 		break;

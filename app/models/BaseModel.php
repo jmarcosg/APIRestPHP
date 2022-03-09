@@ -89,12 +89,20 @@ class BaseModel
         return $result;
     }
 
-    public function executeSqlQuery(string $sql)
+    public function executeSqlQuery(string $sql, $fetch_assoc = true)
     {
         try {
             $conn = new BaseDatos();
             $query =  $conn->query($sql);
-            $result = $conn->fetch_assoc($query);
+
+            if ($fetch_assoc) {
+                $result = $conn->fetch_assoc($query);
+            } else {
+                $result = [];
+                while ($row = odbc_fetch_array($query)) {
+                    $result[] = $row;
+                }
+            }
             return $result;
         } catch (\Throwable $th) {
             return $th;
