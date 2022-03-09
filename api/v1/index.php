@@ -31,6 +31,9 @@ switch ($url['path']) {
 	case 'totemsdata':
 		include './totemsdata/index.php';
 		break;
+	case 'renaper':
+		include './renaper/index.php';
+		break;
 	default:
 		sendRes(null, 'no existe el endpoint', null);
 		break;

@@ -7,3 +7,4 @@ define('EMPLEADO_KEY', $_ENV['TOKEN_KEY'] . '=EMPLEADO');
 define('LOGIN_KEY', $_ENV['TOKEN_KEY'] . '=LOGIN');
 define('LICENCIA_KEY', $_ENV['TOKEN_KEY'] . '=LICENCIA');
 define('TOTEMSDATA_KEY', $_ENV['TOKEN_KEY'] . '=TOTEMSDATA');
+define('RENAPER_KEY', $_ENV['TOKEN_KEY'] . '=RENAPER');
