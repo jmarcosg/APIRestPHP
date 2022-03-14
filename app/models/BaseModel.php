@@ -10,6 +10,7 @@ class BaseModel
 {
     protected $table;
     protected $softDeleted = false;
+    public $value;
 
     public function list($param = [], $ops = [])
     {
@@ -19,11 +20,13 @@ class BaseModel
         if (!$result instanceof ErrorException) {
             $data = [];
             while ($row = odbc_fetch_array($result)) $data[] = $row;
-            return $data;
+            $this->value = $data;
+            return $this;
         } else {
             logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
-            return $result;
+            $this->value = $result;
         }
+        return $this;
     }
 
     public function get($params)
@@ -32,11 +35,16 @@ class BaseModel
         $result = $conn->search($this->table, $params);
 
         if (!$result instanceof ErrorException) {
-            $result = $conn->fetch_assoc($result);
+            $this->value = $conn->fetch_assoc($result);
+
+            /* Ejecutamos los metodos para obtener las relaciones */
+            $methods = $this->filterMethods(get_class_methods($this));
+            foreach ($methods as $method) $this->$method();
         } else {
             logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            $this->value = $result;
         }
-        return $result;
+        return $this;
     }
 
     public function save()
@@ -89,6 +97,23 @@ class BaseModel
         return $result;
     }
 
+    /**
+     * Genera relación de uno a uno     
+     *  
+     * @access public
+     * @param string $class instancia de la clase en se requiere buscar.
+     * @param string $source clave foranea del modelo $this.
+     * @param string $destiny clave primaria de $class.
+     * @return this
+     */
+    public function hasOne($class, $source, $destiny)
+    {
+        $instance = new $class();
+        $data = $instance->get([$destiny => $this->value[$source]]);
+        $this->value[$source] = $data->value;
+        return $this;
+    }
+
     public function executeSqlQuery(string $sql, $fetch_assoc = true)
     {
         try {
@@ -107,5 +132,23 @@ class BaseModel
         } catch (\Throwable $th) {
             return $th;
         }
+    }
+
+    private function filterMethods($methods)
+    {
+        /* Solamente los metodos de la clase hija */
+        return array_values(array_filter($methods, function ($method) {
+            return
+                $method != "__construct" &&
+                $method != "set" &&
+                $method != "list" &&
+                $method != "get" &&
+                $method != "save" &&
+                $method != "update" &&
+                $method != "delete" &&
+                $method != "hasOne" &&
+                $method != "executeSqlQuery" &&
+                $method != "filterMethods";
+        }));
     }
 }

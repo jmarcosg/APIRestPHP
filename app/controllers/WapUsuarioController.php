@@ -18,7 +18,8 @@ class WapUsuarioController
     public function get($params)
     {
         $wapUsuario = new WapUsuario();
-        return $wapUsuario->get($params);
+        $wapUsuario = $wapUsuario->get($params);
+        return $wapUsuario->value;
     }
 
     /* Guarda un formulario */

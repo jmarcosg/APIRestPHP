@@ -18,7 +18,8 @@ class WapPersonaController
     public function get($params)
     {
         $wapPersona = new WapPersona();
-        return $wapPersona->get($params);
+        $wapPersona = $wapPersona->get($params);
+        return $wapPersona->value;
     }
 
     /* Guarda un formulario */
