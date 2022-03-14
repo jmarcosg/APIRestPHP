@@ -11,6 +11,9 @@ require ROOT_PATH . 'app/utils/funciones.php';
 $dotenv = \Dotenv\Dotenv::createImmutable(ROOT_PATH);
 $dotenv->load();
 
+/* Sentry */
+\Sentry\init(['dsn' => $_ENV['sentry']]);
+
 /* Modo produccion: true */
 define('PROD', $_ENV['PROD'] == 'true' ? true : false);
 

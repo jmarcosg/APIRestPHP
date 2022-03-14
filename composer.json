@@ -1,6 +1,7 @@
 {
   "require": {
-    "vlucas/phpdotenv": "^5.3"
+    "vlucas/phpdotenv": "^5.3",
+    "sentry/sdk": "^3.1"
   },
   "autoload": {
     "psr-4": {
