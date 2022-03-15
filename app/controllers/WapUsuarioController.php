@@ -7,6 +7,11 @@ use App\Models\WapUsuario;
 
 class WapUsuarioController
 {
+    public function __construct()
+    {
+        $_SESSION['exect'][] = 'wapUsuario';
+    }
+
     /* Buscar todos los usuarios */
     public function index($param = [], $ops = [])
     {
@@ -18,7 +23,6 @@ class WapUsuarioController
     public function get($params)
     {
         $wapUsuario = new WapUsuario();
-        $_SESSION['exect'][] = 'wapUsuario';
         $wapUsuario = $wapUsuario->get($params);
         return $wapUsuario->value;
     }

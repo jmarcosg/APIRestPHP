@@ -7,18 +7,23 @@ use App\Models\WapPersona;
 
 class WapPersonaController
 {
+    public function __construct()
+    {
+        $_SESSION['exect'][] = 'wapPersona';
+    }
+
     /* Buscar todos los usuarios */
     public function index($param = [], $ops = [])
     {
         $wapPersona = new WapPersona();
-        return $wapPersona->list($param, $ops);
+        $wapPersona = $wapPersona->list($param, $ops);
+        return $wapPersona->value;
     }
 
     /* Busca un usuario */
     public function get($params)
     {
         $wapPersona = new WapPersona();
-        $_SESSION['exect'][] = 'wapPersona';
         $wapPersona = $wapPersona->get($params);
         return $wapPersona->value;
     }

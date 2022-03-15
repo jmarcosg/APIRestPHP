@@ -64,11 +64,25 @@ function getAuthorizationHeader()
 
 function sendRes($res, string $error = null, array $params = null)
 {
+
+    $res = utf8ize($res);
     if ($error) {
         echo json_encode(['data' => null, 'error' => $error, 'params' => $params]);
     } else {
-        echo json_encode(['data' => $res, 'error' => $error]);
+        echo json_encode(['data' => $res, 'error' => $error], JSON_UNESCAPED_UNICODE);
     }
+}
+
+function utf8ize($d)
+{
+    if (is_array($d)) {
+        foreach ($d as $k => $v) {
+            $d[$k] = utf8ize($v);
+        }
+    } else if (is_string($d)) {
+        return utf8_encode($d);
+    }
+    return $d;
 }
 
 function logFileEE($subPath, ErrorException $e, $class, $function)

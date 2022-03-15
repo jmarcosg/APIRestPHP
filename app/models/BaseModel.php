@@ -21,7 +21,10 @@ class BaseModel
             $data = [];
             while ($row = odbc_fetch_array($result)) $data[] = $row;
             $this->value = $data;
-            return $this;
+
+            /* Ejecutamos los metodos para obtener las relaciones */
+            $methods = $this->filterMethods(get_class_methods($this));
+            foreach ($methods as $method) $this->$method();
         } else {
             logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
             $this->value = $result;
@@ -38,8 +41,10 @@ class BaseModel
             $this->value = $conn->fetch_assoc($result);
 
             /* Ejecutamos los metodos para obtener las relaciones */
-            $methods = $this->filterMethods(get_class_methods($this));
-            foreach ($methods as $method) $this->$method();
+            if ($this->value) {
+                $methods = $this->filterMethods(get_class_methods($this));
+                foreach ($methods as $method) $this->$method();
+            }
         } else {
             logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
             $this->value = $result;
@@ -112,13 +117,26 @@ class BaseModel
         $instance = new $class();
 
         /* Obtener el nombre del metodo por el cual se llamo hasOne */
-        $name = debug_backtrace()[1]['function'];
+        $trace = debug_backtrace();
+        $name = $trace[1]['function'];
+        $method = $trace[2]['function'];
 
-        /* Estructuramos la información */
         if (!in_array($name, $_SESSION['exect'])) {
             $_SESSION['exect'][] = $name;
-            $data = $instance->get([$destiny => $this->value[$source]]);
-            $this->value[$name] = $data->value;
+
+            /* Estructuramos la información, cuando value no contiene arreglos */
+            if ($method == 'get') {
+                $data = $instance->get([$destiny => $this->value[$source]]);
+                $this->value[$name] = $data->value;
+            }
+
+            /* Estructuramos la información, cuando value contiene arreglos */
+            if ($method == 'list') {
+                foreach ($this->value as $key => $value) {
+                    $data = $instance->get([$destiny => $value[$source]]);
+                    $this->value[$key][$name] = $data->value;
+                }
+            }
         }
 
         return $this;

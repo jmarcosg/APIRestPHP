@@ -34,14 +34,6 @@ class WapPersona extends BaseModel
         $this->Documento = array_key_exists('Documento', $req) ? $req['Documento'] : null;
     }
 
-    function prueba()
-    {
-        $this->value['prueba'] = [
-            '0' => '01',
-            '1' => '02',
-        ];
-    }
-
     function wapUsuario()
     {
         return $this->hasOne(WapUsuario::class, 'ReferenciaID',  'PersonaID');
