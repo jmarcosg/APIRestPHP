@@ -5,7 +5,7 @@ use App\Controllers\RenaperController;
 $renaperController = new RenaperController();
 
 /* Metodo GET */
-if ($token == TOKEN_KEY && $url['method'] == 'GET') {
+if ($url['method'] == 'GET') {
 	if (isset($_GET) && isset($_GET['sexo']) && isset($_GET['dni'])) {
 
 		if (!isset($_GET['type'])) $_GET['type'] = '';
@@ -32,9 +32,6 @@ if ($token == TOKEN_KEY && $url['method'] == 'GET') {
 	eClean();
 }
 
-if ($token != TOKEN_KEY) {
-	header("HTTP/1.1 401 Unauthorized");
-} else {
-	header("HTTP/1.1 200 Bad Request");
-}
+header("HTTP/1.1 200 Bad Request");
+
 eClean();

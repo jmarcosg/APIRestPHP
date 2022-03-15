@@ -5,7 +5,7 @@ use App\Controllers\WapUsuarioController;
 $wapUsuarioController = new WapUsuarioController();
 
 /* Metodo GET */
-if ($token == TOKEN_KEY && $url['method'] == 'GET') {
+if ($url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0) {
 		$wapUsuario = $wapUsuarioController->get($_GET);
 		if (!$wapUsuario instanceof ErrorException) {
@@ -29,7 +29,7 @@ if ($token == TOKEN_KEY && $url['method'] == 'GET') {
 }
 
 /* Metodo POST */
-if ($token == TOKEN_KEY && $url['method'] == 'POST') {
+if ($url['method'] == 'POST') {
 	$wapUsuario = $wapUsuarioController->store($_POST);
 	if (!$wapUsuario instanceof ErrorException) {
 		sendRes(['ReferenciaID' => $wapUsuario]);
@@ -40,7 +40,7 @@ if ($token == TOKEN_KEY && $url['method'] == 'POST') {
 }
 
 /* Metodo PUT */
-if ($token == TOKEN_KEY && $url['method'] == 'PUT') {
+if ($url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
 	$wapUsuario = $wapUsuarioController->update($_PUT, $url['id']);
 	if (!$wapUsuario instanceof ErrorException) {
@@ -52,7 +52,7 @@ if ($token == TOKEN_KEY && $url['method'] == 'PUT') {
 }
 
 /* Metodo DELETE */
-if ($token == TOKEN_KEY && $url['method'] == 'DELETE') {
+if ($url['method'] == 'DELETE') {
 	$wapUsuario = $wapUsuarioController->delete($url['id']);
 	if (!$wapUsuario instanceof ErrorException) {
 		sendRes($url['id']);
@@ -62,9 +62,6 @@ if ($token == TOKEN_KEY && $url['method'] == 'DELETE') {
 	eClean();
 }
 
-if ($token != TOKEN_KEY) {
-	header("HTTP/1.1 401 Unauthorized");
-} else {
-	header("HTTP/1.1 200 Bad Request");
-}
+header("HTTP/1.1 200 Bad Request");
+
 eClean();

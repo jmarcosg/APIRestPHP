@@ -5,7 +5,7 @@ use App\Controllers\DeportesUsuarioController;
 $deportesUsuarioController = new DeportesUsuarioController();
 
 /* Metodo GET */
-if ($token == TOKEN_KEY && $url['method'] == 'GET') {
+if ($url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0) {
 		$deportesUsuario = $deportesUsuarioController->get($_GET);
 		if (!$deportesUsuario instanceof ErrorException) {
@@ -29,7 +29,7 @@ if ($token == TOKEN_KEY && $url['method'] == 'GET') {
 }
 
 /* Metodo POST */
-if ($token == TOKEN_KEY && $url['method'] == 'POST') {
+if ($url['method'] == 'POST') {
 	$deportesUsuario = $deportesUsuarioController->store($_POST);
 	if (!$deportesUsuario instanceof ErrorException) {
 		sendRes(['ReferenciaID' => $deportesUsuario]);
@@ -40,7 +40,7 @@ if ($token == TOKEN_KEY && $url['method'] == 'POST') {
 }
 
 /* Metodo PUT */
-if ($token == TOKEN_KEY && $url['method'] == 'PUT') {
+if ($url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
 	$deportesUsuario = $deportesUsuarioController->update($_PUT, $url['id']);
 	if (!$deportesUsuario instanceof ErrorException) {
@@ -52,7 +52,7 @@ if ($token == TOKEN_KEY && $url['method'] == 'PUT') {
 }
 
 /* Metodo DELETE */
-if ($token == TOKEN_KEY && $url['method'] == 'DELETE') {
+if ($url['method'] == 'DELETE') {
 	$deportesUsuario = $deportesUsuarioController->delete($url['id']);
 	if (!$deportesUsuario instanceof ErrorException) {
 		sendRes($url['id']);
@@ -62,9 +62,6 @@ if ($token == TOKEN_KEY && $url['method'] == 'DELETE') {
 	eClean();
 }
 
-if ($token != TOKEN_KEY) {
-	header("HTTP/1.1 401 Unauthorized");
-} else {
-	header("HTTP/1.1 200 Bad Request");
-}
+header("HTTP/1.1 200 Bad Request");
+
 eClean();

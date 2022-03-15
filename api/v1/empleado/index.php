@@ -5,7 +5,7 @@ use App\Controllers\EmpleadoController;
 $empleadoController = new EmpleadoController();
 
 /* Metodo GET */
-if ($token == TOKEN_KEY && $url['method'] == 'GET') {
+if ($url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0) {
 		$empleado = $empleadoController->getByDocumentoAndGender($_GET);
 		if (!$empleado instanceof ErrorException) {
@@ -23,9 +23,6 @@ if ($token == TOKEN_KEY && $url['method'] == 'GET') {
 	eClean();
 }
 
-if ($token != TOKEN_KEY) {
-	header("HTTP/1.1 401 Unauthorized");
-} else {
-	header("HTTP/1.1 200 Bad Request");
-}
+header("HTTP/1.1 200 Bad Request");
+
 eClean();
