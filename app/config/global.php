@@ -23,14 +23,14 @@ define('PROD', $_ENV['PROD'] == 'true' ? true : false);
 /* Entorno: local - producción */
 define('ENV', $_ENV['ENV']);
 
+/* Token */
+define('TOKEN_KEY', $_ENV['TOKEN_KEY']);
+
 /* ######################### */
 define('WEBLOGIN2', PROD ? 'localhost/api/webLogin2' : 'https://weblogin.muninqn.gov.ar/api/webLogin2');
 
 /* Headers */
 include_once 'headers.php';
-
-/* Tokens */
-include 'tokens.php';
 
 /* Database */
 include 'db.php';

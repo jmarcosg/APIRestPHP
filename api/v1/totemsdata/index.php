@@ -5,7 +5,7 @@ use App\Controllers\TotemsDataController;
 $totemsDataController = new TotemsDataController();
 
 /* Metodo GET */
-if ($token == TOTEMSDATA_KEY && $url['method'] == 'GET') {
+if ($token == TOKEN_KEY && $url['method'] == 'GET') {
 	if (count($_GET) > 0 && isset($_GET['group']) && isset($_GET['totem'])) {
 
 		$totem = $_GET['totem'];
@@ -39,7 +39,7 @@ if ($token == TOTEMSDATA_KEY && $url['method'] == 'GET') {
 	eClean();
 }
 
-if ($token != ACARREO_KEY) {
+if ($token != TOKEN_KEY) {
 	header("HTTP/1.1 401 Unauthorized");
 } else {
 	header("HTTP/1.1 200 Bad Request");
