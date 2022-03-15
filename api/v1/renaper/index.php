@@ -29,7 +29,7 @@ if ($token == RENAPER_KEY && $url['method'] == 'GET') {
 	} else {
 		sendRes(null, 'Error en los parametros', $_GET);
 	}
-	exit();
+	eClean();
 }
 
 if ($token != RENAPER_KEY) {
@@ -37,4 +37,4 @@ if ($token != RENAPER_KEY) {
 } else {
 	header("HTTP/1.1 200 Bad Request");
 }
-exit();
+eClean();

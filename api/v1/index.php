@@ -38,3 +38,4 @@ switch ($url['path']) {
 		sendRes(null, 'no existe el endpoint', null);
 		break;
 }
+session_unset();

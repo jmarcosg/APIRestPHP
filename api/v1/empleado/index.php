@@ -20,7 +20,7 @@ if ($token == EMPLEADO_KEY && $url['method'] == 'GET') {
 	} else {
 		header("HTTP/1.1 200 Bad Request");
 	}
-	exit();
+	eClean();
 }
 
 if ($token != EMPLEADO_KEY) {
@@ -28,4 +28,4 @@ if ($token != EMPLEADO_KEY) {
 } else {
 	header("HTTP/1.1 200 Bad Request");
 }
-exit();
+eClean();

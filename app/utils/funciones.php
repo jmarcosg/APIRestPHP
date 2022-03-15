@@ -102,3 +102,9 @@ function compararFechas($string, $get, $format = 'd/m/Y')
     ];
     return $array;
 }
+
+function eClean()
+{
+    session_unset();
+    exit();
+}

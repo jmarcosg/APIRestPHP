@@ -18,6 +18,7 @@ class WapPersonaController
     public function get($params)
     {
         $wapPersona = new WapPersona();
+        $_SESSION['exect'][] = 'wapPersona';
         $wapPersona = $wapPersona->get($params);
         return $wapPersona->value;
     }

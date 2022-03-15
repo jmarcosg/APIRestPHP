@@ -25,7 +25,7 @@ if ($token == USUARIO_KEY && $url['method'] == 'GET') {
 			sendRes(null, $wapUsuario->getMessage(), $_GET);
 		};
 	}
-	exit();
+	eClean();
 }
 
 /* Metodo POST */
@@ -36,7 +36,7 @@ if ($token == USUARIO_KEY && $url['method'] == 'POST') {
 	} else {
 		sendRes(null, $wapUsuario->getMessage(), $_GET);
 	};
-	exit();
+	eClean();
 }
 
 /* Metodo PUT */
@@ -48,7 +48,7 @@ if ($token == USUARIO_KEY && $url['method'] == 'PUT') {
 	} else {
 		sendRes(null, $wapUsuario->getMessage(), $_GET);
 	};
-	exit();
+	eClean();
 }
 
 /* Metodo DELETE */
@@ -59,7 +59,7 @@ if ($token == USUARIO_KEY && $url['method'] == 'DELETE') {
 	} else {
 		sendRes(null, $wapUsuario->getMessage(), $url['id']);
 	};
-	exit();
+	eClean();
 }
 
 if ($token != USUARIO_KEY) {
@@ -67,4 +67,4 @@ if ($token != USUARIO_KEY) {
 } else {
 	header("HTTP/1.1 200 Bad Request");
 }
-exit();
+eClean();

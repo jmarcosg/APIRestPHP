@@ -18,6 +18,7 @@ class WapUsuarioController
     public function get($params)
     {
         $wapUsuario = new WapUsuario();
+        $_SESSION['exect'][] = 'wapUsuario';
         $wapUsuario = $wapUsuario->get($params);
         return $wapUsuario->value;
     }

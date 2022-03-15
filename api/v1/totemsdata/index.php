@@ -20,7 +20,7 @@ if ($token == TOTEMSDATA_KEY && $url['method'] == 'GET') {
 			/* if ($_GET['group'] == 'hour') $totemsData = $totemsDataController->groupByMonth($year); */
 		} else {
 			sendRes(null, 'Error en los parametros', $_GET);
-			exit();
+			eClean();
 		}
 
 
@@ -36,7 +36,7 @@ if ($token == TOTEMSDATA_KEY && $url['method'] == 'GET') {
 	} else {
 		sendRes(null, 'Error en los parametros', $_GET);
 	}
-	exit();
+	eClean();
 }
 
 if ($token != ACARREO_KEY) {
@@ -44,4 +44,4 @@ if ($token != ACARREO_KEY) {
 } else {
 	header("HTTP/1.1 200 Bad Request");
 }
-exit();
+eClean();

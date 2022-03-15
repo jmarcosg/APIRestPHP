@@ -108,9 +108,19 @@ class BaseModel
      */
     public function hasOne($class, $source, $destiny)
     {
+        /* Generamos la instancia de la clase por un string */
         $instance = new $class();
-        $data = $instance->get([$destiny => $this->value[$source]]);
-        $this->value[$source] = $data->value;
+
+        /* Obtener el nombre del metodo por el cual se llamo hasOne */
+        $name = debug_backtrace()[1]['function'];
+
+        /* Estructuramos la información */
+        if (!in_array($name, $_SESSION['exect'])) {
+            $_SESSION['exect'][] = $name;
+            $data = $instance->get([$destiny => $this->value[$source]]);
+            $this->value[$name] = $data->value;
+        }
+
         return $this;
     }
 
@@ -136,19 +146,26 @@ class BaseModel
 
     private function filterMethods($methods)
     {
+        /* Todos los metodos de BaseModel */
+        $filterMethod = [
+            "__construct",
+            "set",
+            "list",
+            "get",
+            "save",
+            "update",
+            "delete",
+            "hasOne",
+            "executeSqlQuery",
+            "filterMethods"
+        ];
+
         /* Solamente los metodos de la clase hija */
-        return array_values(array_filter($methods, function ($method) {
-            return
-                $method != "__construct" &&
-                $method != "set" &&
-                $method != "list" &&
-                $method != "get" &&
-                $method != "save" &&
-                $method != "update" &&
-                $method != "delete" &&
-                $method != "hasOne" &&
-                $method != "executeSqlQuery" &&
-                $method != "filterMethods";
-        }));
+        return array_values(array_filter(
+            $methods,
+            function ($method) use ($filterMethod) {
+                return !in_array($method, $filterMethod);
+            }
+        ));
     }
 }

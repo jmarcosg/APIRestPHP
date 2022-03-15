@@ -34,7 +34,7 @@ class WapUsuario extends BaseModel
         $this->Clave = array_key_exists('Clave', $req) ? $req['Clave'] : null;
     }
 
-    public function persona()
+    public function wapPersona()
     {
         return $this->hasOne(WapPersona::class, 'PersonaID',  'ReferenciaID');
     }

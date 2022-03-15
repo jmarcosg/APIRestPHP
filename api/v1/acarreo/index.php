@@ -21,7 +21,7 @@ if ($token == ACARREO_KEY && $url['method'] == 'GET') {
 	} else {
 		sendRes(null, 'Error en los parametros', ['ReferenciaID' => $id]);
 	}
-	exit();
+	eClean();
 }
 
 if ($token != ACARREO_KEY) {
@@ -29,4 +29,4 @@ if ($token != ACARREO_KEY) {
 } else {
 	header("HTTP/1.1 200 Bad Request");
 }
-exit();
+eClean();

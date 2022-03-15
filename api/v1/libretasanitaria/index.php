@@ -21,7 +21,7 @@ if ($token == LIBRETASANITARIA_KEY && $url['method'] == 'GET') {
 	} else {
 		sendRes(null, 'Error en los parametros', ['ReferenciaID' => $id]);
 	}
-	exit();
+	eClean();
 }
 
 if ($token != LIBRETASANITARIA_KEY) {
@@ -29,4 +29,4 @@ if ($token != LIBRETASANITARIA_KEY) {
 } else {
 	header("HTTP/1.1 200 Bad Request");
 }
-exit();
+eClean();
