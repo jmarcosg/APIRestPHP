@@ -38,6 +38,9 @@ if ($token == TOKEN_KEY) {
 		case 'wlaplicacion':
 			include './wlaplicacion/index.php';
 			break;
+		case 'wapusuariosperfiles':
+			include './wapusuariosperfiles/index.php';
+			break;
 		default:
 			sendRes(null, 'no existe el endpoint', null);
 			break;
