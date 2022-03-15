@@ -33,4 +33,14 @@ class WapUsuariosPerfiles extends BaseModel
         $this->AppID = array_key_exists('AppID', $req) ? $req['AppID'] : null;
         $this->PefilID = array_key_exists('PefilID', $req) ? $req['PefilID'] : null;
     }
+
+    function wapUsuario()
+    {
+        return $this->hasOne(WapUsuario::class, 'ReferenciaID',  'ReferenciaID');
+    }
+
+    function wlAplicacion()
+    {
+        return $this->hasOne(WlAplicacion::class, 'AppID',  'REFERENCIA');
+    }
 }

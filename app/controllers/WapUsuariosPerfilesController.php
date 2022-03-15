@@ -9,7 +9,7 @@ class WapUsuariosPerfilesController
 {
     public function __construct()
     {
-        $_SESSION['exect'][] = 'wlAplicacion';
+        $_SESSION['exect'][] = 'wapUsuariosPerfiles';
     }
 
     /* Buscar todos los usuarios */
