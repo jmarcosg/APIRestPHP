@@ -35,6 +35,9 @@ if ($token == TOKEN_KEY) {
 		case 'renaper':
 			include './renaper/index.php';
 			break;
+		case 'wlaplicacion':
+			include './wlaplicacion/index.php';
+			break;
 		default:
 			sendRes(null, 'no existe el endpoint', null);
 			break;
