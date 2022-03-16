@@ -11,6 +11,19 @@ class BaseModel
     protected $table;
     protected $softDeleted = false;
     public $value;
+    protected $filterMethod = [
+        "__construct",
+        "set",
+        "list",
+        "get",
+        "save",
+        "update",
+        "delete",
+        "hasOne",
+        "executeSqlQuery",
+        "filterMethods",
+        "addFilterMethod"
+    ];
 
     public function list($param = [], $ops = [])
     {
@@ -165,25 +178,21 @@ class BaseModel
     private function filterMethods($methods)
     {
         /* Todos los metodos de BaseModel */
-        $filterMethod = [
-            "__construct",
-            "set",
-            "list",
-            "get",
-            "save",
-            "update",
-            "delete",
-            "hasOne",
-            "executeSqlQuery",
-            "filterMethods"
-        ];
+        $filter = $this->filterMethod;
 
         /* Solamente los metodos de la clase hija */
         return array_values(array_filter(
             $methods,
-            function ($method) use ($filterMethod) {
-                return !in_array($method, $filterMethod);
+            function ($method) use ($filter) {
+                return !in_array($method, $filter);
             }
         ));
+    }
+
+    public function addFilterMethod(array $methods)
+    {
+        foreach ($methods as $method) {
+            $this->filterMethod[] = $method;
+        }
     }
 }
