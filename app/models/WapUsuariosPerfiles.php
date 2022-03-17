@@ -16,6 +16,8 @@ class WapUsuariosPerfiles extends BaseModel
     protected $logPath = 'v1/wapUsuariosPerfiles';
     protected $identity = 'ReferenciaID';
 
+    protected $reExectMethods = ['wapPersona'];
+
     public $ReferenciaID;
     public $AppID;
     public $PefilID;

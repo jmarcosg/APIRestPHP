@@ -11,6 +11,11 @@ class BaseModel
     protected $table;
     protected $softDeleted = false;
     public $value;
+
+    /** Metodos que se deben volver a ejecutar en un metodo de tipo list */
+    protected $reExectMethods = [];
+
+    /** Metodos que no se deben ejecutar, en los metodos de las relaciones */
     protected $filterMethod = [
         "__construct",
         "set",
@@ -147,6 +152,9 @@ class BaseModel
             if ($method == 'list') {
                 foreach ($this->value as $key => $value) {
                     $data = $instance->get([$destiny => $value[$source]]);
+                    foreach ($this->reExectMethods as $method) {
+                        unset($_SESSION['exect'][array_search($method, $_SESSION['exect'])]);
+                    }
                     $this->value[$key][$name] = $data->value;
                 }
             }
