@@ -1,7 +1,5 @@
 <?php
-session_start();
-session_unset();
-$_SESSION['exect'] = [];
+$GLOBALS['exect'] = [];
 
 /* Root Path */
 include_once 'paths.php';

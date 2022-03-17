@@ -9,7 +9,7 @@ class WapUsuarioController
 {
     public function __construct()
     {
-        $_SESSION['exect'][] = 'wapUsuario';
+        $GLOBALS['exect'][] = 'wapUsuario';
     }
 
     /* Buscar todos los usuarios */

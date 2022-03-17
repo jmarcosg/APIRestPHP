@@ -9,7 +9,7 @@ class WlAplicacionController
 {
     public function __construct()
     {
-        $_SESSION['exect'][] = 'wlAplicacion';
+        $GLOBALS['exect'][] = 'wlAplicacion';
     }
 
     /* Buscar todos los usuarios */

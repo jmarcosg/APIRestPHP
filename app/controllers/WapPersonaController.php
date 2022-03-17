@@ -9,7 +9,7 @@ class WapPersonaController
 {
     public function __construct()
     {
-        $_SESSION['exect'][] = 'wapPersona';
+        $GLOBALS['exect'][] = 'wapPersona';
     }
 
     /* Buscar todos los usuarios */

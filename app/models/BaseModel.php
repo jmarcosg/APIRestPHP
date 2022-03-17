@@ -152,8 +152,8 @@ class BaseModel
         $name = $trace[1]['function'];
         $method = $trace[2]['function'];
 
-        if (!in_array($name, $_SESSION['exect'])) {
-            $_SESSION['exect'][] = $name;
+        if (!in_array($name, $GLOBALS['exect'])) {
+            $GLOBALS['exect'][] = $name;
 
             /* Estructuramos la información, cuando value no contiene arreglos */
             if ($method == 'get') {
@@ -188,11 +188,10 @@ class BaseModel
         ));
     }
 
-
     private function reExectMethods()
     {
         foreach ($this->reExectMethods as $method) {
-            unset($_SESSION['exect'][array_search($method, $_SESSION['exect'])]);
+            unset($GLOBALS['exect'][array_search($method, $GLOBALS['exect'])]);
         }
     }
 
