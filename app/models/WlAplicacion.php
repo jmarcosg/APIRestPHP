@@ -22,6 +22,10 @@ class WlAplicacion extends BaseModel
 
     public function __construct()
     {
+        parent::__construct();
+
+        $this->addFilterMethod(['set']);
+        
         $this->REFERENCIA = "";
         $this->AppID = "";
         $this->PefilID = "";

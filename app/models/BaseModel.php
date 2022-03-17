@@ -16,19 +16,12 @@ class BaseModel
     protected $reExectMethods = [];
 
     /** Metodos que no se deben ejecutar, en los metodos de las relaciones */
-    protected $filterMethod = [
-        "__construct",
-        "set",
-        "list",
-        "get",
-        "save",
-        "update",
-        "delete",
-        "hasOne",
-        "executeSqlQuery",
-        "filterMethods",
-        "addFilterMethod"
-    ];
+    protected $filterMethod = [];
+
+    public function __construct()
+    {
+        $this->filterMethod = get_class_methods(get_parent_class($this));
+    }
 
     public function list($param = [], $ops = [])
     {
@@ -172,10 +165,8 @@ class BaseModel
             if ($method == 'list') {
                 foreach ($this->value as $key => $value) {
                     $data = $instance->get([$destiny => $value[$source]]);
-                    foreach ($this->reExectMethods as $method) {
-                        unset($_SESSION['exect'][array_search($method, $_SESSION['exect'])]);
-                    }
                     $this->value[$key][$name] = $data->value;
+                    $this->reExectMethods();
                 }
             }
         }
@@ -197,6 +188,19 @@ class BaseModel
         ));
     }
 
+
+    private function reExectMethods()
+    {
+        foreach ($this->reExectMethods as $method) {
+            unset($_SESSION['exect'][array_search($method, $_SESSION['exect'])]);
+        }
+    }
+
+    /** 
+     * Agregamos metodos en la lista para que no se ejecute en las llamadas 
+     * 
+     * @param array $methods Listado de metodos
+     */
     public function addFilterMethod(array $methods)
     {
         foreach ($methods as $method) {

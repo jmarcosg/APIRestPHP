@@ -16,7 +16,8 @@ class WapUsuarioController
     public function index($param = [], $ops = [])
     {
         $wapUsuario = new WapUsuario();
-        return $wapUsuario->list($param, $ops);
+        $wapUsuario = $wapUsuario->list($param, $ops);
+        return $wapUsuario->value;
     }
 
     /* Busca un usuario */
