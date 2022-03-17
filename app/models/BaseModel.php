@@ -120,6 +120,26 @@ class BaseModel
         return $result;
     }
 
+    public function executeSqlQuery(string $sql, $fetch_assoc = true)
+    {
+        try {
+            $conn = new BaseDatos();
+            $query =  $conn->query($sql);
+
+            if ($fetch_assoc) {
+                $result = $conn->fetch_assoc($query);
+            } else {
+                $result = [];
+                while ($row = odbc_fetch_array($query)) {
+                    $result[] = $row;
+                }
+            }
+            return $result;
+        } catch (\Throwable $th) {
+            return $th;
+        }
+    }
+
     /**
      * Genera relación de uno a uno     
      *  
@@ -161,26 +181,6 @@ class BaseModel
         }
 
         return $this;
-    }
-
-    public function executeSqlQuery(string $sql, $fetch_assoc = true)
-    {
-        try {
-            $conn = new BaseDatos();
-            $query =  $conn->query($sql);
-
-            if ($fetch_assoc) {
-                $result = $conn->fetch_assoc($query);
-            } else {
-                $result = [];
-                while ($row = odbc_fetch_array($query)) {
-                    $result[] = $row;
-                }
-            }
-            return $result;
-        } catch (\Throwable $th) {
-            return $th;
-        }
     }
 
     private function filterMethods($methods)
