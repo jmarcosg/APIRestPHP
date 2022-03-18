@@ -122,3 +122,11 @@ function eClean()
     session_unset();
     exit();
 }
+
+function is_multi_array(array $a)
+{
+    foreach ($a as $v) {
+        if (is_array($v)) return true;
+    }
+    return false;
+}
