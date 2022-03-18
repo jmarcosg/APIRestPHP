@@ -18,27 +18,7 @@ class WapUsuario extends BaseModel
     protected $logPath = 'v1/wapUsuarios';
     protected $identity = 'ReferenciaID';
 
-    public $PersonaID;
-    public $Usuario;
-    public $Clave;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->addFilterMethod(['set']);
-
-        $this->PersonaID = "";
-        $this->Usuario = "";
-        $this->Clave = "";
-    }
-
-    public function set(array $req)
-    {
-        $this->PersonaID = array_key_exists('PersonaID', $req) ? $req['PersonaID'] : null;
-        $this->Usuario = array_key_exists('Usuario', $req) ? $req['Usuario'] : null;
-        $this->Clave = array_key_exists('Clave', $req) ? $req['Clave'] : null;
-    }
+    protected $fillable = ['PersonaID', 'Usuario', 'Clave'];
 
     public function wapPersona()
     {

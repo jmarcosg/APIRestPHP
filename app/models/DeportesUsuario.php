@@ -17,21 +17,5 @@ class DeportesUsuario extends BaseModel
     protected $identity = 'id';
     protected $softDeleted = 'deleted_at';
 
-    public $id_wappersonas;
-    public $nombre;
-    public $apellido;
-
-    public function __construct()
-    {
-        $this->id_wappersonas = "";
-        $this->nombre = "";
-        $this->apellido = "";
-    }
-
-    public function set(array $req)
-    {
-        $this->id_wappersonas = array_key_exists('id_wappersonas', $req) ? $req['id_wappersonas'] : null;
-        $this->nombre = array_key_exists('nombre', $req) ? $req['nombre'] : null;
-        $this->apellido = array_key_exists('apellido', $req) ? $req['apellido'] : null;
-    }
+    protected $fillable = ['id_wappersonas', 'nombre', 'apellido'];
 }

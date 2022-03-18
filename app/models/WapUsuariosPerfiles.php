@@ -18,27 +18,7 @@ class WapUsuariosPerfiles extends BaseModel
 
     protected $reExectMethods = ['wapPersona'];
 
-    public $ReferenciaID;
-    public $AppID;
-    public $PefilID;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->addFilterMethod(['set']);
-
-        $this->REFERENCIA = "";
-        $this->AppID = "";
-        $this->PefilID = "";
-    }
-
-    public function set(array $req)
-    {
-        $this->ReferenciaID = array_key_exists('ReferenciaID', $req) ? $req['ReferenciaID'] : null;
-        $this->AppID = array_key_exists('AppID', $req) ? $req['AppID'] : null;
-        $this->PefilID = array_key_exists('PefilID', $req) ? $req['PefilID'] : null;
-    }
+    protected $fillable = ['ReferenciaID', 'AppID', 'PefilID'];
 
     function wapUsuario()
     {

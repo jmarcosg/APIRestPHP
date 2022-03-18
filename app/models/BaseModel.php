@@ -8,19 +8,37 @@ use App\Connections\BaseDatos;
 
 class BaseModel
 {
+    /** Nombre de la tabla en el cual va operar el modelo */
     protected $table;
+
+    /** Indica si es un borrado logico o fisico */
     protected $softDeleted = false;
+
+    /** Valor que retorna luego de hacer la consulta */
     public $value;
+
+    /** Campos de la tabla que se permiten en el modelo */
+    protected $fillable = [];
+
+    /** Arreglo generado para hacer el save en la base de datos */
+    public $req;
 
     /** Metodos que se deben volver a ejecutar en un metodo de tipo list */
     protected $reExectMethods = [];
 
-    /** Metodos que no se deben ejecutar, en los metodos de las relaciones */
+    /** Metodos que no se deben ejecutar, en los en las relaciones */
     protected $filterMethod = [];
 
     public function __construct()
     {
         $this->filterMethod = get_class_methods(get_parent_class($this));
+    }
+
+    public function set(array $req)
+    {
+        foreach ($this->fillable as $fill) {
+            $this->req[$fill] = array_key_exists($fill, $req) ? $req[$fill] : null;
+        }
     }
 
     public function list($param = [], $ops = [])
@@ -65,7 +83,7 @@ class BaseModel
 
     public function save()
     {
-        $array = json_decode(json_encode($this), true);
+        $array = json_decode(json_encode($this->req), true);
         $conn = new BaseDatos();
         $result = $conn->store($this->table, $array);
 
