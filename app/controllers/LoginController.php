@@ -22,19 +22,7 @@ class LoginController
                 'apps' => $userData->value->apps
             ];
 
-            /* Obtenemos los datos del legajo, si es que tiene */
-            /* $emp = new Empleado();
-            $genero = $userData->value->profile->genero->textID; */
-
             $dni = $userData->value->profile->documento;
-
-            /* $empData = $emp->getByDocumentoAndGender($dni, $genero);
-
-            if ($empData && !$empData instanceof ErrorException) {
-                $data['legajo'] = $empData;
-            } else {
-                $data['legajo'] = null;
-            } */
 
             $referenciaId = $userData->value->profile->wapUsuarioID;
             $data['fetch'] = $this->viewFetch($referenciaId, $dni);
@@ -47,7 +35,7 @@ class LoginController
 
     public function viewFetch($referenciaId, $dni)
     {
-        /* Sirve para derterminar que vamos a llamar desde el front */
+        /** Determina que vamos a llamar desde el front */
         $user = new Login();
         $data = $user->viewFetch($referenciaId, $dni);
 
