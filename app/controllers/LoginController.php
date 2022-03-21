@@ -39,7 +39,7 @@ class LoginController
         $user = new Login();
         $data = $user->viewFetch($referenciaId, $dni);
 
-        $data['legajo'] = $data['libreta'] != null ? true : false;
+        $data['legajo'] = $data['legajo'] != null ? true : false;
         $data['libreta'] = $data['libreta'] != null ? true : false;
         $data['licencia'] = $data['licencia'] == null || $data['licencia'] == -1 ? false : true;
         $data['acarreo'] = $data['acarreo'] != null ? true : false;
