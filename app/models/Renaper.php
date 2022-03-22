@@ -13,9 +13,7 @@ class Renaper extends BaseModel
     public function getData($gender, $dni)
     {
         try {
-            $conn = new BaseDatos();
-            $token = $conn->search('RenaperAuthToken');
-            $token = $conn->fetch_assoc($token)['Token'];
+            $token = $this->getTokenRenaper();
 
             $op = [
                 "ssl" => [
@@ -34,6 +32,17 @@ class Renaper extends BaseModel
             }
         } catch (\Throwable $th) {
             logFileEE($this->logPath, $th, get_class($this), __FUNCTION__);
+            return $th;
+        }
+    }
+
+    public function getTokenRenaper()
+    {
+        try {
+            $conn = new BaseDatos();
+            $token = $conn->search('RenaperAuthToken');
+            return $conn->fetch_assoc($token)['Token'];
+        } catch (\Throwable $th) {
             return $th;
         }
     }

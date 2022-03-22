@@ -7,7 +7,7 @@ use ErrorException;
 class LibretaSanitaria extends BaseModel
 {
     protected $logPath = 'v1/libreta-sanitaria';
-    
+
     public function getSolicitudesWhereId($id)
     {
         $sql =
@@ -25,9 +25,12 @@ class LibretaSanitaria extends BaseModel
 
         if ($result instanceof ErrorException) {
             logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+        } else {
+            if ($result) {
+                $result = $this->changeResultFormat($result);
+            }
         }
 
-        $result = $this->changeResultFormat($result);
         return $result;
     }
 

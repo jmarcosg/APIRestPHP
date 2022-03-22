@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Renaper;
+use ErrorException;
 
 class RenaperController
 {
@@ -28,6 +29,8 @@ class RenaperController
         $renaper = new Renaper();
         $renaper = $renaper->getData($gender, $dni);
 
+        if ($renaper instanceof ErrorException) return $renaper;
+
         return [
             'referenciaID' => $renaper->referenciaID,
             'documento' => $renaper->documento,
@@ -42,5 +45,11 @@ class RenaperController
             'celular' => $renaper->celular,
             'correoElectronico' => $renaper->correoElectronico,
         ];
+    }
+
+    public function getTokenRenaper()
+    {
+        $renaper = new Renaper();
+        return $renaper->getTokenRenaper();
     }
 }

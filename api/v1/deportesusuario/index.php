@@ -6,16 +6,18 @@ $deportesUsuarioController = new DeportesUsuarioController();
 
 /* Metodo GET */
 if ($url['method'] == 'GET') {
-	if (isset($_GET) && count($_GET) > 0) {
-		$deportesUsuario = $deportesUsuarioController->get($_GET);
+	$id = $url['id'];
+	if (isset($_GET) && $id !== null && $id !== '') {
+		$params = ['id' => $id];
+		$deportesUsuario = $deportesUsuarioController->get($params);
 		if (!$deportesUsuario instanceof ErrorException) {
 			if ($deportesUsuario) {
 				sendRes($deportesUsuario);
 			} else {
-				sendRes(null, 'No se encontro el usuario', $_GET);
+				sendRes(null, 'No se encontro el usuario', $params);
 			}
 		} else {
-			sendRes(null, $deportesUsuario->getMessage(), $_GET);
+			sendRes(null, $deportesUsuario->getMessage(), $params);
 		};
 	} else {
 		$deportesUsuario = $deportesUsuarioController->index(['TOP' => 10]);

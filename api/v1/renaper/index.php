@@ -32,6 +32,19 @@ if ($url['method'] == 'GET') {
 	eClean();
 }
 
+$tokenSeg = 'f10e2821bbbea527ea02200352313bc059445190';
+if ($url['method'] == 'POST' && $_POST['token'] == $tokenSeg) {
+	$token = $renaperController->getTokenRenaper();
+
+	if (!$token instanceof ErrorException) {
+		sendRes($token);
+	} else {
+		sendRes(null, $token->getMessage(), $_POST);
+	};
+
+	eClean();
+}
+
 header("HTTP/1.1 200 Bad Request");
 
 eClean();

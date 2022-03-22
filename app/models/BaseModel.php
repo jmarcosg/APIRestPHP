@@ -118,7 +118,7 @@ class BaseModel
             /* Si el modelo tiene el softdeleted, modificamos la columna que afecta al softdeleted */
             $deleted_at = date("Y-m-d H:i:s", time());
             $data = $this->get([$this->identity => $id]);
-            if (!isset($data[$this->softDeleted]) && $data[$this->softDeleted] == null) {
+            if (!isset($data->value[$this->softDeleted]) && $data->value[$this->softDeleted] == null) {
                 $result = $this->update([$this->softDeleted => $deleted_at], $id);
             } else {
                 $result = new ErrorException('El recurso ya se encuentra eliminado');
