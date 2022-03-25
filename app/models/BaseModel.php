@@ -97,37 +97,48 @@ class BaseModel
     {
         unset($req[$this->identity]);
 
-        $conn = new BaseDatos();
-        $result = $conn->update($this->table, $req, $id, $this->identity);
+        /* Verificamos si el recurso existe */
+        $search = $this->get([$this->identity => $id])->value;
+        if ($search) {
+            $conn = new BaseDatos();
+            $result = $conn->update($this->table, $req, $id, $this->identity);
 
-        if ($result instanceof ErrorException) {
-            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            if ($result instanceof ErrorException) {
+                logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            }
+        } else {
+            $result = new ErrorException('No se encuentra el recurso');
         }
-
         return $result;
     }
 
     public function delete($id)
     {
-        $conn = new BaseDatos();
-
-        if (!$this->softDeleted) {
-            /* Si el modelo no tiene el softdeleted, borramos el recurso completo de la DB */
-            $result = $conn->delete($this->table, [$this->identity => $id]);
-        } else {
-            /* Si el modelo tiene el softdeleted, modificamos la columna que afecta al softdeleted */
-            $deleted_at = date("Y-m-d H:i:s", time());
-            $data = $this->get([$this->identity => $id]);
-            if (!isset($data[$this->softDeleted]) && $data[$this->softDeleted] == null) {
-                $result = $this->update([$this->softDeleted => $deleted_at], $id);
+        /* Verificamos si el recurso existe */
+        $search = $this->get([$this->identity => $id])->value;
+        if ($search) {
+            $conn = new BaseDatos();
+            if (!$this->softDeleted) {
+                /* Si el modelo no tiene el softdeleted, borramos el recurso completo de la DB */
+                $result = $conn->delete($this->table, [$this->identity => $id]);
             } else {
-                $result = new ErrorException('El recurso ya se encuentra eliminado');
+                /* Si el modelo tiene el softdeleted, modificamos la columna que afecta al softdeleted */
+                $deleted_at = date("Y-m-d H:i:s", time());
+                $data = $this->get([$this->identity => $id]);
+                if (!isset($data[$this->softDeleted]) && $data[$this->softDeleted] == null) {
+                    $result = $this->update([$this->softDeleted => $deleted_at], $id);
+                } else {
+                    $result = new ErrorException('El recurso ya se encuentra eliminado');
+                }
             }
+
+            if ($result instanceof ErrorException) {
+                logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            }
+        } else {
+            $result = new ErrorException('No se encuentra el recurso');
         }
 
-        if ($result instanceof ErrorException) {
-            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
-        }
         return $result;
     }
 
