@@ -42,22 +42,26 @@ if ($url['method'] == 'POST') {
 /* Metodo PUT */
 if ($url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
-	$wapPersona = $wapPersonaController->update($_PUT, $url['id']);
+	$id = $url['id'];
+	$wapPersona = $wapPersonaController->update($_PUT, $id);
+
 	if (!$wapPersona instanceof ErrorException) {
+		$_PUT['ReferenciaID'] = $id;
 		sendRes($_PUT);
 	} else {
-		sendRes(null, $wapPersona->getMessage(), $_GET);
+		sendRes(null, $wapPersona->getMessage(), ['ReferenciaID' => $id]);
 	};
 	eClean();
 }
 
 /* Metodo DELETE */
 if ($url['method'] == 'DELETE') {
+	$id = $url['id'];
 	$wapPersona = $wapPersonaController->delete($url['id']);
 	if (!$wapPersona instanceof ErrorException) {
-		sendRes($url['id']);
+		sendRes(['ReferenciaID' => $id]);
 	} else {
-		sendRes(null, $wapPersona->getMessage(), $url['id']);
+		sendRes(null, $wapPersona->getMessage(), ['ReferenciaID' => $id]);
 	};
 	eClean();
 }
