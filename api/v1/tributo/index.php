@@ -4,9 +4,20 @@ use App\Controllers\TributoController;
 
 $tributoController = new TributoController();
 
-/* Metodo GET */
-if ($url['method'] == 'POST' && $_POST['type'] = 'saveStats') {
-	$tributo = $tributoController->save($_POST);
+if ($url['method'] == 'POST') {
+	if ($_POST['type'] == 'saveStats') {
+		$tributoStats = $tributoController->save($_POST);
+	}
+
+	if ($_POST['type'] == 'sendEmailMensual') {
+		$tributoStats = $tributoController->sendEmailMensual($_POST);
+	}
+
+	if ($_POST['type'] == 'sendEmailSemestral') {
+		$tributoStats = $tributoController->sendEmailSemestral($_POST);
+	}
+	header("HTTP/1.1 200 OK");
+	exit();
 }
 
 header("HTTP/1.1 200 Bad Request");
