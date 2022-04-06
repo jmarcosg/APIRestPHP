@@ -10,11 +10,13 @@ if ($url['method'] == 'POST') {
 	}
 
 	if ($_POST['type'] == 'sendEmailMensual') {
-		$tributoStats = $tributoController->sendEmailMensual($_POST);
+		$emailMensual = $tributoController->sendEmailMensual($_POST);
+		sendRes($emailMensual);
 	}
 
 	if ($_POST['type'] == 'sendEmailSemestral') {
-		$tributoStats = $tributoController->sendEmailSemestral($_POST);
+		$emailSemestral = $tributoController->sendEmailSemestral($_POST);
+		sendRes($emailSemestral);
 	}
 	header("HTTP/1.1 200 OK");
 	exit();
