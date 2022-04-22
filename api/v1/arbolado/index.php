@@ -39,7 +39,7 @@ if ($url['method'] == 'GET') {
 if ($url['method'] == 'POST') {
 	$arbolado = $arbSolicitudController->store($_POST);
 	if (!$arbolado instanceof ErrorException) {
-		sendRes(['ReferenciaID' => $arbolado]);
+		sendRes(['id' => $arbolado]);
 	} else {
 		sendRes(null, $arbolado->getMessage(), $_GET);
 	};
