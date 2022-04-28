@@ -130,3 +130,95 @@ function is_multi_array(array $a)
     }
     return false;
 }
+
+/**
+ * Chequea que el tamaño y tipo de archivos subidos sean los correctos
+ * JS Alert si no lo son
+ * @param int maxsize en mb del archivo, default 200mb
+ * @param array formatos aceptados
+ * @return bool false si hubo un error en el chequeo de archivos
+ */
+function checkFile($maxsize = 15)
+{
+    $acceptable = array('application/pdf', 'image/jpeg', 'image/jpg', 'image/gif', 'image/png', 'video/mp4', 'video/mpeg');
+    if (isset($_FILES) && !empty($_FILES)) {
+        $errors = array();
+
+        $phpFileUploadErrors = array(
+            0 => 'There is no error, the file uploaded with success',
+            1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+            2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+            3 => 'The uploaded file was only partially uploaded',
+            4 => 'No file was uploaded',
+            6 => 'Missing a temporary folder',
+            7 => 'Failed to write file to disk.',
+            8 => 'A PHP extension stopped the file upload.',
+        );
+
+        $maxsize_multiplied = $maxsize * 1000000;
+
+        foreach ($_FILES as $key => $value) {
+            if (($value['size'] >= $maxsize_multiplied) && ($value['size'] != 0)) {
+                $errors[] = "$key Archivo adjunto muy grande. Debe pesar menos de $maxsize megabytes.";
+            }
+            if ((!in_array($value['type'], $acceptable)) && !empty($value['type'])) {
+                $error = "$key Tipo de archivo invalido. Solamente tipos ";
+                foreach ($acceptable as $val) {
+                    $error .= $val . ', ';
+                }
+                $error .= "se aceptan.";
+                $errors[] = $error;
+            }
+            if ($value['error'] != 0 && !empty($value['type'])) {
+                $errors[] = $phpFileUploadErrors[$value['error']];
+            }
+        }
+
+        if (count($errors) === 0) {
+            return true;
+        } else {
+            foreach ($errors as $error) {
+                echo '<script>alert("' . $error . '");</script>';
+            }
+            return false;
+        }
+    }
+}
+
+function getPathFile($file, $subPath, $fileName)
+{
+
+    $path = FILE_PATH_LOCAL . $subPath;
+
+    if (!file_exists($path)) {
+        mkdir($path, 0755, true);
+    };
+
+    if (!empty($file)) {
+        $path = $path . $fileName;
+    };
+
+    return $path;
+}
+
+function getExtFile($file)
+{
+    if (!empty($file)) {
+        switch ($file['type']) {
+            case ('image/jpg'):
+                return '.jpg';
+
+            case ('image/jpeg'):
+                return '.jpeg';
+
+            case ('image/png'):
+                return '.png';
+
+            case 'application/pdf':
+                return '.pdf';
+
+            case 'image/bmp':
+                return '.bmp';
+        }
+    };
+}

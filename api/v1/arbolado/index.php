@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\Arbolado\Arb_SolicitudController;
+use App\Controllers\Arbolado\Arb_ArchivoController;
 
 $arbSolicitudController = new Arb_SolicitudController();
 
@@ -8,7 +9,7 @@ $arbSolicitudController = new Arb_SolicitudController();
 if ($url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0) {
 
-		if ($_GET['list'] == 'true') {
+		if (isset($_GET['list']) && $_GET['list'] == 'true') {
 			unset($_GET['list']);
 			$arbolado = $arbSolicitudController->index($_GET);
 		} else {
@@ -16,7 +17,7 @@ if ($url['method'] == 'GET') {
 		}
 
 		if (!$arbolado instanceof ErrorException) {
-			if ($arbolado) {
+			if ($arbolado !== false) {
 				sendRes($arbolado);
 			} else {
 				sendRes(null, 'No se encontro la solicitud', $_GET);
@@ -37,11 +38,35 @@ if ($url['method'] == 'GET') {
 
 /* Metodo POST */
 if ($url['method'] == 'POST') {
-	$arbolado = $arbSolicitudController->store($_POST);
-	if (!$arbolado instanceof ErrorException) {
-		sendRes(['id' => $arbolado]);
+
+	/* Guardamos la solicitud */
+	$id = $arbSolicitudController->store($_POST);
+	if (!$id instanceof ErrorException) {
+		$arbArchivoController = new Arb_ArchivoController();
+
+		foreach ($_FILES as $key => $file) {
+			/* Generamos un nombre unico para el archivo */
+			$nameFile = uniqid() . getExtFile($file);
+
+			/* Guardamos el nombre del archivo en la tabla */
+			$req = ['id_solicitud' => $id, 'name' => $nameFile];
+			$archivo = $arbArchivoController->store($req);
+
+			/* copiamos el archivo en la carpeta correspondiente */
+			$path = getPathFile($file, "arbolado/$id/", $nameFile);
+			$copiado = copy($file['tmp_name'], $path);
+
+			if ($archivo instanceof ErrorException && !$copiado) {
+				/* Si hubo un error en algun archivo */
+				$arbSolicitudController->delete($id);
+				sendRes(null, $archivo, $_GET);
+				exit;
+			}
+		}
+
+		sendRes(['id' => $id]);
 	} else {
-		sendRes(null, $arbolado->getMessage(), $_GET);
+		sendRes(null, $id->getMessage(), $_GET);
 	};
 	eClean();
 }

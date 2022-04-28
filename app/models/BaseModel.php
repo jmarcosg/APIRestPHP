@@ -124,7 +124,7 @@ class BaseModel
             } else {
                 /* Si el modelo tiene el softdeleted, modificamos la columna que afecta al softdeleted */
                 $deleted_at = date("Y-m-d H:i:s", time());
-                $data = $this->get([$this->identity => $id]);
+                $data = $this->get([$this->identity => $id])->value;
                 if (!isset($data[$this->softDeleted]) && $data[$this->softDeleted] == null) {
                     $result = $this->update([$this->softDeleted => $deleted_at], $id);
                 } else {

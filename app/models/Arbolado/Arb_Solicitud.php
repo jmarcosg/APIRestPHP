@@ -13,7 +13,7 @@ class Arb_Solicitud extends BaseModel
     protected $identity = 'id';
     protected $softDeleted = 'deleted_at';
 
-    protected $fillable = ['id_usuario', 'id_wappersonas', 'tipo', 'solicita', 'ubicacion', 'motivo', 'cantidad', 'contacto'];
+    protected $fillable = ['id_usuario', 'id_wappersonas', 'tipo', 'solicita', 'ubicacion', 'motivo', 'cantidad', 'contacto', 'estado'];
 
     function wapUsuario()
     {

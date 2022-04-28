@@ -46,7 +46,7 @@ class BaseDatos
                     if (isset($ops[$key])) {
                         $op = $ops[$key];
                     }
-                    $where .= " AND " . $key . $op . $value;
+                    $where .= " AND " . $key . $op . "'$value'";
                     $values[] = $value;
                 }
             }
