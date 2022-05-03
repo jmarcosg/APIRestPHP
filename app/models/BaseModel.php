@@ -23,6 +23,9 @@ class BaseModel
     /** Arreglo generado para hacer el save en la base de datos */
     public $req;
 
+    /** Ruta donde se almacena los archivos del proyecto */
+    protected $filesUrl;
+
     /** Metodos que se deben volver a ejecutar en un metodo de tipo list */
     protected $reExectMethods = [];
 
@@ -194,6 +197,46 @@ class BaseModel
             if ($method == 'list') {
                 foreach ($this->value as $key => $value) {
                     $data = $instance->get([$destiny => $value[$source]]);
+                    $this->value[$key][$name] = $data->value;
+                    $this->reExectMethods();
+                }
+            }
+        }
+
+        return $this;
+    }
+    /**
+     * Genera relación de uno a uno     
+     *  
+     * @access public
+     * @param string $class instancia de la clase en se requiere buscar.
+     * @param string $source clave foranea del modelo $this.
+     * @param string $destiny clave primaria de $class.
+     * @return this
+     */
+    public function hasMany($class, $source, $destiny)
+    {
+        /* Generamos la instancia de la clase por un string */
+        $instance = new $class();
+
+        /* Obtener el nombre del metodo por el cual se llamo hasOne */
+        $trace = debug_backtrace();
+        $name = $trace[1]['function'];
+        $method = $trace[2]['function'];
+
+        if (!in_array($name, $GLOBALS['exect'])) {
+            $GLOBALS['exect'][] = $name;
+
+            /* Estructuramos la información, cuando value no contiene arreglos */
+            if ($method == 'get') {
+                $data = $instance->list([$destiny => $this->value[$source]]);
+                $this->value[$name] = $data->value;
+            }
+
+            /* Estructuramos la información, cuando value contiene arreglos */
+            if ($method == 'list') {
+                foreach ($this->value as $key => $value) {
+                    $data = $instance->list([$destiny => $value[$source]]);
                     $this->value[$key][$name] = $data->value;
                     $this->reExectMethods();
                 }

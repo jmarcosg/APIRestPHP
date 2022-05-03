@@ -11,7 +11,11 @@ if ($url['method'] == 'GET') {
 
 		if (isset($_GET['list']) && $_GET['list'] == 'true') {
 			unset($_GET['list']);
-			$arbolado = $arbSolicitudController->index($_GET);
+			if ($_GET['estado'] === 'todas') {
+				$arbolado = $arbSolicitudController->index(['TOP' => 1000]);
+			} else {
+				$arbolado = $arbSolicitudController->index($_GET);
+			}
 		} else {
 			$arbolado = $arbSolicitudController->get($_GET);
 		}
@@ -26,12 +30,6 @@ if ($url['method'] == 'GET') {
 			sendRes(null, $arbolado->getMessage(), $_GET);
 		};
 	} else {
-		$arbolado = $arbSolicitudController->index(['TOP' => 10]);
-		if (!$arbolado instanceof ErrorException) {
-			sendRes($arbolado);
-		} else {
-			sendRes(null, $arbolado->getMessage(), $_GET);
-		};
 	}
 	eClean();
 }
