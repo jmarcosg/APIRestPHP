@@ -48,6 +48,8 @@ class BaseDatos
                     }
                     $where .= " AND " . $key . $op . "'$value'";
                     $values[] = $value;
+                } else {
+                    $where .= " AND " . $key . " is null";
                 }
             }
 

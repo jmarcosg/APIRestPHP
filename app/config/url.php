@@ -14,6 +14,7 @@ $url = explode('/', $url);
 $url = [
     'method' => $_SERVER['REQUEST_METHOD'],
     'path' => strtolower($url[$indexPath]),
+    'subPath' => isset($url[$indexId + 1]) ? $url[$indexId + 1] : null,
     'id' => isset($url[$indexId]) ? $url[$indexId] : null,
     'url' => parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
 ];

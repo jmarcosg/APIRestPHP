@@ -57,10 +57,10 @@ if ($url['method'] == 'POST') {
 			$archivo = $arbArchivoController->store($req);
 
 			/* copiamos el archivo en la carpeta correspondiente */
-			$path = getPathFile($file, "arbolado/$id/", $nameFile);
+			$path = getPathFile($file, "arbolado/solicitud_poda/$id/", $nameFile);
 			$copiado = copy($file['tmp_name'], $path);
 
-			if ($archivo instanceof ErrorException && !$copiado) {
+			if ($archivo instanceof ErrorException || !$copiado) {
 				/* Si hubo un error en algun archivo */
 				$arbSolicitudController->delete($id);
 				sendRes(null, $archivo, $_GET);
