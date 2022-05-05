@@ -11,12 +11,18 @@ if ($url['method'] == 'GET') {
 
 		if (isset($_GET['list']) && $_GET['list'] == 'true') {
 			unset($_GET['list']);
-			if ($_GET['estado'] === 'todas') {
-				$arbolado = $arbSolicitudController->index(['TOP' => 1000]);
+			if (isset($_GET['estado']) && $_GET['estado'] === 'todas') {
+				/* Obtenemos todas las solicitudes */
+				unset($_GET['estado']);
+				$_GET['TOP'] = 1000;
+				$arbolado = $arbSolicitudController->index($_GET);
 			} else {
+
+				/* Obtenemos listado de solicitudes en funcion del estado */
 				$arbolado = $arbSolicitudController->index($_GET);
 			}
 		} else {
+			/* Obtenemos una solicitud puntual */
 			$arbolado = $arbSolicitudController->get($_GET);
 		}
 
