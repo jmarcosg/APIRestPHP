@@ -47,6 +47,12 @@ class BaseModel
     public function list($param = [], $ops = [])
     {
         $conn = new BaseDatos();
+
+        /* Consultamos si tiene el softDelete para realizar el filtrado */
+        if (isset($this->softDeleted) && $this->softDeleted != null) {
+            $param[$this->softDeleted] = null;
+        }
+
         $result = $conn->search($this->table, $param, $ops);
 
         if (!$result instanceof ErrorException) {
