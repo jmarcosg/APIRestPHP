@@ -43,9 +43,9 @@ class BaseDatos
                 if ($key == 'TOP') continue;
                 $op = "=";
                 if (isset($value)) {
-                    if (isset($ops[$key])) {
+                    /* if (isset($ops[$key])) {
                         $op = $ops[$key];
-                    }
+                    } */
                     $where .= " AND " . $key . $op . "'$value'";
                     $values[] = $value;
                 } else {
@@ -54,7 +54,9 @@ class BaseDatos
             }
 
             $limit = array_key_exists('TOP', $param) ? 'TOP ' . $param['TOP'] : '';
-            $sql = "SELECT $limit * FROM " . $table . " WHERE " . $where;
+            $order = array_key_exists('order', $ops) ? $ops['order'] : '';
+
+            $sql = "SELECT $limit * FROM " . $table . " WHERE " . $where . $order;
             $query = odbc_exec($this->conn, $sql);
             return $query;
         } catch (\Throwable $th) {

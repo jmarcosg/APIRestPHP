@@ -21,6 +21,13 @@ if ($url['method'] == 'GET') {
 				$podador = $arbPodadorController->index($_GET);
 			}
 		} else {
+
+			if (isset($_GET['estado']) && $_GET['estado'] == 'verificar') {
+				$detalle = $arbPodadorController->getEstadoSolicitudDetalle($_GET['id_usuario']);
+
+				sendRes($detalle);
+				exit;
+			}
 			/* Obtenemos una solicitud puntual */
 			$podador = $arbPodadorController->get($_GET);
 		}
@@ -42,23 +49,32 @@ if ($url['method'] == 'GET') {
 /* Metodo POST */
 if ($url['method'] == 'POST') {
 
+
 	$file = $_FILES['certificado'];
 	$nameFile = uniqid() . getExtFile($file);
 
 	$_POST['certificado'] = $nameFile;
+
 	/* Guardamos la solicitud */
-	$id = $arbPodadorController->store($_POST);
+	$solicitud = $arbPodadorController->getEstadoSolicitud($_POST['id_usuario']);
+
+	if (!$solicitud) {
+		$id = $arbPodadorController->store($_POST);
+	} else {
+		$id = $arbPodadorController->update($_POST, $solicitud['id']);
+		$id = $solicitud['id'];
+	}
 
 	/* copiamos el archivo en la carpeta correspondiente */
 	$path = getPathFile($file, "arbolado/podador/$id/", $nameFile);
 	$copiado = copy($file['tmp_name'], $path);
 
-	if (!$id instanceof ErrorException || !$copiado) {
+	if ($id instanceof ErrorException || !$copiado) {
 		$arbPodadorController->delete($id);
-		sendRes(['id' => $id]);
+		sendRes(null, $id->getMessage(), $_GET);
 		exit;
 	}
-	sendRes(null, $id->getMessage(), $_GET);
+	sendRes(['id' => $id]);
 	exit;
 }
 
