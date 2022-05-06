@@ -44,7 +44,7 @@ class Arb_PodadorController
         return $data->delete($id);
     }
 
-    public function getEstadoSolicitud($id_usuario)
+    public function existeSol($id_usuario)
     {
         $params = ['id_usuario' => $id_usuario, 'estado' => 'nuevo', 'TOP' => 1];
         $op = ['order' => ' ORDER BY id DESC '];

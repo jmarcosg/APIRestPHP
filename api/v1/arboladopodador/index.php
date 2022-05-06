@@ -9,6 +9,7 @@ if ($url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0 && isset($_GET['action'])) {
 		$action = $_GET['action'];
 		unset($_GET['action']);
+		if ($_GET['estado'] == 'todas') unset($_GET['estado']);
 
 		switch ($action) {
 			case '0':
@@ -23,7 +24,7 @@ if ($url['method'] == 'GET') {
 				break;
 
 			case '2':
-				/* Obtenemos una solicitud puntual */
+				/* Obtenemos el estado de la ultima solicitud enviada por el usuario */
 				$podador = $arbPodadorController->getEstadoSolicitudDetalle($_GET['id_usuario']);
 				break;
 
@@ -49,21 +50,15 @@ if ($url['method'] == 'GET') {
 /* Metodo POST */
 if ($url['method'] == 'POST') {
 
-
 	$file = $_FILES['certificado'];
 	$nameFile = uniqid() . getExtFile($file);
 
 	$_POST['certificado'] = $nameFile;
 
 	/* Guardamos la solicitud */
-	$solicitud = $arbPodadorController->getEstadoSolicitud($_POST['id_usuario']);
+	$solicitud = $arbPodadorController->existeSol($_POST['id_usuario']);
 
-	if (!$solicitud) {
-		$id = $arbPodadorController->store($_POST);
-	} else {
-		$id = $arbPodadorController->update($_POST, $solicitud['id']);
-		$id = $solicitud['id'];
-	}
+	$id = $arbPodadorController->store($_POST);
 
 	/* copiamos el archivo en la carpeta correspondiente */
 	$path = getPathFile($file, "arbolado/podador/$id/", $nameFile);
@@ -85,10 +80,10 @@ if ($url['method'] == 'PUT') {
 	$arbolado = $arbPodadorController->update($_PUT, $id);
 
 	if (!$arbolado instanceof ErrorException) {
-		$_PUT['ReferenciaID'] = $id;
+		$_PUT['id'] = $id;
 		sendRes($_PUT);
 	} else {
-		sendRes(null, $arbolado->getMessage(), ['ReferenciaID' => $id]);
+		sendRes(null, $arbolado->getMessage(), ['id' => $id]);
 	};
 	eClean();
 }

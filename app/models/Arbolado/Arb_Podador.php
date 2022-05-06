@@ -19,10 +19,10 @@ class Arb_Podador extends BaseModel
         'certificado',
         'capacitador',
         'fecha_capacitacion',
-        'verificado',
         'observacion',
         'estado',
-        'fecha_evaluacion'
+        'fecha_evaluacion',
+        'fecha_vencimiento'
     ];
 
     protected $filesUrl = 'http://localhost/APIrest/files/Arbolado/podador/';
@@ -30,5 +30,16 @@ class Arb_Podador extends BaseModel
     function wapPersona()
     {
         return $this->hasOne(WapPersona::class, 'id_wappersonas',  'ReferenciaID');
+    }
+
+    function certificado()
+    {
+        if (isset($this->value['certificado'])) {
+            $name = $this->value['certificado'];
+            $this->value['certificado'] = [
+                'name' => $name,
+                'path' => $this->filesUrl . $this->value['id'] . '/' . $name,
+            ];
+        }
     }
 }

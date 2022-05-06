@@ -10,6 +10,7 @@ if ($url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0 && isset($_GET['action'])) {
 		$action = $_GET['action'];
 		unset($_GET['action']);
+		if ($_GET['estado'] == 'todas') unset($_GET['estado']);
 
 		switch ($action) {
 			case '0':
@@ -85,7 +86,7 @@ if ($url['method'] == 'PUT') {
 	$arbolado = $arbSolicitudController->update($_PUT, $id);
 
 	if (!$arbolado instanceof ErrorException) {
-		$_PUT['ReferenciaID'] = $id;
+		$_PUT['id'] = $id;
 		sendRes($_PUT);
 	} else {
 		sendRes(null, $arbolado->getMessage(), ['ReferenciaID' => $id]);

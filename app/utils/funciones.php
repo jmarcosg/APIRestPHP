@@ -80,7 +80,10 @@ function utf8ize($d)
             $d[$k] = utf8ize($v);
         }
     } else if (is_string($d)) {
-        return utf8_encode($d);
+        if (!mb_detect_encoding($d, "UTF-8", true)) {
+            return utf8_encode($d);
+        }
+        return $d;
     }
     return $d;
 }
