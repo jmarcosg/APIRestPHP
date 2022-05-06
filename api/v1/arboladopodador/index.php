@@ -6,30 +6,30 @@ $arbPodadorController = new Arb_PodadorController();
 
 /* Metodo GET */
 if ($url['method'] == 'GET') {
-	if (isset($_GET) && count($_GET) > 0) {
+	if (isset($_GET) && count($_GET) > 0 && isset($_GET['action'])) {
+		$action = $_GET['action'];
+		unset($_GET['action']);
 
-		if (isset($_GET['list']) && $_GET['list'] == 'true') {
-			unset($_GET['list']);
-			if (isset($_GET['estado']) && $_GET['estado'] === 'todas') {
-				/* Obtenemos todas las solicitudes */
-				unset($_GET['estado']);
+		switch ($action) {
+			case '0':
+				/* Obtenemos todas las solicitudes, o funcion del estado */
 				$_GET['TOP'] = 1000;
 				$podador = $arbPodadorController->index($_GET);
-			} else {
+				break;
 
-				/* Obtenemos listado de solicitudes en funcion del estado */
-				$podador = $arbPodadorController->index($_GET);
-			}
-		} else {
+			case '1':
+				/* Obtenemos una solicitud puntual */
+				$podador = $arbPodadorController->get($_GET);
+				break;
 
-			if (isset($_GET['estado']) && $_GET['estado'] == 'verificar') {
-				$detalle = $arbPodadorController->getEstadoSolicitudDetalle($_GET['id_usuario']);
+			case '2':
+				/* Obtenemos una solicitud puntual */
+				$podador = $arbPodadorController->getEstadoSolicitudDetalle($_GET['id_usuario']);
+				break;
 
-				sendRes($detalle);
-				exit;
-			}
-			/* Obtenemos una solicitud puntual */
-			$podador = $arbPodadorController->get($_GET);
+			default:
+				$podador = new ErrorException('El action no es valido');
+				break;
 		}
 
 		if (!$podador instanceof ErrorException) {
