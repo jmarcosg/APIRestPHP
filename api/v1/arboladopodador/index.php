@@ -9,7 +9,6 @@ if ($url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0 && isset($_GET['action'])) {
 		$action = $_GET['action'];
 		unset($_GET['action']);
-		if ($_GET['estado'] == 'todas') unset($_GET['estado']);
 
 		switch ($action) {
 			case '0':
