@@ -24,7 +24,7 @@ if ($url['method'] == 'GET') {
 
 			case '2':
 				/* Obtenemos el estado de la ultima solicitud enviada por el usuario */
-				$podador = $arbPodadorController->getEstadoSolicitudDetalle($_GET['id_usuario']);
+				$podador = $arbPodadorController->getEstadoSolicitudDetalle($_GET['id_wappersonas']);
 				break;
 
 			default:

@@ -120,6 +120,15 @@ function compararFechas($string, $get, $format = 'd/m/Y')
     return $array;
 }
 
+function esVigente($string, $format = 'Y-m-d')
+{
+    if ($string == null) return true;
+
+    $now = new DateTime();
+    $date = DateTime::createFromFormat($format, $string);
+    return $date > $now;
+}
+
 function eClean()
 {
     session_unset();

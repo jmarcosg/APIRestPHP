@@ -3,6 +3,8 @@
 namespace App\Controllers\Arbolado;
 
 use App\Models\Arbolado\Arb_Podador;
+use DateInterval;
+use DateTime;
 
 class Arb_PodadorController
 {
@@ -35,6 +37,29 @@ class Arb_PodadorController
     public function update($req, $id)
     {
         $data = new Arb_Podador();
+
+        $now = new DateTime();
+
+        $req['fecha_evaluacion'] = $now->format('Y-m-d');
+
+        if ($req['estado'] == 'aprobado') {
+            /* Establecemos la fecha de vencimiento */
+            $interval = new DateInterval('P2Y');
+            $now->add($interval);
+            $req['fecha_vencimiento'] = $now->format('Y-m-d');
+
+            /* Obtenemos la ultima evalacion del usuario */
+            $params = ['id_wappersonas' => $req['id_wappersonas'], 'TOP' => 1];
+            $op = ['order' => ' ORDER BY id DESC '];
+            $arbEvaluacionController = new Arb_EvaluacionController();
+            $evaluacion = $arbEvaluacionController->index($params, $op);
+            $idEvalacion = $evaluacion[0]['id'];
+
+            /* Actualizamos la evaluacion con el id de la solicitud */
+            $evaluacion = $arbEvaluacionController->update(['id_podador' => $id], $idEvalacion);
+        }
+        unset($req['id_wappersonas']);
+
         return $data->update($req, $id);
     }
 
@@ -58,9 +83,9 @@ class Arb_PodadorController
         return $solicitud;
     }
 
-    public function getEstadoSolicitudDetalle($id_usuario)
+    public function getEstadoSolicitudDetalle($id_wappersonas)
     {
-        $params = ['id_usuario' => $id_usuario, 'TOP' => 1];
+        $params = ['id_wappersonas' => $id_wappersonas, 'TOP' => 1];
         $op = ['order' => ' ORDER BY id DESC '];
 
         $solicitud = $this->index($params, $op);
@@ -85,9 +110,7 @@ class Arb_PodadorController
             }
 
             if ($solicitud['estado'] == 'aprobado') {
-                $arrayFechas = compararFechas($venc, 'days', 'Y-m-d');
-
-                if ($arrayFechas['date'] <= $arrayFechas['now']) {
+                if (!esVigente($venc)) {
                     return [
                         'estado' => 'vencida',
                         'msg' => "Solicitud Número: $id vencida con fecha $venc",
