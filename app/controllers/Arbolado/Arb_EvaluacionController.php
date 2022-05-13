@@ -10,6 +10,7 @@ class Arb_EvaluacionController
     {
         $GLOBALS['exect'][] = 'arb_evaluacion';
     }
+
     public function index($param = [], $ops = [])
     {
         $data = new Arb_Evaluacion();
@@ -27,6 +28,7 @@ class Arb_EvaluacionController
     public function store($res)
     {
         $data = new Arb_Evaluacion();
+        $res['id_podador'] = "-1";
         $data->set($res);
         return $data->save();
     }
@@ -41,5 +43,9 @@ class Arb_EvaluacionController
     {
         $data = new Arb_Evaluacion();
         return $data->delete($id);
+    }
+
+    public function getEstadoEvaluacion() {
+        
     }
 }
