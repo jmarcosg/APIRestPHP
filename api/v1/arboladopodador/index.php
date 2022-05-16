@@ -41,7 +41,6 @@ if ($url['method'] == 'GET') {
 		} else {
 			sendRes(null, $arbolado->getMessage(), $_GET);
 		};
-	} else {
 	}
 	eClean();
 }

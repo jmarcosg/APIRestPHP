@@ -21,7 +21,7 @@ if ($url['method'] == 'GET') {
 
 			case '1':
 				/* Obtenemos una solicitud puntual */
-				$evaluacion = $arbEvaluacionController->get($_GET);
+				$evaluacion = $arbEvaluacionController->index(['id_podador' => '-1']);
 				break;
 
 			case '2':
