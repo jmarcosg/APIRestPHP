@@ -19,11 +19,10 @@ class Arb_Podador extends BaseModel
         'id_wappersonas',
         'certificado',
         'capacitador',
-        'fecha_capacitacion',
         'observacion',
         'estado',
-        'fecha_evaluacion',
-        'fecha_vencimiento'
+        'fecha_vencimiento',
+        'fecha_revision'
     ];
 
     protected $filesUrl = 'http://localhost/APIrest/files/Arbolado/podador/';
@@ -59,22 +58,25 @@ class Arb_Podador extends BaseModel
             }
         } else {
             $elem = $this->value;
-            $params = ['id_wappersonas' => $elem['id_wappersonas'], 'TOP' => 1, 'id_podador' => null];
-            if ($elem['estado'] == 'nuevo') {
-                $params['id_podador'] = null;
-            } else {
-                $params['id_podador'] = $elem['id'];
-            }
-            $op = ['order' => ' ORDER BY id DESC '];
 
-            $evaluacion = $arbEvaluacionController->index($params, $op);
+            if (count($elem) > 0) {
+                $params = ['id_wappersonas' => $elem['id_wappersonas'], 'TOP' => 1, 'id_podador' => null];
+                if ($elem['estado'] == 'nuevo') {
+                    $params['id_podador'] = null;
+                } else {
+                    $params['id_podador'] = $elem['id'];
+                }
+                $op = ['order' => ' ORDER BY id DESC '];
 
-            if (count($evaluacion) > 0) {
-                $evaluacion = $evaluacion[0];
-            } else {
-                $evaluacion = null;
+                $evaluacion = $arbEvaluacionController->index($params, $op);
+
+                if (count($evaluacion) > 0) {
+                    $evaluacion = $evaluacion[0];
+                } else {
+                    $evaluacion = null;
+                }
+                $this->value['evaluacion'] = $evaluacion;
             }
-            $this->value['evaluacion'] = $evaluacion;
         }
     }
 

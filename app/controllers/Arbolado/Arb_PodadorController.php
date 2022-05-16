@@ -40,7 +40,7 @@ class Arb_PodadorController
 
         $now = new DateTime();
 
-        $req['fecha_evaluacion'] = $now->format('Y-m-d');
+        $req['fecha_revision'] = $now->format('Y-m-d');
 
         if ($req['estado'] == 'aprobado') {
             /* Establecemos la fecha de vencimiento */
