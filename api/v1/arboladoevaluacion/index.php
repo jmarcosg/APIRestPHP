@@ -21,12 +21,12 @@ if ($url['method'] == 'GET') {
 
 			case '1':
 				/* Obtenemos una solicitud puntual */
-				$evaluacion = $arbEvaluacionController->index(['id_podador' => '-1']);
+				$evaluacion = $arbEvaluacionController->index(['id_podador' => null]);
 				break;
 
 			case '2':
 				/* Obtenemos una solicitud puntual */
-				$params = ['id_wappersonas' => $_GET['id_wappersonas'], 'TOP' => 1, 'id_podador' => "-1"];
+				$params = ['id_wappersonas' => $_GET['id_wappersonas'], 'TOP' => 1, 'id_podador' => null];
 				$op = ['order' => ' ORDER BY id DESC '];
 				$evaluacion = $arbEvaluacionController->index($params, $op);
 
@@ -40,7 +40,7 @@ if ($url['method'] == 'GET') {
 
 			case '3':
 				/* Obtenemos una solicitud puntual */
-				$params = ['id_wappersonas' => $_GET['id_wappersonas'], 'TOP' => 1, 'id_podador' => "-1"];
+				$params = ['id_wappersonas' => $_GET['id_wappersonas'], 'TOP' => 1, 'id_podador' => null];
 				$op = ['order' => ' ORDER BY id DESC '];
 				$evaluacion = $arbEvaluacionController->index($params, $op);
 
@@ -76,7 +76,7 @@ if ($url['method'] == 'GET') {
 if ($url['method'] == 'POST') {
 
 	/* Configuracion de los parametros */
-	$params = ['id_wappersonas' => $_POST['id_wappersonas'], 'TOP' => 1, 'id_podador' => "-1"];
+	$params = ['id_wappersonas' => $_POST['id_wappersonas'], 'TOP' => 1, 'id_podador' => null];
 	$op = ['order' => ' ORDER BY id DESC '];
 
 	/* buscamos la evaluacion */

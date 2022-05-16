@@ -28,7 +28,6 @@ class Arb_EvaluacionController
     public function store($res)
     {
         $data = new Arb_Evaluacion();
-        $res['id_podador'] = "-1";
         $data->set($res);
         return $data->save();
     }
@@ -45,7 +44,7 @@ class Arb_EvaluacionController
         return $data->delete($id);
     }
 
-    public function getEstadoEvaluacion() {
-        
+    public function getEstadoEvaluacion()
+    {
     }
 }
