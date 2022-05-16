@@ -16,7 +16,7 @@ if ($url['method'] == 'GET') {
 			case '0':
 				/* Obtenemos todas las solicitudes, o funcion del estado */
 				$_GET['TOP'] = 1000;
-				$evaluacion = $arbEvaluacionController->index($_GET);
+				$evaluacion = $arbEvaluacionController->index($_GET, ['order' => ' ORDER BY id DESC ']);
 				break;
 
 			case '1':
