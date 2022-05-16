@@ -98,24 +98,27 @@ class Arb_PodadorController
             if ($solicitud['estado'] == 'nuevo') {
                 return [
                     'estado' => 'nuevo',
-                    'msg' => "Usted ya envio una solicitud con número: $id, se encuentra en proceso de evaluación",
+                    'msg' => "La solcitud: $id, se encuentra en proceso de revisión",
                 ];
             }
 
             if ($solicitud['estado'] == 'rechazado') {
+                $observacion = $solicitud['observacion'];
                 return [
                     'estado' => 'rechazado',
-                    'msg' => "Solicitud Número: $id fue rechazada",
+                    'msg' => "Solicitud Número: $id fue rechazada. $observacion",
                 ];
             }
 
             if ($solicitud['estado'] == 'aprobado') {
                 if (!esVigente($venc)) {
+                    $venc = date("d/m/Y", strtotime($venc));
                     return [
                         'estado' => 'vencida',
                         'msg' => "Solicitud Número: $id vencida con fecha $venc",
                     ];
                 } else {
+                    $venc = date("d/m/Y", strtotime($venc));
                     return [
                         'estado' => 'vigente',
                         'msg' => "El carnet se encuentra vigente hasta la fecha: $venc",
