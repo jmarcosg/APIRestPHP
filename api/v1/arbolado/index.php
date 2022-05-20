@@ -80,7 +80,7 @@ if ($url['method'] == 'POST') {
 			'motivo' => $_POST['motivo'],
 			'cantidad' => $_POST['cantidad']
 		];
-		$arbSolicitudController->sendEmailSolicitud($id, 'envioSolicitud', $data);
+		$arbSolicitudController->sendEmailSolicitud($id, 'envio', $data);
 
 		sendRes(['id' => $id]);
 	} else {

@@ -53,6 +53,8 @@ class Arb_SolicitudController
 
         if ($type == 'aprobado') $body = $this->templateSendSolicitudAprobadaEmail($data);
 
+        if ($type == 'rechazado') $body = $this->templateSendSolicitudRechazadaEmail($data);
+
         $response = sendEmail($data['email'], $subject, $body);
 
         if ($response['error']) {
@@ -105,7 +107,7 @@ class Arb_SolicitudController
     }
 
     /** 
-     * Retorna el template de correo electronico para las solicitudes de poda enviadas por el usuario 
+     * Retorna el template de correo electronico para las solicitudes de poda aprobadas
      * */
     protected function templateSendSolicitudAprobadaEmail($data)
     {
@@ -135,6 +137,40 @@ class Arb_SolicitudController
                             <p>Observación: $observacion</p>
                             <hr />
                             <p>El personal se va contactar al número: $contacto</p>
+                        </div>
+                    </div>
+                </body>
+            </html>";
+        return $template;
+    }
+    /** 
+     * Retorna el template de correo electronico para las solicitudes de poda rechazadas
+     * */
+    protected function templateSendSolicitudRechazadaEmail($data)
+    {
+        $id = $data['id'];
+        $observacion = $data['observacion'];
+
+        $template =
+            "<!DOCTYPE html>
+            <html lang='en'>
+                <head>
+                    <meta charset='UTF-8' />
+                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                    <link
+                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
+                        rel='stylesheet'
+                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
+                        crossorigin='anonymous'
+                    />
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='row'>
+                            <h3>La solicitud Número: $id fue rechazada. Puede generar una nueva solicitud </h3>
+                            <br />
+                            <p>Observación: $observacion</p>
                         </div>
                     </div>
                 </body>
