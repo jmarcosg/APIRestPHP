@@ -234,3 +234,19 @@ function getExtFile($file)
         }
     };
 }
+
+function sendEmail($address, $subject, $body)
+{
+    $post_fields = json_encode(['address' => $address, 'subject' => $subject, 'htmlBody' => $body]);
+
+    $uri = "https://weblogin.muninqn.gov.ar/api/Mail";
+    $ch = curl_init($uri);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $result = curl_exec($ch);
+    curl_close($ch);
+
+    return json_decode($result, true);
+}

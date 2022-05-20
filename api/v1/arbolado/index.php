@@ -71,6 +71,9 @@ if ($url['method'] == 'POST') {
 			}
 		}
 
+		/* Enviamos el correo electronico */
+		$arbSolicitudController->sendEmailSolicitud($id);
+
 		sendRes(['id' => $id]);
 	} else {
 		sendRes(null, $id->getMessage(), $_GET);
