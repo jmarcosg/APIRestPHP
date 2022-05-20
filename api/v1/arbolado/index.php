@@ -80,7 +80,7 @@ if ($url['method'] == 'POST') {
 			'motivo' => $_POST['motivo'],
 			'cantidad' => $_POST['cantidad']
 		];
-		$arbSolicitudController->sendEmailSolicitud($id, 'envio', $data);
+		$arbSolicitudController->sendEmail($id, 'envio', $data);
 
 		sendRes(['id' => $id]);
 	} else {
@@ -110,7 +110,7 @@ if ($url['method'] == 'PUT') {
 			'contacto' => $contacto,
 			'observacion' => $_PUT['observacion']
 		];
-		$arbSolicitudController->sendEmailSolicitud($id, $_PUT['estado'], $data);
+		$arbSolicitudController->sendEmail($id, $_PUT['estado'], $data);
 		$_PUT['id'] = $id;
 		sendRes($_PUT);
 	} else {

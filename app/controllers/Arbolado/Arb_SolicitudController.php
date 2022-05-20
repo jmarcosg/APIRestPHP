@@ -45,7 +45,7 @@ class Arb_SolicitudController
         return $data->delete($id);
     }
 
-    public function sendEmailSolicitud($id, $type, $data)
+    public function sendEmail($id, $type, $data)
     {
         $subject = "Sistema Arbolado - Solicitud N° $id";
 
