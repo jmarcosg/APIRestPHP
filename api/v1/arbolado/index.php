@@ -72,7 +72,15 @@ if ($url['method'] == 'POST') {
 		}
 
 		/* Enviamos el correo electronico */
-		$arbSolicitudController->sendEmailSolicitud($id);
+		$data  = [
+			'email' => $_POST['email'],
+			'tipo' => $_POST['tipo'],
+			'solicita' => $_POST['solicita'],
+			'ubicacion' => $_POST['ubicacion'],
+			'motivo' => $_POST['motivo'],
+			'cantidad' => $_POST['cantidad']
+		];
+		$arbSolicitudController->sendEmailSolicitud($id, 'envioSolicitud', $data);
 
 		sendRes(['id' => $id]);
 	} else {
@@ -85,9 +93,24 @@ if ($url['method'] == 'POST') {
 if ($url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
 	$id = $url['id'];
+
+	/* Extraemos el contacto y el email  */
+	$contacto = $_PUT['contacto'];
+	$email = $_PUT['email'];
+	unset($_PUT['contacto']);
+	unset($_PUT['email']);
+
 	$arbolado = $arbSolicitudController->update($_PUT, $id);
 
 	if (!$arbolado instanceof ErrorException) {
+		/* Enviamos el correo electronico */
+		$data = [
+			'id' => $id,
+			'email' => $email,
+			'contacto' => $contacto,
+			'observacion' => $_PUT['observacion']
+		];
+		$arbSolicitudController->sendEmailSolicitud($id, $_PUT['estado'], $data);
 		$_PUT['id'] = $id;
 		sendRes($_PUT);
 	} else {
