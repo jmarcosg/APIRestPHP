@@ -49,11 +49,11 @@ class Arb_SolicitudController
     {
         $subject = "Sistema Arbolado - Solicitud N° $id";
 
-        if ($type == 'envio') $body = $this->templateSendSolicitudEmail($data);
+        if ($type == 'envio') $body = $this->templateSolicitudEmail($data);
 
-        if ($type == 'aprobado') $body = $this->templateSendSolicitudAprobadaEmail($data);
+        if ($type == 'aprobado') $body = $this->templateSolicitudAprobadaEmail($data);
 
-        if ($type == 'rechazado') $body = $this->templateSendSolicitudRechazadaEmail($data);
+        if ($type == 'rechazado') $body = $this->templateSolicitudRechazadaEmail($data);
 
         $response = sendEmail($data['email'], $subject, $body);
 
@@ -66,7 +66,7 @@ class Arb_SolicitudController
     /** 
      * Retorna el template de correo electronico para las solicitudes de poda enviadas por el usuario 
      * */
-    protected function templateSendSolicitudEmail($data)
+    protected function templateSolicitudEmail($data)
     {
         $tipo = $data['tipo'];
         $solicita = $data['solicita'];
@@ -109,7 +109,7 @@ class Arb_SolicitudController
     /** 
      * Retorna el template de correo electronico para las solicitudes de poda aprobadas
      * */
-    protected function templateSendSolicitudAprobadaEmail($data)
+    protected function templateSolicitudAprobadaEmail($data)
     {
         $id = $data['id'];
         $observacion = $data['observacion'];
@@ -146,7 +146,7 @@ class Arb_SolicitudController
     /** 
      * Retorna el template de correo electronico para las solicitudes de poda rechazadas
      * */
-    protected function templateSendSolicitudRechazadaEmail($data)
+    protected function templateSolicitudRechazadaEmail($data)
     {
         $id = $data['id'];
         $observacion = $data['observacion'];
