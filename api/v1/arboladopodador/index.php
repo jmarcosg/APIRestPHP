@@ -67,6 +67,11 @@ if ($url['method'] == 'POST') {
 		sendRes(null, $id->getMessage(), $_GET);
 		exit;
 	}
+
+	/* Envio de correo electronico */
+	$data = ['email' => $_POST['email']];
+	$arbPodadorController->sendEmail($id, 'envio', $data);
+
 	sendRes(['id' => $id]);
 	exit;
 }
@@ -75,7 +80,17 @@ if ($url['method'] == 'POST') {
 if ($url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
 	$id = $url['id'];
+	$email = $_PUT['email'];
+	unset($_PUT['email']);
 	$arbolado = $arbPodadorController->update($_PUT, $id);
+
+	/* Envio de correo electronico */
+	$data = [
+		'email' => $email,
+		'observacion' =>  $_PUT['observacion'],
+	];
+
+	$arbPodadorController->sendEmail($id, $_PUT['estado'], $data);
 
 	if (!$arbolado instanceof ErrorException) {
 		$_PUT['id'] = $id;
