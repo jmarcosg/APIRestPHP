@@ -15,7 +15,7 @@ class Arb_Solicitud extends BaseModel
 
     protected $fillable = ['id_usuario', 'id_wappersonas', 'tipo', 'solicita', 'ubicacion', 'motivo', 'cantidad', 'contacto', 'estado'];
 
-    protected $filesUrl = 'http://localhost/APIrest/files/Arbolado/solicitud_poda/';
+    protected $filesUrl = FILE_PATH . 'Arbolado/solicitud_poda/';
 
     function wapPersona()
     {
