@@ -25,7 +25,7 @@ class Arb_Podador extends BaseModel
         'fecha_revision'
     ];
 
-    protected $filesUrl = 'http://localhost/APIrest/files/Arbolado/podador/';
+    protected $filesUrl = FILE_PATH . 'Arbolado/podador/';
 
     function wapPersona()
     {
