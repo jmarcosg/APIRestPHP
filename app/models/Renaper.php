@@ -36,6 +36,54 @@ class Renaper extends BaseModel
         }
     }
 
+    public function getDataTramite($gender, $dni, $tramite)
+    {
+        try {
+            $token = $this->getTokenRenaper();
+
+            $curl = curl_init();
+
+            $post = json_encode([
+                "genero" => $gender,
+                'numero' => $dni,
+                "tramite" => $tramite
+            ]);
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://weblogin.muninqn.gov.ar/api/RenaperExt',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_POSTFIELDS
+                => json_encode([
+                    "genero" => $gender,
+                    'numero' => $dni,
+                    "tramite" => $tramite
+                ]),
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . $token,
+                    'Content-Type: application/json'
+                ),
+            ));
+
+            $response = curl_exec($curl);
+            curl_close($curl);
+            $result = json_decode($response);
+
+            if ($result->error) {
+                throw new ErrorException($result->error);
+            } else {
+                return $result->docInfo;
+            }
+        } catch (\Throwable $th) {
+            logFileEE($this->logPath, $th, get_class($this), __FUNCTION__);
+            return $th;
+        }
+    }
+
     public function getTokenRenaper()
     {
         try {

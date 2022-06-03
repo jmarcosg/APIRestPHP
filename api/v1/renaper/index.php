@@ -9,17 +9,34 @@ if ($url['method'] == 'GET') {
 	if (isset($_GET) && isset($_GET['sexo']) && isset($_GET['dni'])) {
 
 		if (!isset($_GET['type'])) $_GET['type'] = '';
-		switch ($_GET['type']) {
-			case 'imagen';
-				$renaper = $renaperController->getImage($_GET['sexo'], $_GET['dni']);
-				break;
-			case 'person';
-				$renaper = $renaperController->getPersonData($_GET['sexo'], $_GET['dni']);
-				break;
-			default:
-				$renaper = $renaperController->getData($_GET['sexo'], $_GET['dni']);
-				break;
+
+		if (isset($_GET['tramite'])) {
+			switch ($_GET['type']) {
+				case 'imagen';
+					$renaper = $renaperController->getImageTramite($_GET['sexo'], $_GET['dni'], $_GET['tramite']);
+					break;
+				case 'person';
+					$renaper = $renaperController->getPersonDataTramite($_GET['sexo'], $_GET['dni'], $_GET['tramite']);
+					break;
+				default:
+					$renaper = $renaperController->getDataTramite($_GET['sexo'], $_GET['dni'], $_GET['tramite']);
+					break;
+			}
+		} else {
+			switch ($_GET['type']) {
+				case 'imagen';
+					$renaper = $renaperController->getImage($_GET['sexo'], $_GET['dni']);
+					break;
+				case 'person';
+					$renaper = $renaperController->getPersonData($_GET['sexo'], $_GET['dni']);
+					break;
+				default:
+					$renaper = $renaperController->getData($_GET['sexo'], $_GET['dni']);
+					break;
+			}
 		}
+
+
 
 		if (!$renaper instanceof ErrorException) {
 			sendRes($renaper);
