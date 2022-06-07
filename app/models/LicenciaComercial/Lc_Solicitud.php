@@ -9,7 +9,7 @@ class Lc_Solicitud extends BaseModel
     protected $table = 'lc_solicitudes';
     protected $logPath = 'v1/licencia_comercial';
     protected $identity = 'id';
-    protected $softDeleted = 'deleted_athandlerChangeRubro';
+    protected $softDeleted = 'deleted_at';
 
     protected $fillable = [
         'id_documento',

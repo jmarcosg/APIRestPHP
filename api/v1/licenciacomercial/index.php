@@ -14,28 +14,34 @@ if ($url['method'] == 'GET') {
 			case '0':
 				/* Obtenemos todas las solicitudes, o funcion del estado */
 				$_GET['TOP'] = 1000;
-				$arbolado = $arbSolicitudController->index($_GET, ['order' => ' ORDER BY id DESC ']);
+				$lc = $lcSolicitudController->index($_GET, ['order' => ' ORDER BY id DESC ']);
 				break;
 
 			case '1':
 				/* Obtenemos una solicitud puntual */
-				$arbolado = $arbSolicitudController->get($_GET);
+				$lc = $lcSolicitudController->get($_GET);
+				break;
+
+			case '2':
+				/* Obtenemos la ultima solicitud */
+				$_GET['TOP'] = 1;
+				$lc = $lcSolicitudController->get($_GET, ['order' => ' ORDER BY id DESC ']);
 				break;
 
 			default:
-				$arbolado = new ErrorException('El action no es valido');
+				$lc = new ErrorException('El action no es valido');
 				break;
 		}
 
 		/* Envio del mensaje */
-		if (!$arbolado instanceof ErrorException) {
-			if ($arbolado !== false) {
-				sendRes($arbolado);
+		if (!$lc instanceof ErrorException) {
+			if ($lc !== false) {
+				sendRes($lc);
 			} else {
 				sendRes(null, 'No se encontro la solicitud', $_GET);
 			}
 		} else {
-			sendRes(null, $arbolado->getMessage(), $_GET);
+			sendRes(null, $lc->getMessage(), $_GET);
 		};
 	} else {
 	}
