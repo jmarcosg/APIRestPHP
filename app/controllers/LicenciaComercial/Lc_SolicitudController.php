@@ -3,6 +3,8 @@
 namespace App\Controllers\LicenciaComercial;
 
 use App\Models\LicenciaComercial\Lc_Solicitud;
+use App\Controllers\RenaperController;
+
 use ErrorException;
 
 class Lc_SolicitudController
@@ -22,6 +24,16 @@ class Lc_SolicitudController
     {
         $data = new Lc_Solicitud();
         $data = $data->get($params)->value;
+
+        /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
+        if ($data['pertenece'] == 'tercero') {
+            $rc = new RenaperController();
+            $dni = $data["dni_tercero"];
+            $tramite = $data["tramite_tercero"];
+            $genero = $data["genero_tercero"];
+            $data['dataTercero'] = $rc->getDataTramite($genero, $dni, $tramite);
+        }
+
         return $data;
     }
 
