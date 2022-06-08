@@ -45,9 +45,25 @@ class Lc_SolicitudController
         return $data->save();
     }
 
-    public function update($req, $id)
+    public function updateFirts($req, $id)
     {
         $data = new Lc_Solicitud();
+        if ($req["pertenece"] == 'propia') {
+            $req['id_wappersonas_tercero'] = null;
+            $req['dni_tercero'] = null;
+            $req['tramite_tercero'] = null;
+            $req['genero_tercero'] = null;
+        }
+        return $data->update($req, $id);
+    }
+
+    public function updateSec($req, $id)
+    {
+        $data = new Lc_Solicitud();
+
+        $rubros = explode(",", $req['rubros']);
+        unset($req['rubros']);
+        
         return $data->update($req, $id);
     }
 

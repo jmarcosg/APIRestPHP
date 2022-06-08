@@ -65,27 +65,29 @@ if ($url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
 	$id = $url['id'];
 
-	/* Extraemos el contacto y el email  */
-	$contacto = $_PUT['contacto'];
-	$email = $_PUT['email'];
-	unset($_PUT['contacto']);
-	unset($_PUT['email']);
+	$step = $_PUT['step'];
+	unset($_PUT['step']);
 
-	$arbolado = $arbSolicitudController->update($_PUT, $id);
+	switch ($step) {
+		case '1':
+			$lc = $lcSolicitudController->updateFirts($_PUT, $id);
+			break;
 
-	if (!$arbolado instanceof ErrorException) {
-		/* Enviamos el correo electronico */
-		$data = [
-			'id' => $id,
-			'email' => $email,
-			'contacto' => $contacto,
-			'observacion' => $_PUT['observacion']
-		];
-		$arbSolicitudController->sendEmail($id, $_PUT['estado'], $data);
+		case '2':
+			$lc = $lcSolicitudController->updateSec($_PUT, $id);
+			break;
+
+		default:
+			# code...
+			break;
+	}
+
+
+	if (!$lc instanceof ErrorException) {
 		$_PUT['id'] = $id;
 		sendRes($_PUT);
 	} else {
-		sendRes(null, $arbolado->getMessage(), ['ReferenciaID' => $id]);
+		sendRes(null, $arbolado->getMessage(), ['id' => $id]);
 	};
 	eClean();
 }
