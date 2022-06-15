@@ -25,7 +25,7 @@ class Renaper extends BaseModel
             $response = file_get_contents($url, false, stream_context_create($op));
             $result = json_decode($response);
 
-            if ($result->error) {
+            if ($result->error && $result->error != "Servicio de consulta a Renaper, manualmente detenido.") {
                 throw new ErrorException($result->error);
             } else {
                 return $result->docInfo;

@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Arbolado;
 
+use App\Connections\BaseDatos;
 use App\Models\Arbolado\Arb_Podador;
 use DateInterval;
 use DateTime;
@@ -248,5 +249,27 @@ class Arb_PodadorController
                 </body>
             </html>";
         return $template;
+    }
+
+    public function getDatosCarnet($id)
+    {
+        $sql =
+            "SELECT 
+                id,
+                wap_per.Nombre,
+                wap_per.Documento,
+                certificado,
+                estado,
+                fecha_vencimiento,
+                fecha_revision,
+                genero
+            FROM dbo.arb_podadores arb_pod
+            LEFT JOIN dbo.wapPersonas wap_per ON arb_pod.id_wappersonas  = wap_per.ReferenciaID
+            WHERE id = $id";
+
+        $conn = new BaseDatos();
+        $query =  $conn->query($sql);
+
+        return odbc_fetch_array($query);
     }
 }
