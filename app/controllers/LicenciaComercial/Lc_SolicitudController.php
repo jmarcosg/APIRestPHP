@@ -26,24 +26,28 @@ class Lc_SolicitudController
         $data = new Lc_Solicitud();
         $data = $data->get($params)->value;
 
-        /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
-        if ($data['pertenece'] == 'tercero') {
-            $rc = new RenaperController();
-            $dni = $data["dni_tercero"];
-            $tramite = $data["tramite_tercero"];
-            $genero = $data["genero_tercero"];
-            $data['dataTercero'] = $rc->getDataTramite($genero, $dni, $tramite);
+        if ($data) {
+
+            /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
+            if ($data['pertenece'] == 'tercero') {
+                $rc = new RenaperController();
+                $dni = $data["dni_tercero"];
+                $tramite = $data["tramite_tercero"];
+                $genero = $data["genero_tercero"];
+                $data['dataTercero'] = $rc->getDataTramite($genero, $dni, $tramite);
+            }
+
+            $rubro = new Lc_RubroController();
+            $rubros = $rubro->index(['id_solicitud' => $data['id']]);
+
+            $rubrosArray = [];
+            foreach ($rubros as $r) {
+                $rubrosArray[] = $r['nombre'];
+            }
+
+            $data['rubros'] = $rubrosArray;
         }
 
-        $rubro = new Lc_RubroController();
-        $rubros = $rubro->index(['id_solicitud' => $data['id']]);
-
-        $rubrosArray = [];
-        foreach ($rubros as $r) {
-            $rubrosArray[] = $r['nombre'];
-        }
-
-        $data['rubros'] = $rubrosArray;
 
         return $data;
     }
