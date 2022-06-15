@@ -33,6 +33,7 @@ class Arb_PodadorController
         $renaper = new RenaperController();
         $img = $renaper->getImage($genero, $dni);
 
+        $img['qr'] = $this->getCodigoQr($data['id']);
         $data['img'] = $img;
 
         return $data;
@@ -40,8 +41,8 @@ class Arb_PodadorController
 
     function getCodigoQr($idSolicitud)
     {
-        /* $baseUrl =  */
-        $url = "https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=";
+        $baseUrl = "http://200.85.183.194:90/apps/APIRest/public/views/arbolado/infoPodador.php?numero=";
+        $url = "https://chart.googleapis.com/chart?chs=250x250&chco=006BB1&cht=qr&chl=$baseUrl";
         $data = $url . $idSolicitud;
         $imagen = base64_encode(file_get_contents($data));
         $image = "data:image/png;base64," . $imagen;
