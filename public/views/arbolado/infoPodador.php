@@ -11,6 +11,8 @@ if ($_GET['numero']) {
     $podadorController = new Arb_PodadorController();
     $datos = $podadorController->getDatosCarnet($n);
 
+    $datos = utf8ize($datos);
+
     $credencial = $datos["id"];
     $nombre = $datos["Nombre"];
     $dni = $datos["Documento"];

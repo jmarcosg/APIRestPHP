@@ -3,6 +3,7 @@
 namespace App\Controllers\Arbolado;
 
 use App\Connections\BaseDatos;
+use App\Controllers\RenaperController;
 use App\Models\Arbolado\Arb_Podador;
 use DateInterval;
 use DateTime;
@@ -25,7 +26,26 @@ class Arb_PodadorController
     {
         $data = new Arb_Podador();
         $data = $data->get($params)->value;
+
+        $genero = $data["wapPersona"]["Genero"];
+        $dni = $data["wapPersona"]["Documento"];
+
+        $renaper = new RenaperController();
+        $img = $renaper->getImage($genero, $dni);
+
+        $data['img'] = $img;
+
         return $data;
+    }
+
+    function getCodigoQr($idSolicitud)
+    {
+        /* $baseUrl =  */
+        $url = "https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=";
+        $data = $url . $idSolicitud;
+        $imagen = base64_encode(file_get_contents($data));
+        $image = "data:image/png;base64," . $imagen;
+        return $image;
     }
 
     public function store($res)
