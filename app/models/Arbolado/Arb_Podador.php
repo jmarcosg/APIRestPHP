@@ -22,7 +22,9 @@ class Arb_Podador extends BaseModel
         'observacion',
         'estado',
         'fecha_vencimiento',
-        'fecha_revision'
+        'fecha_revision',
+        'id_usuario_admin',
+        'id_wappersonas_admin'
     ];
 
     protected $filesUrl = FILE_PATH . 'Arbolado/podador/';
@@ -30,6 +32,11 @@ class Arb_Podador extends BaseModel
     function wapPersona()
     {
         return $this->hasOne(WapPersona::class, 'id_wappersonas',  'ReferenciaID');
+    }
+
+    function wapPersonaAdmin()
+    {
+        return $this->hasOne(WapPersona::class, 'id_wappersonas_admin',  'ReferenciaID');
     }
 
     function evaluacion()

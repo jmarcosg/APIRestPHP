@@ -46,7 +46,7 @@ class Arb_PodadorController
         } else {
             $baseUrl = "http://200.85.183.194:90/apps/APIRest/public/views/arbolado/infoPodador.php?numero=";
         }
-        $url = "https://chart.googleapis.com/chart?chs=250x250&chco=006BB1&cht=qr&chl=$baseUrl . $idSolicitud";
+        $url = "https://chart.googleapis.com/chart?chs=250x250&chco=006BB1&cht=qr&chl=" . $baseUrl . $idSolicitud;
         $imagen = base64_encode(file_get_contents($url));
         return "data:image/png;base64," . $imagen;
     }
