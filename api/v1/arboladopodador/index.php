@@ -14,7 +14,12 @@ if ($url['method'] == 'GET') {
 			case '0':
 				/* Obtenemos todas las solicitudes, o funcion del estado */
 				$_GET['TOP'] = 1000;
-				$podador = $arbPodadorController->index($_GET, ['order' => ' ORDER BY id DESC ']);
+				if ($_GET['estado'] == 'todas') {
+					unset($_GET['estado']);
+					$podador = $arbPodadorController->index($_GET, ['order' => ' ORDER BY id DESC ']);
+				} else {
+					$podador = $arbPodadorController->getNoDeshabilitados($_GET, ['order' => ' ORDER BY id DESC ']);
+				}
 				break;
 
 			case '1':
@@ -25,6 +30,12 @@ if ($url['method'] == 'GET') {
 			case '2':
 				/* Obtenemos el estado de la ultima solicitud enviada por el usuario */
 				$podador = $arbPodadorController->getEstadoSolicitudDetalle($_GET['id_wappersonas']);
+				break;
+
+			case '3':
+				/* Obtenemos todas las solicitudes deshabilitadas */
+				$_GET['TOP'] = 1000;
+				$podador = $arbPodadorController->getDeshabilitados($_GET, ['order' => ' ORDER BY id DESC ']);
 				break;
 
 			default:
@@ -79,6 +90,18 @@ if ($url['method'] == 'POST') {
 /* Metodo PUT */
 if ($url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
+
+	if ($_PUT["motivo_deshabilitado"] != "null") {
+		$typeSendEmail = 'deshabilitado';
+		$obsSendEmail = $_PUT['motivo_deshabilitado'];
+		$_PUT['fecha_deshabilitado'] = date("Y-m-d", strtotime(date('Y-m-d') . "+ 1 year"));
+	} else {
+		$typeSendEmail = $_PUT['estado'];
+		$_PUT["motivo_deshabilitado"] = null;
+		$_PUT["fecha_deshabilitado"] = null;
+		$obsSendEmail = $_PUT['observacion'];
+	}
+
 	$id = $url['id'];
 	$email = $_PUT['email'];
 	unset($_PUT['email']);
@@ -87,13 +110,16 @@ if ($url['method'] == 'PUT') {
 	/* Envio de correo electronico */
 	$data = [
 		'email' => $email,
-		'observacion' =>  $_PUT['observacion'],
+		'observacion' =>  $obsSendEmail,
 	];
 
-	$arbPodadorController->sendEmail($id, $_PUT['estado'], $data);
+	$arbPodadorController->sendEmail($id, $typeSendEmail, $data);
 
 	if (!$arbolado instanceof ErrorException) {
 		$_PUT['id'] = $id;
+		if ($_PUT['fecha_deshabilitado'] > date('Y-m-d')) {
+			$_PUT['estado'] = 'deshabilitado';
+		}
 		sendRes($_PUT);
 	} else {
 		sendRes(null, $arbolado->getMessage(), ['id' => $id]);

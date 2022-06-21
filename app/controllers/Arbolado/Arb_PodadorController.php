@@ -15,10 +15,52 @@ class Arb_PodadorController
     {
         $GLOBALS['exect'][] = 'arb_Podador';
     }
+
     public function index($param = [], $ops = [])
     {
         $data = new Arb_Podador();
         $data = $data->list($param, $ops)->value;
+
+        /* Forzamos estado deshabilitado */
+        foreach ($data as $key => $el) {
+            if ($this->esDeshabilitado($el)) {
+                $data[$key]['estado'] = 'deshabilitado';
+            }
+        }
+
+        return $data;
+    }
+
+    /** Obtenemos los no deshabilitados */
+    public function getNoDeshabilitados($param = [], $ops = [])
+    {
+        $data = new Arb_Podador();
+        $data = $data->list($param, $ops)->value;
+
+        /* Filtramos las que no se encuentran deshabilitados */
+        $data = array_filter($data, function ($el) {
+            return !$this->esDeshabilitado($el);
+        });
+
+        return $data;
+    }
+
+    /** Obtenemos todos los deshabilitados */
+    public function getDeshabilitados($param = [], $ops = [])
+    {
+        $data = new Arb_Podador();
+        $data = $data->list($param, $ops)->value;
+
+        /* Filtramos las que no se encuentran deshabilitados */
+        $data = array_filter($data, function ($el) {
+            return $this->esDeshabilitado($el);
+        });
+
+        /* Forzamos estado deshabilitado */
+        foreach ($data as $key => $el) {
+            $data[$key]['estado'] = 'deshabilitado';
+        }
+
         return $data;
     }
 
@@ -27,28 +69,22 @@ class Arb_PodadorController
         $data = new Arb_Podador();
         $data = $data->get($params)->value;
 
-        $genero = $data["wapPersona"]["Genero"];
-        $dni = $data["wapPersona"]["Documento"];
+        if ($data['estado'] == 'aprobado' && !$this->esDeshabilitado($data)) {
+            $genero = $data["wapPersona"]["Genero"];
+            $dni = $data["wapPersona"]["Documento"];
 
-        $renaper = new RenaperController();
-        $img = $renaper->getImage($genero, $dni);
+            $renaper = new RenaperController();
+            $img = $renaper->getImage($genero, $dni);
 
-        $img['qr'] = $this->getCodigoQr($data['id']);
-        $data['img'] = $img;
+            $img['qr'] = $this->getCodigoQr($data['id']);
+            $data['img'] = $img;
+        }
+
+        if ($this->esDeshabilitado($data)) {
+            $data['estado'] = 'deshabilitado';
+        }
 
         return $data;
-    }
-
-    function getCodigoQr($idSolicitud)
-    {
-        if (PROD) {
-            $baseUrl = "https://weblogin.muninqn.gov.ar/apps/APIRest/public/views/arbolado/infoPodador.php?numero=";
-        } else {
-            $baseUrl = "http://200.85.183.194:90/apps/APIRest/public/views/arbolado/infoPodador.php?numero=";
-        }
-        $url = "https://chart.googleapis.com/chart?chs=250x250&chco=006BB1&cht=qr&chl=" . $baseUrl . $idSolicitud;
-        $imagen = base64_encode(file_get_contents($url));
-        return "data:image/png;base64," . $imagen;
     }
 
     public function store($res)
@@ -168,6 +204,8 @@ class Arb_PodadorController
 
         if ($type == 'rechazado') $body = $this->templateSolicitudRechazadaEmail($data);
 
+        if ($type == 'deshabilitado') $body = $this->templateSolicitudRechazadaEmail($data);
+
         $response = sendEmail($data['email'], $subject, $body);
 
         if ($response['error']) {
@@ -274,6 +312,39 @@ class Arb_PodadorController
         return $template;
     }
 
+    /** 
+     * Retorna el template de correo electronico para las solicitudes de poda enviadas por el usuario 
+     * */
+    protected function templateSolicitudDeshabilitadoEmail($data)
+    {
+        $observacion = $data['observacion'];
+
+        $template =
+            "<!DOCTYPE html>
+            <html lang='en'>
+                <head>
+                    <meta charset='UTF-8' />
+                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                    <link
+                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
+                        rel='stylesheet'
+                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
+                        crossorigin='anonymous'
+                    />
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='row'>
+                            <p>Usted fue deshabilitado como podador</p>
+                            <p>Observación: $observacion</p>  
+                        </div>
+                    </div>
+                </body>
+            </html>";
+        return $template;
+    }
+
     public function getDatosCarnet($id)
     {
         $sql =
@@ -294,5 +365,22 @@ class Arb_PodadorController
         $query =  $conn->query($sql);
 
         return odbc_fetch_array($query);
+    }
+
+    public function getCodigoQr($idSolicitud)
+    {
+        if (PROD) {
+            $baseUrl = "https://weblogin.muninqn.gov.ar/apps/APIRest/public/views/arbolado/infoPodador.php?numero=";
+        } else {
+            $baseUrl = "http://200.85.183.194:90/apps/APIRest/public/views/arbolado/infoPodador.php?numero=";
+        }
+        $url = "https://chart.googleapis.com/chart?chs=250x250&chco=006BB1&cht=qr&chl=" . $baseUrl . $idSolicitud;
+        $imagen = base64_encode(file_get_contents($url));
+        return "data:image/png;base64," . $imagen;
+    }
+
+    private function esDeshabilitado($data)
+    {
+        return $data["fecha_deshabilitado"] > date('Y-m-d');
     }
 }

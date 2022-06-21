@@ -24,7 +24,9 @@ class Arb_Podador extends BaseModel
         'fecha_vencimiento',
         'fecha_revision',
         'id_usuario_admin',
-        'id_wappersonas_admin'
+        'id_wappersonas_admin',
+        'fecha_deshabilitado',
+        'motivo_deshabilitado'
     ];
 
     protected $filesUrl = FILE_PATH . 'Arbolado/podador/';
