@@ -2,8 +2,10 @@
 
 namespace App\Controllers\Arbolado;
 
-use App\Models\Arbolado\Arb_Solicitud;
 use App\Traits\Arbolado\TemplateEmailSolicitud;
+
+use App\Models\Arbolado\Arb_Solicitud;
+use App\Models\Arbolado\Arb_Audit;
 
 class Arb_SolicitudController
 {
@@ -38,6 +40,17 @@ class Arb_SolicitudController
 
     public function update($req, $id)
     {
+        /* Generamos registro para la auditoria */
+        $audit = new Arb_Audit();
+        $audit->set([
+            'id_usuario' => $req['id_usuario'],
+            'id_wappersonas' => $req['id_wappersonas'],
+            'id_solicitud' => $id,
+            'accion' => $req['estado'],
+        ]);
+        $audit->save();
+
+        /* Modificamos el registro */
         $data = new Arb_Solicitud();
         return $data->update($req, $id);
     }

@@ -4,6 +4,7 @@ namespace App\Controllers\Arbolado;
 
 use App\Connections\BaseDatos;
 use App\Controllers\RenaperController;
+use App\Models\Arbolado\Arb_Audit;
 use App\Models\Arbolado\Arb_Podador;
 use App\Traits\Arbolado\TemplateEmailPodador;
 
@@ -123,6 +124,18 @@ class Arb_PodadorController
             $evaluacion = $arbEvaluacionController->update(['id_podador' => $id], $idEvalacion);
         }
         unset($req['id_wappersonas']);
+
+        /* Generamos registro para la auditoria */
+        $audit = new Arb_Audit();
+        $accion = $req["motivo_deshabilitado"] == null ? $req['estado'] : 'deshabilitacion';
+        $audit->set([
+            'id_usuario' => $req['id_usuario_admin'],
+            'id_wappersonas' => $req['id_wappersonas_admin'],
+            'id_podador' => $id,
+            'accion' => $accion,
+            'observacion' => $req['motivo_deshabilitado'],
+        ]);
+        $audit->save();
 
         return $data->update($req, $id);
     }

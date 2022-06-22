@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Arbolado;
 
+use App\Models\Arbolado\Arb_Audit;
 use App\Models\Arbolado\Arb_Evaluacion;
 
 class Arb_EvaluacionController
@@ -29,7 +30,19 @@ class Arb_EvaluacionController
     {
         $data = new Arb_Evaluacion();
         $data->set($res);
-        return $data->save();
+        $id = $data->save();
+
+        /* Generamos registro para la auditoria */
+        $audit = new Arb_Audit();
+        $audit->set([
+            'id_usuario' => $res['id_usuario_admin'],
+            'id_wappersonas' => $res['id_wappersonas_admin'],
+            'id_evaluacion' => $id,
+            'accion' => 'agrego',
+        ]);
+        $audit->save();
+
+        return $id;
     }
 
     public function update($req, $id)
