@@ -5,13 +5,14 @@ namespace App\Controllers\Arbolado;
 use App\Connections\BaseDatos;
 use App\Controllers\RenaperController;
 use App\Models\Arbolado\Arb_Podador;
-use App\Traits\Arbolado\TemplateEmail;
+use App\Traits\Arbolado\TemplateEmailPodador;
+
 use DateInterval;
 use DateTime;
 
 class Arb_PodadorController
 {
-    use TemplateEmail;
+    use TemplateEmailPodador;
 
     public function __construct()
     {

@@ -4,19 +4,18 @@ namespace App\Traits\Arbolado;
 
 use ErrorException;
 
-trait TemplateEmail
+trait TemplateEmailSolicitud
 {
+
     public function sendEmail($id, $type, $data)
     {
-        $subject = "Sistema Arbolado - Solicitud podador N° $id";
+        $subject = "Sistema Arbolado - Solicitud N° $id";
 
-        if ($type == 'envio') $body = $this->templateSolicitudEmail();
+        if ($type == 'envio') $body = $this->templateSolicitudEmail($data);
 
         if ($type == 'aprobado') $body = $this->templateSolicitudAprobadaEmail($data);
 
         if ($type == 'rechazado') $body = $this->templateSolicitudRechazadaEmail($data);
-
-        if ($type == 'deshabilitado') $body = $this->templateSolicitudDeshabilitadoEmail($data);
 
         $response = sendEmail($data['email'], $subject, $body);
 
@@ -29,8 +28,14 @@ trait TemplateEmail
     /** 
      * Retorna el template de correo electronico para las solicitudes de poda enviadas por el usuario 
      * */
-    protected function templateSolicitudEmail()
+    protected function templateSolicitudEmail($data)
     {
+        $tipo = $data['tipo'];
+        $solicita = $data['solicita'];
+        $ubicacion = $data['ubicacion'];
+        $motivo = $data['motivo'];
+        $cantidad = $data['cantidad'];
+
         $template =
             "<!DOCTYPE html>
             <html lang='en'>
@@ -48,8 +53,14 @@ trait TemplateEmail
                 <body>
                     <div class='container'>
                         <div class='row'>
-                            <p>Usted envio una solicitud para ser Podador.</p>
-                            <p>La solicitud se encuentra en propeceso de revisión</p>
+                            <h3>Detalle de la solicitud enviada</h3>
+                            <hr />
+                            <p>Tipo: $tipo</p>
+                            <p>Solicita: $solicita</p>
+                            <p>Ubicación: $ubicacion</p>
+                            <p>Motivo: $motivo</p>
+                            <p>Cantidad: $cantidad</p>
+                            <hr />
                         </div>
                     </div>
                 </body>
@@ -58,11 +69,13 @@ trait TemplateEmail
     }
 
     /** 
-     * Retorna el template de correo electronico para las solicitudes de poda enviadas por el usuario 
+     * Retorna el template de correo electronico para las solicitudes de poda aprobadas
      * */
     protected function templateSolicitudAprobadaEmail($data)
     {
+        $id = $data['id'];
         $observacion = $data['observacion'];
+        $contacto = $data['contacto'];
 
         $template =
             "<!DOCTYPE html>
@@ -81,20 +94,23 @@ trait TemplateEmail
                 <body>
                     <div class='container'>
                         <div class='row'>
-                            <p>La solcitud de podador se encuentra aprobada.</p>
-                            <p>Observación: $observacion</p>                            
+                            <h3>La solicitud Número: $id ya se encuentra aprobada</h3>
+                            <br />
+                            <p>Observación: $observacion</p>
+                            <hr />
+                            <p>El personal se va contactar al número: $contacto</p>
                         </div>
                     </div>
                 </body>
             </html>";
         return $template;
     }
-
     /** 
-     * Retorna el template de correo electronico para las solicitudes de poda enviadas por el usuario 
+     * Retorna el template de correo electronico para las solicitudes de poda rechazadas
      * */
     protected function templateSolicitudRechazadaEmail($data)
     {
+        $id = $data['id'];
         $observacion = $data['observacion'];
 
         $template =
@@ -114,42 +130,9 @@ trait TemplateEmail
                 <body>
                     <div class='container'>
                         <div class='row'>
-                            <p>La solcitud de podador se encuentra rechazada.</p>
-                            <p>Usted puede enviar una nueva solicitud.</p>
-                            <p>Observación: $observacion</p>  
-                        </div>
-                    </div>
-                </body>
-            </html>";
-        return $template;
-    }
-
-    /** 
-     * Retorna el template de correo electronico para las solicitudes de poda enviadas por el usuario 
-     * */
-    protected function templateSolicitudDeshabilitadoEmail($data)
-    {
-        $observacion = $data['observacion'];
-
-        $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <p>Usted fue deshabilitado como podador</p>
-                            <p>Observación: $observacion</p>  
+                            <h3>La solicitud Número: $id fue rechazada. Puede generar una nueva solicitud </h3>
+                            <br />
+                            <p>Observación: $observacion</p>
                         </div>
                     </div>
                 </body>
