@@ -107,6 +107,9 @@ class Arb_PodadorController
 
         $req['fecha_revision'] = $now->format('Y-m-d');
 
+        /* En el caso que deshabiliten al podador para no borrar la observacion actual */
+        if ($req["observacion"] == "") unset($req["observacion"]);
+
         if ($req['estado'] == 'aprobado') {
             /* Establecemos la fecha de vencimiento */
             $interval = new DateInterval('P2Y');
