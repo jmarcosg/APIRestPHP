@@ -17,6 +17,7 @@ class Arb_Audit extends BaseModel
         'id_podador',
         'id_solicitud',
         'id_evaluacion',
+        'id_inspector',
         'accion',
         'observacion',
     ];
