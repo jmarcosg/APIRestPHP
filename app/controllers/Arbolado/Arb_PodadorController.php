@@ -8,6 +8,8 @@ use App\Models\Arbolado\Arb_Audit;
 use App\Models\Arbolado\Arb_Podador;
 use App\Traits\Arbolado\TemplateEmailPodador;
 
+use App\Models\Arbolado\MYPDF;
+
 use DateInterval;
 use DateTime;
 
@@ -250,5 +252,45 @@ class Arb_PodadorController
     private function esDeshabilitado($data)
     {
         return $data["fecha_deshabilitado"] > date('Y-m-d');
+    }
+
+    public function getPodadoresPdf()
+    {
+        $params = ['estado' => 'aprobado', 'TOP' => 10000];
+        $podadores = $this->getNoDeshabilitados($params, ['order' => ' ORDER BY id DESC ']);
+        $header = array('Nro', 'DNI', 'NOMBRE', 'TELEFONO', 'INFO');
+
+        $data = [];
+        foreach ($podadores as $p) {
+            $data[] = [
+                $p['id'],
+                $p['wapPersona']['Documento'],
+                $p['wapPersona']['Nombre'],
+                $p['wapPersona']['Celular'],
+                $p['observacion'],
+            ];
+        }
+
+        // create new PDF documentgetPodadoresPdf
+        $pdf = new MYPDF('P', 'mm');
+
+        // set document information
+        $pdf->SetCreator('Municipalidad de Neuquén');
+        $pdf->SetAuthor('Municipalidad de Neuquén');
+        $pdf->SetTitle('Listado Podadores - ' . date('d/m/Y'));
+        $pdf->SetSubject('Listado Podadores');
+        $pdf->SetKeywords('Listado Podadores');
+
+        // set font
+        $pdf->SetFont('helvetica', '', 11);
+
+        // add a page
+        $pdf->AddPage();
+
+        // print colored table
+        $pdf->ColoredTable($header, utf8ize($data));
+
+        // close and output PDF document
+        $pdf->Output('Listado_podadores.pdf', 'D');
     }
 }
