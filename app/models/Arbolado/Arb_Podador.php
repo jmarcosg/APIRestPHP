@@ -19,6 +19,7 @@ class Arb_Podador extends BaseModel
         'id_wappersonas',
         'certificado',
         'capacitador',
+        'telefono',
         'observacion',
         'estado',
         'fecha_vencimiento',

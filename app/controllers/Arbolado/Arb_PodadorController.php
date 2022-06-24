@@ -260,13 +260,18 @@ class Arb_PodadorController
         $podadores = $this->getNoDeshabilitados($params, ['order' => ' ORDER BY id DESC ']);
         $header = array('Nro', 'DNI', 'NOMBRE', 'TELEFONO', 'INFO');
 
+        /* Filtramos los no vencidos */
+        $podadores = array_filter($podadores, function ($el) {
+            return $el['fecha_vencimiento'] > date('Y-m-d');
+        });
+
         $data = [];
         foreach ($podadores as $p) {
             $data[] = [
                 $p['id'],
                 $p['wapPersona']['Documento'],
                 $p['wapPersona']['Nombre'],
-                $p['wapPersona']['Celular'],
+                $p['telefono'],
                 $p['observacion'],
             ];
         }
