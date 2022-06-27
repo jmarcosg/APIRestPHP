@@ -132,33 +132,75 @@ class Arb_PodadorController
         exit;
     }
 
-    public function store($res)
+    public static function store()
     {
-        $res['estado'] = 'nuevo';
+        /* Logica para el certificado */
+        $file = $_FILES['certificado'];
+        $nameFile = uniqid() . getExtFile($file);
+
+        $_POST['certificado'] = $nameFile;
+
+        /* Guardamos la solicitud */
+        $_POST['estado'] = 'nuevo';
         $data = new Arb_Podador();
-        $data->set($res);
-        return $data->save();
+        $data->set($_POST);
+        $id = $data->save();
+
+        /* copiamos el archivo en la carpeta correspondiente */
+        $path = getPathFile($file, "arbolado/podador/$id/", $nameFile);
+        $copiado = copy($file['tmp_name'], $path);
+
+        if ($id instanceof ErrorException || !$copiado) {
+            self::delete($id);
+            sendRes(null, $id->getMessage(), $_GET);
+            exit;
+        }
+
+        /* Envio de correo electronico */
+        $email = ['email' => $_POST['email']];
+        self::sendEmail($id, 'envio', $email);
+
+        sendRes(['id' => $id]);
+        exit;
     }
 
-    public function update($req, $id)
+    public static function update($id)
     {
+        /* Formateo de la información */
+        parse_str(file_get_contents('php://input'), $_PUT);
+
+        if ($_PUT["motivo_deshabilitado"] != "null") {
+            $typeSendEmail = 'deshabilitado';
+            $obsSendEmail = $_PUT['motivo_deshabilitado'];
+            $_PUT['fecha_deshabilitado'] = date("Y-m-d", strtotime(date('Y-m-d') . "+ 1 year"));
+        } else {
+            $typeSendEmail = $_PUT['estado'];
+            $_PUT["motivo_deshabilitado"] = null;
+            $_PUT["fecha_deshabilitado"] = null;
+            $obsSendEmail = $_PUT['observacion'];
+        }
+
+        $email = $_PUT['email'];
+        unset($_PUT['email']);
+
+        /* Actualizamos la solicitud */
         $data = new Arb_Podador();
 
         $now = new DateTime();
 
-        $req['fecha_revision'] = $now->format('Y-m-d');
+        $_PUT['fecha_revision'] = $now->format('Y-m-d');
 
         /* En el caso que deshabiliten al podador para no borrar la observacion actual */
-        if ($req["observacion"] == "") unset($req["observacion"]);
+        if ($_PUT["observacion"] == "") unset($_PUT["observacion"]);
 
-        if ($req['estado'] == 'aprobado') {
+        if ($_PUT['estado'] == 'aprobado') {
             /* Establecemos la fecha de vencimiento */
             $interval = new DateInterval('P2Y');
             $now->add($interval);
-            $req['fecha_vencimiento'] = $now->format('Y-m-d');
+            $_PUT['fecha_vencimiento'] = $now->format('Y-m-d');
 
             /* Obtenemos la ultima evalacion del usuario */
-            $params = ['id_wappersonas' => $req['id_wappersonas'], 'TOP' => 1];
+            $params = ['id_wappersonas' => $_PUT['id_wappersonas'], 'TOP' => 1];
             $op = ['order' => ' ORDER BY id DESC '];
             $arbEvaluacionController = new Arb_EvaluacionController();
             $evaluacion = $arbEvaluacionController->index($params, $op);
@@ -167,24 +209,47 @@ class Arb_PodadorController
             /* Actualizamos la evaluacion con el id de la solicitud */
             $evaluacion = $arbEvaluacionController->update(['id_podador' => $id], $idEvalacion);
         }
-        unset($req['id_wappersonas']);
+        unset($_PUT['id_wappersonas']);
 
         /* Generamos registro para la auditoria */
         $audit = new Arb_Audit();
-        $accion = $req["motivo_deshabilitado"] == null ? $req['estado'] : 'deshabilitacion';
+        $accion = $_PUT["motivo_deshabilitado"] == null ? $_PUT['estado'] : 'deshabilitacion';
         $audit->set([
-            'id_usuario' => $req['id_usuario_admin'],
-            'id_wappersonas' => $req['id_wappersonas_admin'],
+            'id_usuario' => $_PUT['id_usuario_admin'],
+            'id_wappersonas' => $_PUT['id_wappersonas_admin'],
             'id_podador' => $id,
             'accion' => $accion,
-            'observacion' => $req['motivo_deshabilitado'],
+            'observacion' => $_PUT['motivo_deshabilitado'],
         ]);
         $audit->save();
 
-        return $data->update($req, $id);
+        $solicitud = $data->update($_PUT, $id);
+
+        /* Enviamos el correo electronico */
+        $data = [
+            'email' => $email,
+            'observacion' =>  $obsSendEmail,
+        ];
+
+        self::sendEmail($id, $typeSendEmail, $data);
+
+        if (!$solicitud instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            if ($_PUT['fecha_deshabilitado'] > date('Y-m-d')) {
+                $_PUT['estado'] = 'deshabilitado';
+            }
+            sendRes($_PUT);
+        } else {
+            sendRes(
+                null,
+                $solicitud->getMessage(),
+                ['id' => $id]
+            );
+        };
+        exit;
     }
 
-    public function delete($id)
+    public static function delete($id)
     {
         $data = new Arb_Podador();
         return $data->delete($id);
