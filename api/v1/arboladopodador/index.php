@@ -6,54 +6,41 @@ $arbPodadorController = new Arb_PodadorController();
 
 /* Metodo GET */
 if ($url['method'] == 'GET') {
-	if (isset($_GET) && count($_GET) > 0 && isset($_GET['action'])) {
-		$action = $_GET['action'];
-		unset($_GET['action']);
+	$action = $_GET['action'];
+	unset($_GET['action']);
 
-		switch ($action) {
-			case '0':
-				/* Obtenemos todas las solicitudes, o funcion del estado */
-				$_GET['TOP'] = 1000;
-				if ($_GET['estado'] == 'todas') {
-					unset($_GET['estado']);
-					$podador = $arbPodadorController->index($_GET, ['order' => ' ORDER BY id DESC ']);
-				} else {
-					$podador = $arbPodadorController->getNoDeshabilitados($_GET, ['order' => ' ORDER BY id DESC ']);
-				}
-				break;
-
-			case '1':
-				/* Obtenemos una solicitud puntual */
-				$podador = $arbPodadorController->get($_GET);
-				break;
-
-			case '2':
-				/* Obtenemos el estado de la ultima solicitud enviada por el usuario */
-				$podador = $arbPodadorController->getEstadoSolicitudDetalle($_GET['id_wappersonas']);
-				break;
-
-			case '3':
-				/* Obtenemos todas las solicitudes deshabilitadas */
-				$_GET['TOP'] = 1000;
-				$podador = $arbPodadorController->getDeshabilitados($_GET, ['order' => ' ORDER BY id DESC ']);
-				break;
-
-			default:
-				$podador = new ErrorException('El action no es valido');
-				break;
-		}
-
-		if (!$podador instanceof ErrorException) {
-			if ($podador !== false) {
-				sendRes($podador);
+	switch ($action) {
+		case '0':
+			/* Obtenemos todas las solicitudes, o funcion del estado */
+			if ($_GET['estado'] == 'todas') {
+				unset($_GET['estado']);
+				Arb_PodadorController::index();
 			} else {
-				sendRes(null, 'No se encontro la solicitud', $_GET);
+				Arb_PodadorController::getNoDeshabilitados();
 			}
-		} else {
-			sendRes(null, $arbolado->getMessage(), $_GET);
-		};
+			break;
+
+		case '1':
+			/* Obtenemos una solicitud puntual */
+			Arb_PodadorController::get();
+			break;
+
+		case '2':
+			/* Obtenemos el estado de la ultima solicitud enviada por el usuario */
+			Arb_PodadorController::getEstadoSolicitudDetalle();
+			break;
+
+		case '3':
+			/* Obtenemos todas las solicitudes deshabilitadas */
+			Arb_PodadorController::getDeshabilitados();
+			break;
+
+		default:
+			$error = new ErrorException('El action no es valido');
+			sendRes(null, $error->getMessage(), $_GET);
+			exit;
+			break;
 	}
-	eClean();
 }
 
 /* Metodo POST */

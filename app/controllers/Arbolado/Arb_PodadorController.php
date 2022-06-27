@@ -12,6 +12,7 @@ use App\Models\Arbolado\MYPDF;
 
 use DateInterval;
 use DateTime;
+use ErrorException;
 
 class Arb_PodadorController
 {
@@ -22,44 +23,66 @@ class Arb_PodadorController
         $GLOBALS['exect'][] = 'arb_Podador';
     }
 
-    public function index($param = [], $ops = [])
+    public static function index()
     {
+
+        $ops = ['order' => ' ORDER BY id DESC '];
+
         $data = new Arb_Podador();
-        $data = $data->list($param, $ops)->value;
+
+        $data = $data->list($_GET, $ops)->value;
 
         /* Forzamos estado deshabilitado */
         foreach ($data as $key => $el) {
-            if ($this->esDeshabilitado($el)) {
+            if (self::esDeshabilitado($el)) {
                 $data[$key]['estado'] = 'deshabilitado';
             }
         }
 
-        return $data;
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
     }
 
     /** Obtenemos los no deshabilitados */
-    public function getNoDeshabilitados($param = [], $ops = [])
+    public static function getNoDeshabilitados()
     {
+        $ops = ['order' => ' ORDER BY id DESC '];
+
         $data = new Arb_Podador();
-        $data = $data->list($param, $ops)->value;
+
+        $data = $data->list($_GET, $ops)->value;
 
         /* Filtramos las que no se encuentran deshabilitados */
         $data = array_filter($data, function ($el) {
-            return !$this->esDeshabilitado($el);
+            return !self::esDeshabilitado($el);
         });
 
-        return $data;
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
     }
 
     /** Obtenemos todos los deshabilitados */
-    public function getDeshabilitados($param = [], $ops = [])
+    public static function getDeshabilitados()
     {
+        $ops = ['order' => ' ORDER BY id DESC '];
+
         $data = new Arb_Podador();
-        $data = $data->list($param, $ops)->value;
+
+        $data = $data->list($_GET, $ops)->value;
 
         /* Filtramos las que no se encuentran deshabilitados */
         $data = array_filter($data, function ($el) {
-            return $this->esDeshabilitado($el);
+            return self::esDeshabilitado($el);
         });
 
         /* Forzamos estado deshabilitado */
@@ -67,30 +90,46 @@ class Arb_PodadorController
             $data[$key]['estado'] = 'deshabilitado';
         }
 
-        return $data;
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+        exit;
     }
 
-    public function get($params)
+    public static function get()
     {
         $data = new Arb_Podador();
-        $data = $data->get($params)->value;
 
-        if ($data['estado'] == 'aprobado' && !$this->esDeshabilitado($data)) {
+        $data = $data->get($_GET)->value;
+
+        if ($data['estado'] == 'aprobado' && !self::esDeshabilitado($data)) {
             $genero = $data["wapPersona"]["Genero"];
             $dni = $data["wapPersona"]["Documento"];
 
             $renaper = new RenaperController();
             $img = $renaper->getImage($genero, $dni);
 
-            $img['qr'] = $this->getCodigoQr($data['id']);
+            $img['qr'] = self::getCodigoQr($data['id']);
             $data['img'] = $img;
         }
 
-        if ($this->esDeshabilitado($data)) {
+        if (self::esDeshabilitado($data)) {
             $data['estado'] = 'deshabilitado';
         }
 
-        return $data;
+        if (!$data instanceof ErrorException) {
+            if ($data !== false) {
+                sendRes($data);
+            } else {
+                sendRes(null, 'No se encontro la solicitud', $_GET);
+            }
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
     }
 
     public function store($res)
@@ -165,12 +204,20 @@ class Arb_PodadorController
         return $solicitud;
     }
 
-    public function getEstadoSolicitudDetalle($id_wappersonas)
+    public static function getEstadoSolicitudDetalle()
     {
-        $params = ['id_wappersonas' => $id_wappersonas, 'TOP' => 1];
+        $params = ['id_wappersonas' => $_GET['id_wappersonas'], 'TOP' => 1];
+
         $op = ['order' => ' ORDER BY id DESC '];
 
-        $solicitud = $this->index($params, $op);
+        $data = new Arb_Podador();
+
+        $solicitud = $data->list($params, $op)->value;
+
+        $response = [
+            'estado' => null,
+            'msg' => null,
+        ];
 
         if ($solicitud) {
             $solicitud = $solicitud[0];
@@ -178,7 +225,7 @@ class Arb_PodadorController
             $venc = $solicitud['fecha_vencimiento'];
 
             if ($solicitud['estado'] == 'nuevo') {
-                return [
+                $response = [
                     'estado' => 'nuevo',
                     'msg' => "La solcitud: $id, se encuentra en proceso de revisión",
                 ];
@@ -186,7 +233,7 @@ class Arb_PodadorController
 
             if ($solicitud['estado'] == 'rechazado') {
                 $observacion = $solicitud['observacion'];
-                return [
+                $response = [
                     'estado' => 'rechazado',
                     'msg' => "Solicitud Número: $id fue rechazada. $observacion",
                 ];
@@ -195,13 +242,13 @@ class Arb_PodadorController
             if ($solicitud['estado'] == 'aprobado') {
                 if (!esVigente($venc)) {
                     $venc = date("d/m/Y", strtotime($venc));
-                    return [
+                    $response = [
                         'estado' => 'vencida',
                         'msg' => "Solicitud Número: $id vencida con fecha $venc",
                     ];
                 } else {
                     $venc = date("d/m/Y", strtotime($venc));
-                    return [
+                    $response = [
                         'estado' => 'vigente',
                         'msg' => "El carnet se encuentra vigente hasta la fecha: $venc",
                     ];
@@ -209,10 +256,8 @@ class Arb_PodadorController
             }
         }
 
-        return [
-            'estado' => null,
-            'msg' => null,
-        ];;
+        sendRes($response);
+        exit;
     }
 
     public function getDatosCarnet($id)
@@ -237,7 +282,7 @@ class Arb_PodadorController
         return odbc_fetch_array($query);
     }
 
-    public function getCodigoQr($idSolicitud)
+    public static function getCodigoQr($idSolicitud)
     {
         if (PROD) {
             $baseUrl = "https://weblogin.muninqn.gov.ar/apps/APIRest/public/views/arbolado/infoPodador.php?numero=";
@@ -249,7 +294,7 @@ class Arb_PodadorController
         return "data:image/png;base64," . $imagen;
     }
 
-    private function esDeshabilitado($data)
+    private static function esDeshabilitado($data)
     {
         return $data["fecha_deshabilitado"] > date('Y-m-d');
     }
