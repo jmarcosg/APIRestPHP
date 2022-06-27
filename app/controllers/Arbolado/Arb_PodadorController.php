@@ -48,8 +48,8 @@ class Arb_PodadorController
         exit;
     }
 
-    /** Obtenemos los no deshabilitados */
-    public static function getNoDeshabilitados()
+    /** Obtenemos los aprobados */
+    public static function getAprobados()
     {
         $ops = ['order' => ' ORDER BY id DESC '];
 
@@ -374,7 +374,7 @@ class Arb_PodadorController
     public function getPodadoresPdf()
     {
         $params = ['estado' => 'aprobado', 'TOP' => 10000];
-        $podadores = $this->getNoDeshabilitados($params, ['order' => ' ORDER BY id DESC ']);
+        $podadores = $this->getAprobados($params, ['order' => ' ORDER BY id DESC ']);
         $header = array('Nro', 'DNI', 'NOMBRE', 'TELEFONO', 'INFO');
 
         /* Filtramos los no vencidos */

@@ -16,7 +16,7 @@ if ($url['method'] == 'GET') {
 				unset($_GET['estado']);
 				Arb_PodadorController::index();
 			} else {
-				Arb_PodadorController::getNoDeshabilitados();
+				Arb_PodadorController::getAprobados();
 			}
 			break;
 
