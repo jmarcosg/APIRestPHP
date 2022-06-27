@@ -252,7 +252,14 @@ class Arb_PodadorController
     public static function delete($id)
     {
         $data = new Arb_Podador();
-        return $data->delete($id);
+        $data = $data->delete($id);
+
+        if (!$data instanceof ErrorException) {
+            sendRes(['id' => $id]);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
     }
 
     public function existeSol($id_usuario)

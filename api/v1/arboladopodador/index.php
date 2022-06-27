@@ -44,27 +44,14 @@ if ($url['method'] == 'GET') {
 }
 
 /* Metodo POST */
-if ($url['method'] == 'POST') {
-	Arb_PodadorController::store();
-}
+if ($url['method'] == 'POST') Arb_PodadorController::store();
 
 /* Metodo PUT */
-if ($url['method'] == 'PUT') {
-	Arb_PodadorController::update($url['id']);
-}
+if ($url['method'] == 'PUT') Arb_PodadorController::update($url['id']);
 
 /* Metodo DELETE */
-if ($url['method'] == 'DELETE') {
-	$id = $url['id'];
-	$arbolado = $arbPodadorController->delete($url['id']);
-	if (!$arbolado instanceof ErrorException) {
-		sendRes(['ReferenciaID' => $id]);
-	} else {
-		sendRes(null, $arbolado->getMessage(), ['ReferenciaID' => $id]);
-	};
-	eClean();
-}
+if ($url['method'] == 'DELETE') Arb_PodadorController::delete($url['id']);
 
 header("HTTP/1.1 200 Bad Request");
 
-eClean();
+exit();
