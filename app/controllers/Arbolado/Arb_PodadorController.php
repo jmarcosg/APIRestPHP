@@ -48,56 +48,6 @@ class Arb_PodadorController
         exit;
     }
 
-    /** Obtenemos los aprobados */
-    public static function getAprobados()
-    {
-        $ops = ['order' => ' ORDER BY id DESC '];
-
-        $data = new Arb_Podador();
-
-        $data = $data->list($_GET, $ops)->value;
-
-        /* Filtramos las que no se encuentran deshabilitados */
-        $data = array_filter($data, function ($el) {
-            return !self::esDeshabilitado($el);
-        });
-
-        if (!$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            sendRes(null, $data->getMessage(), $_GET);
-        };
-
-        exit;
-    }
-
-    /** Obtenemos todos los deshabilitados */
-    public static function getDeshabilitados()
-    {
-        $ops = ['order' => ' ORDER BY id DESC '];
-
-        $data = new Arb_Podador();
-
-        $data = $data->list($_GET, $ops)->value;
-
-        /* Filtramos las que no se encuentran deshabilitados */
-        $data = array_filter($data, function ($el) {
-            return self::esDeshabilitado($el);
-        });
-
-        /* Forzamos estado deshabilitado */
-        foreach ($data as $key => $el) {
-            $data[$key]['estado'] = 'deshabilitado';
-        }
-
-        if (!$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            sendRes(null, $data->getMessage(), $_GET);
-        };
-        exit;
-    }
-
     public static function get()
     {
         $data = new Arb_Podador();
@@ -258,6 +208,56 @@ class Arb_PodadorController
             sendRes(['id' => $id]);
         } else {
             sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    /** Obtenemos todos los aprobados */
+    public static function getAprobados()
+    {
+        $ops = ['order' => ' ORDER BY id DESC '];
+
+        $data = new Arb_Podador();
+
+        $data = $data->list($_GET, $ops)->value;
+
+        /* Filtramos las que no se encuentran deshabilitados */
+        $data = array_filter($data, function ($el) {
+            return !self::esDeshabilitado($el);
+        });
+
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
+    }
+
+    /** Obtenemos todos los deshabilitados */
+    public static function getDeshabilitados()
+    {
+        $ops = ['order' => ' ORDER BY id DESC '];
+
+        $data = new Arb_Podador();
+
+        $data = $data->list($_GET, $ops)->value;
+
+        /* Filtramos las que no se encuentran deshabilitados */
+        $data = array_filter($data, function ($el) {
+            return self::esDeshabilitado($el);
+        });
+
+        /* Forzamos estado deshabilitado */
+        foreach ($data as $key => $el) {
+            $data[$key]['estado'] = 'deshabilitado';
+        }
+
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
         };
         exit;
     }
