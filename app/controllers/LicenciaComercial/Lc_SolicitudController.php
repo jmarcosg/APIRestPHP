@@ -14,17 +14,29 @@ class Lc_SolicitudController
     {
         $GLOBALS['exect'][] = 'lc_solicitud';
     }
-    public function index($param = [], $ops = [])
+
+    public static function index()
     {
+        $ops = ['order' => ' ORDER BY id DESC '];
+
         $data = new Lc_Solicitud();
-        $data = $data->list($param, $ops)->value;
-        return $data;
+
+        $data = $data->list($_GET, $ops)->value;
+
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
     }
 
-    public function get($params)
+    public static function get()
     {
         $data = new Lc_Solicitud();
-        $data = $data->get($params)->value;
+
+        $data = $data->get($_GET)->value;
 
         if ($data) {
 
@@ -48,19 +60,34 @@ class Lc_SolicitudController
             $data['rubros'] = $rubrosArray;
         }
 
-
-        return $data;
+        if (!$data instanceof ErrorException) {
+            if ($data !== false) {
+                sendRes($data);
+            } else {
+                sendRes(null, 'No se encontro la solicitud', $_GET);
+            }
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+        exit;
     }
 
-    public function store($res)
+    public static function store()
     {
-        $res['estado'] = 'act';
+        $_POST['estado'] = 'act';
         $data = new Lc_Solicitud();
-        $data->set($res);
-        return $data->save();
+        $data->set($_POST);
+        $id = $data->save();
+
+        if (!$id instanceof ErrorException) {
+            sendRes(['id' => $id]);
+        } else {
+            sendRes(null, $id->getMessage(), $_GET);
+        };
+        exit;
     }
 
-    public function updateFirts($req, $id)
+    public static function updateFirts($req, $id)
     {
         $data = new Lc_Solicitud();
         if ($req["pertenece"] == 'propia') {
@@ -69,7 +96,15 @@ class Lc_SolicitudController
             $req['tramite_tercero'] = null;
             $req['genero_tercero'] = null;
         }
-        return $data->update($req, $id);
+        $lc =  $data->update($req, $id);
+
+        if (!$lc instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $lc->getMessage(), ['id' => $id]);
+        };
+        exit;
     }
 
     public function updateSec($req, $id)
