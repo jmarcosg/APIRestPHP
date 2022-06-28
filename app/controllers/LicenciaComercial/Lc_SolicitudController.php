@@ -4,8 +4,9 @@ namespace App\Controllers\LicenciaComercial;
 
 use App\Models\LicenciaComercial\Lc_Solicitud;
 use App\Models\LicenciaComercial\Lc_Rubro;
-use App\Controllers\RenaperController;
+use App\Models\LicenciaComercial\Lc_Documento;
 
+use App\Controllers\RenaperController;
 use ErrorException;
 
 class Lc_SolicitudController
@@ -74,10 +75,16 @@ class Lc_SolicitudController
 
     public static function store()
     {
+        /* Guardamos la solicitud */
         $_POST['estado'] = 'act';
         $data = new Lc_Solicitud();
         $data->set($_POST);
         $id = $data->save();
+
+        /* Guardamos un registro de reserva para los documentos */
+        $documento = new Lc_Documento();
+        $documento->set(['id_solicitud' => $id]);
+        $documento->save();
 
         if (!$id instanceof ErrorException) {
             sendRes(['id' => $id]);
