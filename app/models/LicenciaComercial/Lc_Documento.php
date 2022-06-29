@@ -18,7 +18,6 @@ class Lc_Documento extends BaseModel
         'constancia_convenio_dpr',
         'contrato_social',
         'certificado_vigencia',
-        'certificado_vigencia',
         'obra_actualizado',
         'escritura',
         'reglamento_copropiedad',
@@ -26,5 +25,5 @@ class Lc_Documento extends BaseModel
         'recibo_retributaria',
     ];
 
-    protected $filesUrl = FILE_PATH . 'Licencia_comercial/solicitud/';
+    public $filesUrl = FILE_PATH . 'licencia_comercial/solicitud/';
 }

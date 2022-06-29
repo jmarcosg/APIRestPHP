@@ -197,11 +197,8 @@ function checkFile($maxsize = 15)
     }
 }
 
-function getPathFile($file, $subPath, $fileName)
+function getPathFile($file, $path, $fileName)
 {
-
-    $path = FILE_PATH_LOCAL . $subPath;
-
     if (!file_exists($path)) {
         mkdir($path, 0755, true);
     };
@@ -249,4 +246,22 @@ function sendEmail($address, $subject, $body)
     curl_close($ch);
 
     return json_decode($result, true);
+}
+
+function deleteDir($dirPath)
+{
+    if (is_dir($dirPath)) {
+        if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+            $dirPath .= '/';
+        }
+        $files = glob($dirPath . '*', GLOB_MARK);
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                deleteDir($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dirPath);
+    }
 }

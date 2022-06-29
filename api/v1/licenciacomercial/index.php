@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\LicenciaComercial\Lc_SolicitudController;
+use App\Controllers\LicenciaComercial\Lc_DocumentoController;
 
 $lcSolicitudController = new Lc_SolicitudController();
 
@@ -35,7 +36,13 @@ if ($url['method'] == 'GET') {
 }
 
 /* Metodo POST */
-if ($url['method'] == 'POST') Lc_SolicitudController::store($_POST);
+if ($url['method'] == 'POST') {
+	if (isset($_POST['step']) && $_POST['step'] == '3') {
+		Lc_DocumentoController::update();
+	} else {
+		Lc_SolicitudController::store($_POST);
+	}
+}
 
 /* Metodo PUT */
 if ($url['method'] == 'PUT') {
@@ -51,7 +58,11 @@ if ($url['method'] == 'PUT') {
 			break;
 
 		case '2':
-			$lc = $lcSolicitudController->updateSec($_PUT, $id);
+			Lc_SolicitudController::updateSec($_PUT, $id);
+			break;
+
+		case '3':
+			Lc_SolicitudController::updateSec($_PUT, $id);
 			break;
 
 		default:

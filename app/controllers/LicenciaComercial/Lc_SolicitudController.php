@@ -114,7 +114,7 @@ class Lc_SolicitudController
         exit;
     }
 
-    public function updateSec($req, $id)
+    public static function updateSec($req, $id)
     {
         $data = new Lc_Solicitud();
 
@@ -130,7 +130,15 @@ class Lc_SolicitudController
             $rubro->save();
         }
 
-        return $data->update($req, $id);
+        $data = $data->update($req, $id);
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
     }
 
     public function delete($id)
