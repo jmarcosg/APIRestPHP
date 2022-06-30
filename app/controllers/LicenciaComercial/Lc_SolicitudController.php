@@ -50,6 +50,7 @@ class Lc_SolicitudController
                 $data['dataTercero'] = $rc->getDataTramite($genero, $dni, $tramite);
             }
 
+            /* Obtenemos los rubros cargados */
             $rubro = new Lc_RubroController();
             $rubros = $rubro->index(['id_solicitud' => $data['id']]);
 
@@ -59,6 +60,11 @@ class Lc_SolicitudController
             }
 
             $data['rubros'] = $rubrosArray;
+
+            /* Obtenemos los documentos de la tercera etapa */
+            $documento = new Lc_DocumentoController();
+            $documentos = $documento->getFilesUrl(['id_solicitud' => $data['id']]);
+            $data['documentos'] = $documentos;
         }
 
         if (!$data instanceof ErrorException) {
@@ -129,6 +135,21 @@ class Lc_SolicitudController
             $rubro->set(['id_solicitud' => $id, 'nombre' => $r]);
             $rubro->save();
         }
+
+        $data = $data->update($req, $id);
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    public static function updateThir($req, $id)
+    {
+        $data = new Lc_Solicitud();
 
         $data = $data->update($req, $id);
 

@@ -9,7 +9,7 @@ class Lc_DocumentoController
 {
     public function __construct()
     {
-        $GLOBALS['exect'][] = 'lc_rubro';
+        $GLOBALS['exect'][] = 'lc_documento';
     }
 
     public function index($param = [], $ops = [])
@@ -19,10 +19,27 @@ class Lc_DocumentoController
         return $data;
     }
 
-    public function get($params)
+    public function getFilesUrl($params)
     {
-        $data = new Lc_Documento();
-        $data = $data->get($params)->value;
+        $documento = new Lc_Documento();
+        $data = $documento->get($params)->value;
+
+        unset($data["id"]);
+        unset($data["id_solicitud"]);
+        unset($data["deleted_at"]);
+        unset($data["fecha_alta"]);
+
+        foreach ($data as $key => $doc) {
+            global $filesUrl;
+
+            $id_solicitud = $params["id_solicitud"];
+
+            $filesUrl = $documento->filesUrl;
+
+            if ($doc) {
+                $data[$key] = $filesUrl . $id_solicitud . "/" . $key . '/' . $doc;
+            }
+        }
         return $data;
     }
 

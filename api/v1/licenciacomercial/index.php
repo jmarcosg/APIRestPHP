@@ -62,7 +62,7 @@ if ($url['method'] == 'PUT') {
 			break;
 
 		case '3':
-			Lc_SolicitudController::updateSec($_PUT, $id);
+			Lc_SolicitudController::updateThir($_PUT, $id);
 			break;
 
 		default:
