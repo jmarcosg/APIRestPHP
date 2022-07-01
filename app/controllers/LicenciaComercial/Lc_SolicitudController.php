@@ -7,10 +7,13 @@ use App\Models\LicenciaComercial\Lc_Rubro;
 use App\Models\LicenciaComercial\Lc_Documento;
 
 use App\Controllers\RenaperController;
+use App\Traits\LicenciaComercial\QuerysSql;
 use ErrorException;
 
 class Lc_SolicitudController
 {
+    use QuerysSql;
+
     public function __construct()
     {
         $GLOBALS['exect'][] = 'lc_solicitud';
@@ -23,6 +26,23 @@ class Lc_SolicitudController
         $data = new Lc_Solicitud();
 
         $data = $data->list($_GET, $ops)->value;
+
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
+    }
+
+    public static function indexCatastro()
+    {
+        $solicitud = new Lc_Solicitud();
+
+        $sql = self::getSqlSolicitudes("estado = 'cat'");
+        $data = $solicitud->executeSqlQuery($sql, false);
+        $data = self::formatSolicitudDataArray($data);
 
         if (!$data instanceof ErrorException) {
             sendRes($data);

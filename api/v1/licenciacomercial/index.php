@@ -3,29 +3,27 @@
 use App\Controllers\LicenciaComercial\Lc_SolicitudController;
 use App\Controllers\LicenciaComercial\Lc_DocumentoController;
 
-$lcSolicitudController = new Lc_SolicitudController();
-
 /* Metodo GET */
+$GLOBALS['exect'][] = 'lc_solicitud';
 if ($url['method'] == 'GET') {
 	$action = $_GET['action'];
 	unset($_GET['action']);
 
 	switch ($action) {
 		case '0':
-			/* Obtenemos todas las solicitudes, o funcion del estado */
-			Lc_SolicitudController::index();
+			/* Obtenemos todas las solicitudes de catastro */
+			Lc_SolicitudController::indexCatastro();
 			break;
 
 		case '1':
 			/* Obtenemos una solicitud puntual */
-			Lc_SolicitudController::get($_GET);
+			Lc_SolicitudController::get();
 			break;
 
 		case '2':
 			/* Obtenemos la ultima solicitud */
 			$_GET['TOP'] = 1;
 			Lc_SolicitudController::get($_GET);
-			break;
 
 		default:
 			$error = new ErrorException('El action no es valido');

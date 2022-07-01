@@ -3,6 +3,7 @@
 namespace App\Models\LicenciaComercial;
 
 use App\Models\BaseModel;
+use App\Models\WapPersona;
 
 class Lc_Solicitud extends BaseModel
 {
@@ -28,4 +29,6 @@ class Lc_Solicitud extends BaseModel
     ];
 
     protected $filesUrl = FILE_PATH . 'Licencia_comercial/solicitud/';
+
+    
 }
