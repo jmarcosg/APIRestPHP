@@ -93,6 +93,50 @@ trait QuerysSql
         return $solicitudes;
     }
 
+    private static function formatSolicitudData($solicitud)
+    {
+
+        /* Obtenemos los elementos que contienen per_ini_ en la key */
+        $personaInicio = self::filterByIncludeKey($solicitud, 'perini_');
+
+
+        /* Limpiamos los keys */
+        foreach ($solicitud as $key => $elem) {
+            if (str_contains($key, 'perini_')) {
+                $stringKey = explode('_', $key)[1];
+                $personaInicio[$stringKey] = $elem;
+                unset($personaInicio[$key]);
+            }
+        }
+        $solicitud['personaInicio'] = $personaInicio;
+
+
+        if ($solicitud["id_wappersonas_tercero"]) {
+            /* Obtenemos los elementos que contienen per_sol_ en la key */
+            $personaTercero = self::filterByIncludeKey($solicitud, 'persol_');
+
+            /* Limpiamos los keys */
+            foreach ($solicitud as $key => $elem) {
+                if (str_contains($key, 'persol_')) {
+                    $stringKey = explode('_', $key)[1];
+                    $personaTercero[$stringKey] = $elem;
+                    unset($personaTercero[$key]);
+                    unset($solicitud[$key]);
+                }
+            }
+            $solicitud['personaTercero'] = $personaTercero;
+        } else {
+            $solicitud['personaTercero'] = null;
+            /* Limpiamos los keys */
+            foreach ($solicitud as $key => $elem) {
+                if (str_contains($key, 'persol_')) {
+                    unset($solicitud[$key]);
+                }
+            }
+        }
+        return $solicitud;
+    }
+
     private static function filterByIncludeKey($array, $key)
     {
         return array_filter($array, function ($elem) use ($key) {

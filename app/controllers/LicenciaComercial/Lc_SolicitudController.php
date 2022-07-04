@@ -53,6 +53,55 @@ class Lc_SolicitudController
         exit;
     }
 
+    public static function getById()
+    {
+        $solicitud = new Lc_Solicitud();
+
+        $id = $_GET['id'];
+        $sql = self::getSqlSolicitudes("id = $id");
+        $data = $solicitud->executeSqlQuery($sql, true);
+        $data = self::formatSolicitudData($data);
+
+        if ($data) {
+
+            /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
+            if ($data['pertenece'] == 'tercero') {
+                $rc = new RenaperController();
+                $dni = $data["dni_tercero"];
+                $tramite = $data["tramite_tercero"];
+                $genero = $data["genero_tercero"];
+                $data['dataTercero'] = $rc->getDataTramite($genero, $dni, $tramite);
+            }
+
+            /* Obtenemos los rubros cargados */
+            $rubro = new Lc_RubroController();
+            $rubros = $rubro->index(['id_solicitud' => $data['id']]);
+
+            $rubrosArray = [];
+            foreach ($rubros as $r) {
+                $rubrosArray[] = $r['nombre'];
+            }
+
+            $data['rubros'] = $rubrosArray;
+
+            /* Obtenemos los documentos de la tercera etapa */
+            $documento = new Lc_DocumentoController();
+            $documentos = $documento->getFilesUrl(['id_solicitud' => $data['id']]);
+            $data['documentos'] = $documentos;
+        }
+
+        if (!$data instanceof ErrorException) {
+            if ($data !== false) {
+                sendRes($data);
+            } else {
+                sendRes(null, 'No se encontro la solicitud', $_GET);
+            }
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+        exit;
+    }
+    
     public static function get()
     {
         $data = new Lc_Solicitud();

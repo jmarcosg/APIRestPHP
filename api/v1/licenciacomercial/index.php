@@ -4,6 +4,7 @@ use App\Controllers\LicenciaComercial\Lc_SolicitudController;
 use App\Controllers\LicenciaComercial\Lc_DocumentoController;
 
 /* Metodo GET */
+
 $GLOBALS['exect'][] = 'lc_solicitud';
 if ($url['method'] == 'GET') {
 	$action = $_GET['action'];
@@ -17,13 +18,14 @@ if ($url['method'] == 'GET') {
 
 		case '1':
 			/* Obtenemos una solicitud puntual */
-			Lc_SolicitudController::get();
+			Lc_SolicitudController::getById();
 			break;
 
 		case '2':
 			/* Obtenemos la ultima solicitud */
 			$_GET['TOP'] = 1;
 			Lc_SolicitudController::get($_GET);
+
 
 		default:
 			$error = new ErrorException('El action no es valido');
