@@ -101,7 +101,7 @@ class Lc_SolicitudController
         };
         exit;
     }
-    
+
     public static function get()
     {
         $data = new Lc_Solicitud();
@@ -219,6 +219,46 @@ class Lc_SolicitudController
     public static function updateThir($req, $id)
     {
         $data = new Lc_Solicitud();
+
+        $data = $data->update($req, $id);
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    public static function catastroUpdate($req, $id)
+    {
+        $data = new Lc_Solicitud();
+
+        $estado = $req['estado'];
+
+        /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
+        if ($estado == 'aprobado') {
+            $req['estado'] = 'docs';
+        }
+
+        /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
+        if ($estado == 'retornado') {
+            $req['estado'] = 'act';
+
+            $solicitud = $data->get(['id' => $id])->value;
+            $solicitud['id_solicitud'] = $id;
+            unset($solicitud['id']);
+            unset($solicitud['deleted_at']);
+            unset($solicitud['fecha_alta']);
+            die();
+        }
+
+
+        /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
+        if ($estado == 'rechazado') {
+            $req['estado'] = 'cat_rechazo';
+        }
 
         $data = $data->update($req, $id);
 

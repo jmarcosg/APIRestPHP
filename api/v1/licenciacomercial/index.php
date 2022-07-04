@@ -54,15 +54,23 @@ if ($url['method'] == 'PUT') {
 
 	switch ($step) {
 		case '1':
+			/* Datos personales */
 			Lc_SolicitudController::updateFirts($_PUT, $id);
 			break;
 
 		case '2':
+			/* Nomenclatura y rubros */
 			Lc_SolicitudController::updateSec($_PUT, $id);
 			break;
 
 		case '3':
+			/* Documentacion */
 			Lc_SolicitudController::updateThir($_PUT, $id);
+			break;
+
+		case '4':
+			/* Rechazo o aprobacion de catastro */
+			Lc_SolicitudController::catastroUpdate($_PUT, $id);
 			break;
 
 		default:
