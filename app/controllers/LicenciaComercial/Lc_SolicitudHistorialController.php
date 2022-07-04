@@ -2,8 +2,8 @@
 
 namespace App\Controllers\LicenciaComercial;
 
-use App\Models\LicenciaComercial\Lc_Solicitud;
 use App\Models\LicenciaComercial\Lc_SolicitudHistorial;
+
 use App\Models\LicenciaComercial\Lc_Rubro;
 use App\Models\LicenciaComercial\Lc_Documento;
 
@@ -11,7 +11,7 @@ use App\Controllers\RenaperController;
 use App\Traits\LicenciaComercial\QuerysSql;
 use ErrorException;
 
-class Lc_SolicitudController
+class Lc_SolicitudHistorialController
 {
     use QuerysSql;
 
@@ -24,7 +24,7 @@ class Lc_SolicitudController
     {
         $ops = ['order' => ' ORDER BY id DESC '];
 
-        $data = new Lc_Solicitud();
+        $data = new Lc_SolicitudHistorial;
 
         $data = $data->list($_GET, $ops)->value;
 
@@ -39,7 +39,7 @@ class Lc_SolicitudController
 
     public static function indexCatastro()
     {
-        $solicitud = new Lc_Solicitud();
+        $solicitud = new Lc_SolicitudHistorial;;
 
         $sql = self::getSqlSolicitudes("estado = 'cat'");
         $data = $solicitud->executeSqlQuery($sql, false);
@@ -56,7 +56,7 @@ class Lc_SolicitudController
 
     public static function getById()
     {
-        $solicitud = new Lc_Solicitud();
+        $solicitud = new Lc_SolicitudHistorial;
 
         $id = $_GET['id'];
         $sql = self::getSqlSolicitudes("id = $id");
@@ -105,7 +105,7 @@ class Lc_SolicitudController
 
     public static function get()
     {
-        $data = new Lc_Solicitud();
+        $data = new Lc_SolicitudHistorial;
 
         $data = $data->get($_GET)->value;
 
@@ -153,7 +153,7 @@ class Lc_SolicitudController
     {
         /* Guardamos la solicitud */
         $_POST['estado'] = 'act';
-        $data = new Lc_Solicitud();
+        $data = new Lc_SolicitudHistorial;
         $data->set($_POST);
         $id = $data->save();
 
@@ -172,7 +172,7 @@ class Lc_SolicitudController
 
     public static function updateFirts($req, $id)
     {
-        $data = new Lc_Solicitud();
+        $data = new Lc_SolicitudHistorial;
         if ($req["pertenece"] == 'propia') {
             $req['id_wappersonas_tercero'] = null;
             $req['dni_tercero'] = null;
@@ -192,7 +192,7 @@ class Lc_SolicitudController
 
     public static function updateSec($req, $id)
     {
-        $data = new Lc_Solicitud();
+        $data = new Lc_SolicitudHistorial;
 
         $rubros = explode(",", $req['rubros']);
         unset($req['rubros']);
@@ -219,7 +219,7 @@ class Lc_SolicitudController
 
     public static function updateThir($req, $id)
     {
-        $data = new Lc_Solicitud();
+        $data = new Lc_SolicitudHistorial;
 
         $data = $data->update($req, $id);
 
@@ -234,7 +234,7 @@ class Lc_SolicitudController
 
     public static function catastroUpdate($req, $id)
     {
-        $data = new Lc_Solicitud();
+        $data = new Lc_SolicitudHistorial;
 
         $estado = $req['estado'];
 
@@ -249,21 +249,10 @@ class Lc_SolicitudController
 
             $solicitud = $data->get(['id' => $id])->value;
             $solicitud['id_solicitud'] = $id;
-
-            $solhistorial = new Lc_SolicitudHistorial();
-            $solhistorial->set($solicitud);
-            $idSolHistorial = $solhistorial->save();
-
-            $rubro = new Lc_RubroController();
-            $rubros = $rubro->index(['id_solicitud' => $id]);
-
-            foreach ($rubros as $key => $r) {
-                $r['id_solicitud_historial'] = $idSolHistorial;
-                $r['id_solicitud'] = null;
-                $rubro = new Lc_Rubro();
-                $rubro->set($r);
-                $rubro->save();
-            }
+            unset($solicitud['id']);
+            unset($solicitud['deleted_at']);
+            unset($solicitud['fecha_alta']);
+            die();
         }
 
 
@@ -276,7 +265,6 @@ class Lc_SolicitudController
 
         if (!$data instanceof ErrorException) {
             $_PUT['id'] = $id;
-            $_PUT['estado'] = $estado;
             sendRes($_PUT);
         } else {
             sendRes(null, $data->getMessage(), ['id' => $id]);
@@ -286,7 +274,7 @@ class Lc_SolicitudController
 
     public function delete($id)
     {
-        $data = new Lc_Solicitud();
+        $data = new Lc_SolicitudHistorial;
         return $data->delete($id);
     }
 }

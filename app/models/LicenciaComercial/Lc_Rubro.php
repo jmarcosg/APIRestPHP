@@ -13,7 +13,7 @@ class Lc_Rubro extends BaseModel
     protected $identity = 'id';
 
     protected $fillable = [
-        'id_solicitud', 'nombre'
+        'id_solicitud', 'id_solicitud_historial', 'nombre'
     ];
 
     protected $filesUrl = FILE_PATH . 'Licencia_comercial/solicitud/';
