@@ -37,11 +37,28 @@ class Lc_SolicitudController
         exit;
     }
 
-    public static function indexCatastro()
+    public static function indexCatastroNuevas()
     {
         $solicitud = new Lc_Solicitud();
 
         $sql = self::getSqlSolicitudes("estado = 'cat'");
+        $data = $solicitud->executeSqlQuery($sql, false);
+        $data = self::formatSolicitudDataArray($data);
+
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
+    }
+
+    public static function indexCatastroRechazadas()
+    {
+        $solicitud = new Lc_Solicitud();
+
+        $sql = self::getSqlSolicitudes("estado = 'cat_rechazo'");
         $data = $solicitud->executeSqlQuery($sql, false);
         $data = self::formatSolicitudDataArray($data);
 
@@ -107,7 +124,12 @@ class Lc_SolicitudController
     {
         $data = new Lc_Solicitud();
 
-        $data = $data->get($_GET)->value;
+        $ops = ['order' => ' ORDER BY id DESC '];
+        $data = $data->list($_GET, $ops)->value[0];
+
+        if ($data['estado'] == 'cat_rechazo') {
+            $data = false;
+        }
 
         if ($data) {
 
@@ -257,7 +279,7 @@ class Lc_SolicitudController
             $rubro = new Lc_RubroController();
             $rubros = $rubro->index(['id_solicitud' => $id]);
 
-            foreach ($rubros as $key => $r) {
+            foreach ($rubros as $r) {
                 $r['id_solicitud_historial'] = $idSolHistorial;
                 $r['id_solicitud'] = null;
                 $rubro = new Lc_Rubro();

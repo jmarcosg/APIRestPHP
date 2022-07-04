@@ -105,6 +105,7 @@ trait QuerysSql
             if (str_contains($key, 'perini_')) {
                 $stringKey = explode('_', $key)[1];
                 $personaInicio[$stringKey] = $elem;
+                unset($solicitud[$key]);
                 unset($personaInicio[$key]);
             }
         }

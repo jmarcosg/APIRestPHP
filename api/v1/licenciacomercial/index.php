@@ -12,8 +12,8 @@ if ($url['method'] == 'GET') {
 
 	switch ($action) {
 		case '0':
-			/* Obtenemos todas las solicitudes de catastro */
-			Lc_SolicitudController::indexCatastro();
+			/* Obtenemos todas las solicitudes de catastro nuevas */
+			Lc_SolicitudController::indexCatastroNuevas();
 			break;
 
 		case '1':
@@ -25,6 +25,12 @@ if ($url['method'] == 'GET') {
 			/* Obtenemos la ultima solicitud */
 			$_GET['TOP'] = 1;
 			Lc_SolicitudController::get($_GET);
+			break;
+			
+		case '3':
+			/* Obtenemos todas las solicitudes de catastro rechazadas */
+			Lc_SolicitudController::indexCatastroRechazadas();
+			break;
 
 
 		default:
