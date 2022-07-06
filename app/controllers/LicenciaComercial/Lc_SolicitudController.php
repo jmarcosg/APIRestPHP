@@ -125,38 +125,41 @@ class Lc_SolicitudController
         $data = new Lc_Solicitud();
 
         $ops = ['order' => ' ORDER BY id DESC '];
-        $data = $data->list($_GET, $ops)->value[0];
+        $data = $data->list($_GET, $ops)->value;
 
-        if ($data['estado'] == 'cat_rechazo') {
+        if (count($data) > 0) {
+            $data = $data[0];
+
+            if ($data['estado'] == 'cat_rechazo') $data = false;
+
+            if ($data) {
+                /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
+                if ($data['pertenece'] == 'tercero') {
+                    $rc = new RenaperController();
+                    $dni = $data["dni_tercero"];
+                    $tramite = $data["tramite_tercero"];
+                    $genero = $data["genero_tercero"];
+                    $data['dataTercero'] = $rc->getDataTramite($genero, $dni, $tramite);
+                }
+
+                /* Obtenemos los rubros cargados */
+                $rubro = new Lc_RubroController();
+                $rubros = $rubro->index(['id_solicitud' => $data['id']]);
+
+                $rubrosArray = [];
+                foreach ($rubros as $r) {
+                    $rubrosArray[] = $r['nombre'];
+                }
+
+                $data['rubros'] = $rubrosArray;
+
+                /* Obtenemos los documentos de la tercera etapa */
+                $documento = new Lc_DocumentoController();
+                $documentos = $documento->getFilesUrl(['id_solicitud' => $data['id']]);
+                $data['documentos'] = $documentos;
+            }
+        } else {
             $data = false;
-        }
-
-        if ($data) {
-
-            /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
-            if ($data['pertenece'] == 'tercero') {
-                $rc = new RenaperController();
-                $dni = $data["dni_tercero"];
-                $tramite = $data["tramite_tercero"];
-                $genero = $data["genero_tercero"];
-                $data['dataTercero'] = $rc->getDataTramite($genero, $dni, $tramite);
-            }
-
-            /* Obtenemos los rubros cargados */
-            $rubro = new Lc_RubroController();
-            $rubros = $rubro->index(['id_solicitud' => $data['id']]);
-
-            $rubrosArray = [];
-            foreach ($rubros as $r) {
-                $rubrosArray[] = $r['nombre'];
-            }
-
-            $data['rubros'] = $rubrosArray;
-
-            /* Obtenemos los documentos de la tercera etapa */
-            $documento = new Lc_DocumentoController();
-            $documentos = $documento->getFilesUrl(['id_solicitud' => $data['id']]);
-            $data['documentos'] = $documentos;
         }
 
         if (!$data instanceof ErrorException) {
