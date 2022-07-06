@@ -24,11 +24,13 @@ class Lc_Solicitud extends BaseModel
         'tipo_persona',
         'tiene_local',
         'nomenclatura',
-        'observacion',
-        'estado'
+        'descripcion',
+        'estado',
+        'ver_rubros',
+        'ver_catastro',
+        'ver_ambiental',
+        'ver_documentos',
     ];
 
     protected $filesUrl = FILE_PATH . 'Licencia_comercial/solicitud/';
-
-    
 }

@@ -178,6 +178,12 @@ class Lc_SolicitudController
     {
         /* Guardamos la solicitud */
         $_POST['estado'] = 'act';
+
+        $_POST['ver_rubros'] = 0;
+        $_POST['ver_catastro'] = 0;
+        $_POST['ver_ambiental'] = 0;
+        $_POST['ver_documentos'] = 0;
+
         $data = new Lc_Solicitud();
         $data->set($_POST);
         $id = $data->save();
