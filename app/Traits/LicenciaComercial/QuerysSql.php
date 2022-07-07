@@ -35,6 +35,7 @@ trait QuerysSql
                 sol.tipo_persona as tipo_persona,
                 sol.tiene_local as tiene_local,
                 sol.nomenclatura as nomenclatura,
+                sol.descripcion_actividad as descripcion,
                 sol.estado as estado,
                 sol.fecha_alta as fecha_alta
             FROM dbo.lc_solicitudes sol

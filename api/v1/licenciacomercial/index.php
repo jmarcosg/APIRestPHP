@@ -13,11 +13,10 @@ if ($url['method'] == 'GET') {
 	switch ($action) {
 		case '0':
 			/* Obtenemos todas las solicitudes de catastro nuevas */
-			Lc_SolicitudController::indexCatastroNuevas();
+			Lc_SolicitudController::index("estado = 'cat'");
 			break;
 
 		case '1':
-			/* Obtenemos una solicitud puntual */
 			Lc_SolicitudController::getById();
 			break;
 
@@ -26,10 +25,15 @@ if ($url['method'] == 'GET') {
 			$_GET['TOP'] = 1;
 			Lc_SolicitudController::get($_GET);
 			break;
-			
+
 		case '3':
 			/* Obtenemos todas las solicitudes de catastro rechazadas */
 			Lc_SolicitudController::indexCatastroRechazadas();
+			break;
+
+		case '4':
+			/* Obtenemos todas las solicitudes para verificar los rubros */
+			Lc_SolicitudController::index("estado = 'ver_rubros'");
 			break;
 
 
@@ -77,6 +81,11 @@ if ($url['method'] == 'PUT') {
 		case '4':
 			/* Rechazo o aprobacion de catastro */
 			Lc_SolicitudController::catastroUpdate($_PUT, $id);
+			break;
+
+		case '5':
+			/* Rechazo o aprobacion de catastro */
+			Lc_SolicitudController::rubrosUpdate($_PUT, $id);
 			break;
 
 		default:

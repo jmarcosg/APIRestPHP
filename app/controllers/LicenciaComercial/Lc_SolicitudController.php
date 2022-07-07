@@ -20,7 +20,7 @@ class Lc_SolicitudController
         $GLOBALS['exect'][] = 'lc_solicitud';
     }
 
-    public static function index()
+    /* public static function index()
     {
         $ops = ['order' => ' ORDER BY id DESC '];
 
@@ -35,13 +35,13 @@ class Lc_SolicitudController
         };
 
         exit;
-    }
+    } */
 
-    public static function indexCatastroNuevas()
+    public static function index($where)
     {
         $solicitud = new Lc_Solicitud();
 
-        $sql = self::getSqlSolicitudes("estado = 'cat'");
+        $sql = self::getSqlSolicitudes($where);
         $data = $solicitud->executeSqlQuery($sql, false);
         $data = self::formatSolicitudDataArray($data);
 
@@ -251,6 +251,33 @@ class Lc_SolicitudController
     public static function updateThir($req, $id)
     {
         $data = new Lc_Solicitud();
+
+        $data = $data->update($req, $id);
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    public static function rubrosUpdate($req, $id)
+    {
+        $data = new Lc_Solicitud();
+
+        $rubros = explode(",", $req['rubros']);
+        unset($req['rubros']);
+
+        $rubro = new Lc_RubroController();
+        $rubro->deleteBySolicitudId($id);
+
+        foreach ($rubros as $r) {
+            $rubro = new Lc_Rubro();
+            $rubro->set(['id_solicitud' => $id, 'nombre' => $r]);
+            $rubro->save();
+        }
 
         $data = $data->update($req, $id);
 

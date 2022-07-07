@@ -24,7 +24,7 @@ class Lc_Solicitud extends BaseModel
         'tipo_persona',
         'tiene_local',
         'nomenclatura',
-        'descripcion',
+        'descripcion_actividad',
         'estado',
         'ver_rubros',
         'ver_catastro',

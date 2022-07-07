@@ -15,6 +15,7 @@ class Lc_Documento extends BaseModel
     protected $fillable = [
         'id_solicitud',
         'constancia_afip',
+        'impuesto',
         'constancia_convenio_dpr',
         'contrato_social',
         'certificado_vigencia',
