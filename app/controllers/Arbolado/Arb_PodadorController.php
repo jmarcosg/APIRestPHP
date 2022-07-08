@@ -226,6 +226,8 @@ class Arb_PodadorController
             return !self::esDeshabilitado($el);
         });
 
+        $data = array_values($data);
+
         if (!$data instanceof ErrorException) {
             sendRes($data);
         } else {
