@@ -37,6 +37,12 @@ trait QuerysSql
                 sol.nomenclatura as nomenclatura,
                 sol.descripcion_actividad as descripcion,
                 sol.estado as estado,
+                sol.observacion as observacion,
+                sol.ver_rubros as ver_rubros,
+                sol.observacion_rubros as observacion_rubros,
+                sol.ver_catastro as ver_catastro,
+                sol.ver_ambiental as ver_ambiental,
+                sol.ver_documentos as ver_documentos,
                 sol.fecha_alta as fecha_alta
             FROM dbo.lc_solicitudes sol
                 LEFT JOIN dbo.wapPersonas perini ON sol.id_wappersonas = perini.ReferenciaID 
