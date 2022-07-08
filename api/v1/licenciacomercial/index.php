@@ -37,10 +37,14 @@ if ($url['method'] == 'GET') {
 			break;
 
 		case '5':
-			/* Obtenemos todas las solicitudes para verificar los rubros */
+			/* Obtenemos todas las solicitudes aprobadas por verificación de rubros */
 			Lc_SolicitudController::index("ver_rubros = '1'");
 			break;
 
+		case '6':
+			/* Obtenemos todas las solicitudes rechazadas por verificación de rubros */
+			Lc_SolicitudController::index("estado = 'ver_rubros_rechazado'");
+			break;
 
 		default:
 			$error = new ErrorException('El action no es valido');
