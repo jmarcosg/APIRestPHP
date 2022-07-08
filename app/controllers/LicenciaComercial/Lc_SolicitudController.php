@@ -136,7 +136,7 @@ class Lc_SolicitudController
 
                 $data['rubros'] = $rubrosArray;
 
-                /* Obtenemos los documentos de la tercera etapa */
+                /* Obtenemos los documentos  */
                 $documento = new Lc_DocumentoController();
                 $documentos = $documento->getFilesUrl(['id_solicitud' => $data['id']]);
                 $data['documentos'] = $documentos;
