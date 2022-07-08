@@ -20,23 +20,6 @@ class Lc_SolicitudController
         $GLOBALS['exect'][] = 'lc_solicitud';
     }
 
-    /* public static function index()
-    {
-        $ops = ['order' => ' ORDER BY id DESC '];
-
-        $data = new Lc_Solicitud();
-
-        $data = $data->list($_GET, $ops)->value;
-
-        if (!$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            sendRes(null, $data->getMessage(), $_GET);
-        };
-
-        exit;
-    } */
-
     public static function index($where)
     {
         $solicitud = new Lc_Solicitud();
@@ -267,12 +250,22 @@ class Lc_SolicitudController
     {
         $data = new Lc_Solicitud();
 
+        /* Actualizamos la observacion por el cambio de rubro */
+        $obsRubros = $req['observacion_rubros'];
+        $data->update(['observacion_rubros' => $obsRubros], $id);
+
+        /* Generamos una replica en el historico */
+        $admin =  $req['id_wappersonas_admin'];
+        self::setHistory($id, 'cambio_rubros', $admin);
+
         $rubros = explode(",", $req['rubros']);
         unset($req['rubros']);
 
+        /* Borramos los rubros viejos */
         $rubro = new Lc_RubroController();
         $rubro->deleteBySolicitudId($id);
 
+        /* Actualizamos los nuevos rubros */
         foreach ($rubros as $r) {
             $rubro = new Lc_Rubro();
             $rubro->set(['id_solicitud' => $id, 'nombre' => $r]);
@@ -283,6 +276,54 @@ class Lc_SolicitudController
 
         if (!$data instanceof ErrorException) {
             $_PUT['id'] = $id;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    public static function rubrosVeriUpdate($req, $id)
+    {
+        $data = new Lc_Solicitud();
+        $solicitud = $data->get(['id' => $id])->value;
+
+        /* Guaramos el ID del admin para generar registro de auditoria */
+        $admin =  $req['id_wappersonas_admin'];
+        unset($req['id_wappersonas_admin']);
+
+        $estado = $req['estado'];
+        /* Si se aprueba y no tiene local lo mandamos a pedir los archivos */
+        if ($estado == 'aprobado' && $solicitud['tiene_local'] === '0') {
+            $req['estado'] = 'doc';
+            $req['ver_rubros'] = '1';
+        }
+
+        /* Si se aprueba y tiene local lo mandamos a catastro */
+        if ($estado == 'aprobado' && $solicitud['tiene_local'] === '1') {
+            $req['estado'] = 'cat';
+            $req['ver_rubros'] = '1';
+        }
+
+        /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
+        if ($estado == 'retornado') {
+            $req['estado'] = 'act';
+        }
+
+        /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
+        if ($estado == 'rechazado') {
+            $req['estado'] = 'ver_rubros_rechazado';
+        }
+
+        /* Guardamos la solcitidu */
+        $data = $data->update($req, $id);
+
+        /* Registramos un historial de la solicitud  */
+        self::setHistory($id, 'cambio_rubros', $admin);
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            $_PUT['estado'] = $estado;
             sendRes($_PUT);
         } else {
             sendRes(null, $data->getMessage(), ['id' => $id]);
@@ -340,6 +381,31 @@ class Lc_SolicitudController
             sendRes(null, $data->getMessage(), ['id' => $id]);
         };
         exit;
+    }
+
+    private static function setHistory($id, $tipo, $admin)
+    {
+        $data = new Lc_Solicitud();
+        $solicitud = $data->get(['id' => $id])->value;
+
+        $solicitud['id_solicitud'] = $id;
+        $solicitud['tipo_registro'] = $tipo;
+        $solicitud['id_wappersonas_admin'] = $admin;
+
+        $solhistorial = new Lc_SolicitudHistorial();
+        $solhistorial->set($solicitud);
+        $idSolHistorial = $solhistorial->save();
+
+        $rubro = new Lc_RubroController();
+        $rubros = $rubro->index(['id_solicitud' => $id]);
+
+        foreach ($rubros as $r) {
+            $r['id_solicitud_historial'] = $idSolHistorial;
+            $r['id_solicitud'] = null;
+            $rubro = new Lc_Rubro();
+            $rubro->set($r);
+            $rubro->save();
+        }
     }
 
     public function delete($id)

@@ -3,7 +3,6 @@
 namespace App\Models\LicenciaComercial;
 
 use App\Models\BaseModel;
-use App\Models\WapPersona;
 
 class Lc_SolicitudHistorial extends BaseModel
 {
@@ -17,6 +16,7 @@ class Lc_SolicitudHistorial extends BaseModel
         'id_documento',
         'id_usuario',
         'id_wappersonas',
+        'id_wappersonas_admin',
         'pertenece',
         'id_wappersonas_tercero',
         'dni_tercero',
@@ -25,7 +25,14 @@ class Lc_SolicitudHistorial extends BaseModel
         'tipo_persona',
         'tiene_local',
         'nomenclatura',
+        'descripcion_actividad',
+        'estado',
         'observacion',
-        'estado'
+        'ver_rubros',
+        'observacion_rubros',
+        'ver_catastro',
+        'ver_ambiental',
+        'tipo_registro',
+        'ver_documentos',
     ];
 }

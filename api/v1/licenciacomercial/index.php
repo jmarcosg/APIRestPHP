@@ -36,6 +36,11 @@ if ($url['method'] == 'GET') {
 			Lc_SolicitudController::index("estado = 'ver_rubros'");
 			break;
 
+		case '5':
+			/* Obtenemos todas las solicitudes para verificar los rubros */
+			Lc_SolicitudController::index("ver_rubros = '1'");
+			break;
+
 
 		default:
 			$error = new ErrorException('El action no es valido');
@@ -80,7 +85,7 @@ if ($url['method'] == 'PUT') {
 
 		case '4':
 			/* Rechazo o aprobacion de catastro */
-			Lc_SolicitudController::catastroUpdate($_PUT, $id);
+			Lc_SolicitudController::rubrosVeriUpdate($_PUT, $id);
 			break;
 
 		case '5':
