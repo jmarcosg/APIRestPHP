@@ -88,13 +88,18 @@ if ($url['method'] == 'PUT') {
 			break;
 
 		case '4':
-			/* Rechazo o aprobacion de catastro */
-			Lc_SolicitudController::rubrosVeriUpdate($_PUT, $id);
+			/* Verificacion de rubros - Cambio de rubros */
+			Lc_SolicitudController::rubrosUpdate($_PUT, $id);
 			break;
 
 		case '5':
-			/* Rechazo o aprobacion de catastro */
-			Lc_SolicitudController::rubrosUpdate($_PUT, $id);
+			/* Verificacion de rubros - Aprobacion */
+			Lc_SolicitudController::rubrosVeriUpdate($_PUT, $id);
+			break;
+
+		case '6':
+			/* Catastro - Aprobacion */
+			Lc_SolicitudController::catastroUpdate($_PUT, $id);
 			break;
 
 		default:

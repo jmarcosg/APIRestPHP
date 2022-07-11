@@ -335,36 +335,20 @@ class Lc_SolicitudController
     {
         $data = new Lc_Solicitud();
 
-        $estado = $req['estado'];
+        /* Guaramos el ID del admin para generar registro de auditoria */
+        $admin =  $req['id_wappersonas_admin'];
+        unset($req['id_wappersonas_admin']);
 
+        $estado = $req['estado'];
         /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
         if ($estado == 'aprobado') {
-            $req['estado'] = 'docs';
+            $req['estado'] = 'doc';
         }
 
         /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
         if ($estado == 'retornado') {
             $req['estado'] = 'act';
-
-            $solicitud = $data->get(['id' => $id])->value;
-            $solicitud['id_solicitud'] = $id;
-
-            $solhistorial = new Lc_SolicitudHistorial();
-            $solhistorial->set($solicitud);
-            $idSolHistorial = $solhistorial->save();
-
-            $rubro = new Lc_RubroController();
-            $rubros = $rubro->index(['id_solicitud' => $id]);
-
-            foreach ($rubros as $r) {
-                $r['id_solicitud_historial'] = $idSolHistorial;
-                $r['id_solicitud'] = null;
-                $rubro = new Lc_Rubro();
-                $rubro->set($r);
-                $rubro->save();
-            }
         }
-
 
         /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
         if ($estado == 'rechazado') {
@@ -372,6 +356,9 @@ class Lc_SolicitudController
         }
 
         $data = $data->update($req, $id);
+
+        /* Registramos un historial de la solicitud  */
+        self::setHistory($id, 'catastro', $admin);
 
         if (!$data instanceof ErrorException) {
             $_PUT['id'] = $id;
