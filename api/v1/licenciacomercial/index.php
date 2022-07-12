@@ -5,16 +5,11 @@ use App\Controllers\LicenciaComercial\Lc_DocumentoController;
 
 /* Metodo GET */
 
-$GLOBALS['exect'][] = 'lc_solicitud';
 if ($url['method'] == 'GET') {
 	$action = $_GET['action'];
 	unset($_GET['action']);
 
 	switch ($action) {
-			/* case '0': */
-			/* Obtenemos todas las solicitudes de catastro nuevas */
-			/* Lc_SolicitudController::index("estado = 'cat'");
-			break; */
 
 		case '1':
 			Lc_SolicitudController::getById();
@@ -27,33 +22,48 @@ if ($url['method'] == 'GET') {
 			break;
 
 		case '3':
-			/* Obtenemos todas las solicitudes de catastro rechazadas */
-			Lc_SolicitudController::indexCatastroRechazadas();
+			/* Obtenemos todas las solicitudes para verificar los rubros */
+			Lc_SolicitudController::index("estado = 'ver_rubros' AND ver_rubros = 0 AND estado NOT LIKE '%rechazado%'");
 			break;
 
 		case '4':
-			/* Obtenemos todas las solicitudes para verificar los rubros */
-			Lc_SolicitudController::index("estado = 'ver_rubros'");
+			/* Obtenemos todas las solicitudes aprobadas por verificación de rubros */
+			Lc_SolicitudController::index("ver_rubros = '1' AND estado NOT LIKE '%rechazado%'");
 			break;
 
 		case '5':
-			/* Obtenemos todas las solicitudes aprobadas por verificación de rubros */
-			Lc_SolicitudController::index("ver_rubros = '1'");
+			/* Obtenemos todas las solicitudes rechazadas por verificación de rubros */
+			Lc_SolicitudController::index("estado = 'rubros_rechazado'");
 			break;
 
 		case '6':
-			/* Obtenemos todas las solicitudes rechazadas por verificación de rubros */
-			Lc_SolicitudController::index("estado = 'ver_rubros_rechazado'");
+			/* Catastro, Rubros con nomenclatura */
+			Lc_SolicitudController::index("estado = 'cat' AND ver_catastro = 0 AND estado NOT LIKE '%rechazado%'");
 			break;
 
 		case '7':
-			/* Catastro - Rubros con nomenclatura */
-			Lc_SolicitudController::index("estado = 'cat' AND ver_catastro = 0");
+			/* Catastro, Rubros con nomenclatura - Listado de aprobados */
+			Lc_SolicitudController::index("ver_catastro = 1 AND estado NOT LIKE '%rechazado%'");
 			break;
 
 		case '8':
-			/* Catastro - Verificacion ambiental */
-			Lc_SolicitudController::index("estado = 'cat' AND ver_ambiental = 0");
+			/* Catastro, Rubros con nomenclatura - Listado de rechazados */
+			Lc_SolicitudController::index("estado = 'cat_rechazado'");
+			break;
+
+		case '9':
+			/* Verificación ambiental */
+			Lc_SolicitudController::index("estado = 'cat' AND ver_ambiental = 0 AND estado NOT LIKE '%rechazado%'");
+			break;
+
+		case '10':
+			/* Verificación ambiental - Listado de aprobados */
+			Lc_SolicitudController::index("ver_ambiental = 1 AND estado NOT LIKE '%rechazado%'");
+			break;
+
+		case '11':
+			/* Verificación ambiental - Listado de rechazados */
+			Lc_SolicitudController::index("estado = 'ambiental_rechazado'");
 			break;
 
 		default:

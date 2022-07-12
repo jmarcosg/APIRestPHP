@@ -37,23 +37,6 @@ class Lc_SolicitudController
         exit;
     }
 
-    public static function indexCatastroRechazadas()
-    {
-        $solicitud = new Lc_Solicitud();
-
-        $sql = self::getSqlSolicitudes("estado = 'cat_rechazo'");
-        $data = $solicitud->executeSqlQuery($sql, false);
-        $data = self::formatSolicitudDataArray($data);
-
-        if (!$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            sendRes(null, $data->getMessage(), $_GET);
-        };
-
-        exit;
-    }
-
     public static function getById()
     {
         $solicitud = new Lc_Solicitud();
@@ -113,7 +96,7 @@ class Lc_SolicitudController
         if (count($data) > 0) {
             $data = $data[0];
 
-            if ($data['estado'] == 'rechazado') $data = false;
+            if (str_contains($data['estado'], 'rechazado')) $data = false;
 
             if ($data) {
                 /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
@@ -320,7 +303,7 @@ class Lc_SolicitudController
 
         /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
         if ($estado == 'rechazado') {
-            $req['estado'] = 'rechazado';
+            $req['estado'] = 'rubros_rechazado';
         }
 
         /* Guardamos la solcitidu */
@@ -371,7 +354,7 @@ class Lc_SolicitudController
 
         /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
         if ($estado == 'rechazado') {
-            $req['estado'] = 'cat_rechazo';
+            $req['estado'] = 'cat_rechazado';
         }
 
         $data = $data->update($req, $id);
@@ -421,7 +404,7 @@ class Lc_SolicitudController
 
         /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
         if ($estado == 'rechazado') {
-            $req['estado'] = 'cat_rechazo';
+            $req['estado'] = 'ambiental_rechazado';
         }
 
         $data = $data->update($req, $id);
