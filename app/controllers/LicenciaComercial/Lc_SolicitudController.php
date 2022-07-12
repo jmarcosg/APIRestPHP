@@ -334,15 +334,68 @@ class Lc_SolicitudController
     public static function catastroUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
+        $solicitud = $data->get(['id' => $id])->value;
 
         /* Guaramos el ID del admin para generar registro de auditoria */
         $admin =  $req['id_wappersonas_admin'];
         unset($req['id_wappersonas_admin']);
 
         $estado = $req['estado'];
+
         /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
         if ($estado == 'aprobado') {
-            $req['estado'] = 'doc';
+            if ($solicitud['ver_ambiental'] === '1') {
+                $req['estado'] = 'doc';
+            } else {
+                $req['estado'] = 'cat';
+            }
+            $req['ver_catastro'] = '1';
+        }
+
+        /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
+        if ($estado == 'retornado') {
+            $req['estado'] = 'act';
+        }
+
+        /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
+        if ($estado == 'rechazado') {
+            $req['estado'] = 'cat_rechazo';
+        }
+
+        $data = $data->update($req, $id);
+
+        /* Registramos un historial de la solicitud  */
+        self::setHistory($id, 'catastro', $admin);
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            $_PUT['estado'] = $estado;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    public static function catastroAmbUpdate($req, $id)
+    {
+        $data = new Lc_Solicitud();
+        $solicitud = $data->get(['id' => $id])->value;
+
+        /* Guaramos el ID del admin para generar registro de auditoria */
+        $admin =  $req['id_wappersonas_admin'];
+        unset($req['id_wappersonas_admin']);
+
+        $estado = $req['estado'];
+
+        /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
+        if ($estado == 'aprobado') {
+            if ($solicitud['ver_catastro'] === '1') {
+                $req['estado'] = 'doc';
+            } else {
+                $req['estado'] = 'cat';
+            }
+            $req['ver_ambiental'] = '1';
         }
 
         /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
