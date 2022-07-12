@@ -113,7 +113,7 @@ class Lc_SolicitudController
         if (count($data) > 0) {
             $data = $data[0];
 
-            if ($data['estado'] == 'cat_rechazo') $data = false;
+            if ($data['estado'] == 'rechazado') $data = false;
 
             if ($data) {
                 /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
@@ -246,6 +246,10 @@ class Lc_SolicitudController
         exit;
     }
 
+    /**
+     * Modulo Verificacion de rubros
+     * Realiza Cambios en los rubros
+     */
     public static function rubrosUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
@@ -283,6 +287,10 @@ class Lc_SolicitudController
         exit;
     }
 
+    /**
+     * Modulo Verificacion de rubros
+     * Evalua la solicitud en funcion de los rubros / descripción actividad
+     */
     public static function rubrosVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
@@ -307,19 +315,19 @@ class Lc_SolicitudController
 
         /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
         if ($estado == 'retornado') {
-            $req['estado'] = 'act';
+            $req['estado'] = 'act_retornado';
         }
 
         /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
         if ($estado == 'rechazado') {
-            $req['estado'] = 'ver_rubros_rechazado';
+            $req['estado'] = 'rechazado';
         }
 
         /* Guardamos la solcitidu */
         $data = $data->update($req, $id);
 
         /* Registramos un historial de la solicitud  */
-        self::setHistory($id, 'cambio_rubros', $admin);
+        self::setHistory($id, 'rubros_verificador', $admin);
 
         if (!$data instanceof ErrorException) {
             $_PUT['id'] = $id;
@@ -331,6 +339,10 @@ class Lc_SolicitudController
         exit;
     }
 
+    /**
+     * Modulo Catastro
+     * Evalua la solicitud en funcion de los rubros / nomenclatura
+     */
     public static function catastroVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
@@ -377,6 +389,10 @@ class Lc_SolicitudController
         exit;
     }
 
+    /**
+     * Modulo Catastro - Verificación Ambiental
+     * Evalua la solicitud en funcion de los rubros / nomenclatura
+     */
     public static function ambientalVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
@@ -411,7 +427,7 @@ class Lc_SolicitudController
         $data = $data->update($req, $id);
 
         /* Registramos un historial de la solicitud  */
-        self::setHistory($id, 'catastro', $admin);
+        self::setHistory($id, 'verificacion_ambiental', $admin);
 
         if (!$data instanceof ErrorException) {
             $_PUT['id'] = $id;
@@ -423,6 +439,13 @@ class Lc_SolicitudController
         exit;
     }
 
+    /**
+     * Genera un registro de historial de la solicitud
+     * @param String $id      Id de la solicitud
+     * @param String $tipo    Tipo de historial
+     * @param String $admin   Id del admin que genera el historial 
+     * @return void 
+     */
     private static function setHistory($id, $tipo, $admin)
     {
         $data = new Lc_Solicitud();
