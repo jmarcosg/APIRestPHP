@@ -109,12 +109,12 @@ if ($url['method'] == 'PUT') {
 
 		case '6':
 			/* Catastro - Aprobacion */
-			Lc_SolicitudController::catastroUpdate($_PUT, $id);
+			Lc_SolicitudController::catastroVeriUpdate($_PUT, $id);
 			break;
 
 		case '7':
 			/* Catastro - Verificacion ambiental */
-			Lc_SolicitudController::catastroAmbUpdate($_PUT, $id);
+			Lc_SolicitudController::ambientalVeriUpdate($_PUT, $id);
 			break;
 
 		default:

@@ -331,7 +331,7 @@ class Lc_SolicitudController
         exit;
     }
 
-    public static function catastroUpdate($req, $id)
+    public static function catastroVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
         $solicitud = $data->get(['id' => $id])->value;
@@ -377,7 +377,7 @@ class Lc_SolicitudController
         exit;
     }
 
-    public static function catastroAmbUpdate($req, $id)
+    public static function ambientalVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
         $solicitud = $data->get(['id' => $id])->value;
