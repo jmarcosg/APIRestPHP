@@ -3,6 +3,7 @@
 namespace App\Traits\Arbolado;
 
 use ErrorException;
+use App\Controllers\Arbolado\Arb_PodadorController;
 
 trait TemplateEmailSolicitud
 {
@@ -11,13 +12,20 @@ trait TemplateEmailSolicitud
     {
         $subject = "Sistema Arbolado - Solicitud N° $id";
 
+        $attachments = null;
         if ($type == 'envio') $body = $this->templateSolicitudEmail($data);
 
-        if ($type == 'aprobado') $body = $this->templateSolicitudAprobadaEmail($data);
+        if ($type == 'aprobado') {           
+
+            $podadoresControllers =  new Arb_PodadorController();
+            $podadoresControllers->getPodadoresPdf();
+            $attachments = ['Listado_podadores.pdf'];
+            $body = $this->templateSolicitudAprobadaEmail($data);
+        }
 
         if ($type == 'rechazado') $body = $this->templateSolicitudRechazadaEmail($data);
 
-        $response = sendEmail($data['email'], $subject, $body);
+        $response = sendEmail($data['email'], $subject, $body, $attachments);
 
         if ($response['error']) {
             $error = new ErrorException($response['error']);
@@ -98,7 +106,7 @@ trait TemplateEmailSolicitud
                             <br />
                             <p>Observación: $observacion</p>
                             <hr />
-                            <p>El personal se va contactar al número: $contacto</p>
+                            <a href='#'>Listado de podadores habilitados</a>
                         </div>
                     </div>
                 </body>

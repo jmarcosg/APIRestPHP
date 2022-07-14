@@ -232,9 +232,14 @@ function getExtFile($file)
     };
 }
 
-function sendEmail($address, $subject, $body)
+function sendEmail($address, $subject, $body, $attachments = null)
 {
-    $post_fields = json_encode(['address' => $address, 'subject' => $subject, 'htmlBody' => $body]);
+    $arrayFilds = ['address' => $address, 'subject' => $subject, 'htmlBody' => $body];
+
+    if ($attachments) {
+        $arrayFilds['attachments'] = $attachments;
+    }
+    $post_fields = json_encode($arrayFilds);
 
     $uri = "https://weblogin.muninqn.gov.ar/api/Mail";
     $ch = curl_init($uri);

@@ -446,6 +446,7 @@ class Arb_PodadorController
         $pdf->ColoredTable($header, utf8ize($data));
 
         // close and output PDF document
+        $pdf->Output(ADJUNTOS_PATH . '\Listado_podadoresssss.pdf', 'F');
         $pdf->Output('Listado_podadores.pdf', 'I');
     }
 }
