@@ -421,6 +421,7 @@ class Arb_PodadorController
         }
 
         // create new PDF documentgetPodadoresPdf
+
         $pdf = new MYPDF('P', 'mm');
 
         // set document information
@@ -437,7 +438,15 @@ class Arb_PodadorController
         $pdf->Text(15, 30, 'LISTADO PODADORES');
 
         $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->Image('https://weblogin.muninqn.gov.ar/apps/estilos_globales/logo-credencial.png', 100, 13, 97.3, 14, 'PNG');
+
+        if (ENV == 'replica' || ENV == 'prod') {
+            $bannerUrl = 'C:\webApps\Produccion\webLogin\apps\estilos_globales\logo-credencial.png';
+        } else {
+            $bannerUrl = 'https://weblogin.muninqn.gov.ar/apps/estilos_globales/logo-credencial.png';
+        }
+
+        $pdf->Image($bannerUrl, 100, 13, 97.3, 14, 'PNG');
+
         $pdf->SetFont('helvetica', '', 8);
         $pdf->Text(110, 30, 'SECRETARIA DE MOVILIDAD Y SERVICIOS AL CIUDADANO');
         $pdf->Text(123, 34, 'SUBSECRETARIA DE ESPACIOS VERDES');
@@ -446,7 +455,7 @@ class Arb_PodadorController
         $pdf->ColoredTable($header, utf8ize($data));
 
         // close and output PDF document
-        $pdf->Output(ADJUNTOS_PATH . '\Listado_podadoresssss.pdf', 'F');
+        /* $pdf->Output(ADJUNTOS_PATH . '11111.pdf', 'F'); */
         $pdf->Output('Listado_podadores.pdf', 'I');
     }
 }
