@@ -97,7 +97,7 @@ class Arb_PodadorController
         $id = $data->save();
 
         /* copiamos el archivo en la carpeta correspondiente */
-        $path = getPathFile($file, "arbolado/podador/$id/", $nameFile);
+        $path = getPathFile($file, FILE_PATH_LOCAL . "arbolado/podador/$id/", $nameFile);
         $copiado = copy($file['tmp_name'], $path);
 
         if ($id instanceof ErrorException || !$copiado) {
@@ -212,7 +212,7 @@ class Arb_PodadorController
         exit;
     }
 
-    /** Obtenemos todos los aprobados */
+    /** Obtenemos todos los aprobados para el front*/
     public static function getAprobados()
     {
         $ops = ['order' => ' ORDER BY id DESC '];
@@ -230,6 +230,31 @@ class Arb_PodadorController
 
         if (!$data instanceof ErrorException) {
             sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
+    }
+
+    /** Obtenemos todos los aprobados para el front*/
+    public static function getAprobadosPdf()
+    {
+        $ops = ['order' => ' ORDER BY id DESC '];
+
+        $data = new Arb_Podador();
+
+        $data = $data->list($_GET, $ops)->value;
+
+        /* Filtramos las que no se encuentran deshabilitados */
+        $data = array_filter($data, function ($el) {
+            return !self::esDeshabilitado($el);
+        });
+
+        $data = array_values($data);
+
+        if (!$data instanceof ErrorException) {
+            return $data;
         } else {
             sendRes(null, $data->getMessage(), $_GET);
         };
@@ -376,12 +401,12 @@ class Arb_PodadorController
     public function getPodadoresPdf()
     {
         $params = ['estado' => 'aprobado', 'TOP' => 10000];
-        $podadores = $this->getAprobados($params, ['order' => ' ORDER BY id DESC ']);
+        $podadores = $this->getAprobadosPdf($params, ['order' => ' ORDER BY id DESC ']);
         $header = array('Nro', 'DNI', 'NOMBRE', 'TELEFONO', 'INFO');
 
         /* Filtramos los no vencidos */
         $podadores = array_filter($podadores, function ($el) {
-            return $el['fecha_vencimiento'] > date('Y-m-d');
+            return $el['fecha_vencimiento'] > date('Y-m-d') || $el['fecha_vencimiento'] == null;
         });
 
         $data = [];
@@ -411,10 +436,19 @@ class Arb_PodadorController
         // add a page
         $pdf->AddPage();
 
+        $pdf->SetFont('helvetica', 'B', 15);
+        $pdf->Text(15, 30, 'LISTADO PODADORES');
+
+        $pdf->SetFont('helvetica', 'B', 12);
+        $pdf->Image('https://weblogin.muninqn.gov.ar/apps/estilos_globales/logo-credencial.png', 100, 13, 97.3, 14, 'PNG');
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->Text(110, 30, 'SECRETARIA DE MOVILIDAD Y SERVICIOS AL CIUDADANO');
+        $pdf->Text(123, 34, 'SUBSECRETARIA DE ESPACIOS VERDES');
+        $pdf->Ln(10);
         // print colored table
         $pdf->ColoredTable($header, utf8ize($data));
 
         // close and output PDF document
-        $pdf->Output('Listado_podadores.pdf', 'D');
+        $pdf->Output('Listado_podadores.pdf', 'I');
     }
 }

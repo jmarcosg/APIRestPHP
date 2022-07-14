@@ -60,7 +60,7 @@ if ($url['method'] == 'POST') {
 			$archivo = $arbArchivoController->store($req);
 
 			/* copiamos el archivo en la carpeta correspondiente */
-			$path = getPathFile($file, "arbolado/solicitud_poda/$id/", $nameFile);
+			$path = getPathFile($file, FILE_PATH_LOCAL . "arbolado/solicitud_poda/$id/", $nameFile);
 			$copiado = copy($file['tmp_name'], $path);
 
 			if ($archivo instanceof ErrorException || !$copiado) {
@@ -110,6 +110,8 @@ if ($url['method'] == 'PUT') {
 			'contacto' => $contacto,
 			'observacion' => $_PUT['observacion']
 		];
+
+
 		$arbSolicitudController->sendEmail($id, $_PUT['estado'], $data);
 		$_PUT['id'] = $id;
 		sendRes($_PUT);
