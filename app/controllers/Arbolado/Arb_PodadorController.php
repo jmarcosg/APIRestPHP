@@ -430,9 +430,6 @@ class Arb_PodadorController
         $pdf->SetSubject('Listado Podadores');
         $pdf->SetKeywords('Listado Podadores');
 
-        // set font
-        $pdf->SetFont('helvetica', '', 11);
-
         // add a page
         $pdf->AddPage();
 
