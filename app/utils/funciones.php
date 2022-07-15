@@ -240,7 +240,7 @@ function sendEmail($address, $subject, $body, $attachments = null)
         $arrayFilds['attachments'] = $attachments;
     }
     $post_fields = json_encode($arrayFilds);
-
+    verEstructura($arrayFilds);
     $uri = "https://weblogin.muninqn.gov.ar/api/Mail";
     $ch = curl_init($uri);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);

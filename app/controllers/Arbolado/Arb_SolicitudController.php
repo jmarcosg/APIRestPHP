@@ -184,7 +184,7 @@ class Arb_SolicitudController
         $pdf->Text(155, getRowVal($row, true), 'Queda debidamente notificado');
 
         // close and output PDF document
-        $pdf->Output(ADJUNTOS_PATH . $fileName . '.pdf', 'I');
+        $pdf->Output(ADJUNTOS_PATH . $fileName, 'F');
     }
 
     public function delete($id)

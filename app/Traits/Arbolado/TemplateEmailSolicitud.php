@@ -18,7 +18,7 @@ trait TemplateEmailSolicitud
 
         if ($type == 'aprobado') {
             $solicitudController =  new Arb_SolicitudController();
-            $fileName = $id . '_' . date('Ymd');
+            $fileName = $id . '_' . date('Ymd') . '.pdf';
             $solicitudController->getSolicitudPodaPdf($id, $fileName);
             $attachments = [$fileName];
             $body = $this->templateSolicitudAprobadaEmail($data);
