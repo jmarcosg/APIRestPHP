@@ -4,6 +4,7 @@ namespace App\Traits\Arbolado;
 
 use ErrorException;
 use App\Controllers\Arbolado\Arb_PodadorController;
+use App\Controllers\Arbolado\Arb_SolicitudController;
 
 trait TemplateEmailSolicitud
 {
@@ -15,11 +16,11 @@ trait TemplateEmailSolicitud
         $attachments = null;
         if ($type == 'envio') $body = $this->templateSolicitudEmail($data);
 
-        if ($type == 'aprobado') {           
-
-            $podadoresControllers =  new Arb_PodadorController();
-            $podadoresControllers->getPodadoresPdf();
-            $attachments = ['Listado_podadores.pdf'];
+        if ($type == 'aprobado') {
+            $solicitudController =  new Arb_SolicitudController();
+            $fileName = $id . '_' . date('Ymd');
+            $solicitudController->getSolicitudPodaPdf($id, $fileName);
+            $attachments = [$fileName];
             $body = $this->templateSolicitudAprobadaEmail($data);
         }
 
