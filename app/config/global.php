@@ -49,4 +49,4 @@ include_once 'headers.php';
 include 'db.php';
 
 /* Configuracion de la URL */
-/* include 'url.php'; */
+include 'url.php';
