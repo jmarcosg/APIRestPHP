@@ -2,6 +2,7 @@
 
 use App\Controllers\Arbolado\Arb_SolicitudController;
 use App\Controllers\Arbolado\Arb_ArchivoController;
+use App\Controllers\Arbolado\Arb_InspectorController;
 
 $arbSolicitudController = new Arb_SolicitudController();
 

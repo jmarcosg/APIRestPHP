@@ -57,8 +57,6 @@ class Arb_SolicitudController
         return $data->update($req, $id);
     }
 
-
-
     public function getSolicitudPodaPdf($id, $fileName)
     {
         $solicitud = $this->get(['id' => $id]);

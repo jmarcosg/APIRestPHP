@@ -13,7 +13,25 @@ class Arb_Solicitud extends BaseModel
     protected $identity = 'id';
     protected $softDeleted = 'deleted_at';
 
-    protected $fillable = ['id_usuario', 'id_wappersonas', 'tipo', 'solicita', 'ubicacion', 'motivo', 'cantidad', 'contacto', 'estado'];
+    protected $fillable = [
+        'id_usuario', 
+        'id_wappersonas', 
+        'tipo', 
+        'solicita', 
+        'ubicacion', 
+        'motivo', 
+        'cantidad', 
+        'contacto', 
+        'estado',
+        'observacion',
+        'id_inspector',
+        'cantidad_autorizado',
+        'cantidad_reponer',
+        'dias_reponer',
+        'especie',
+        'constancia_danio',
+        'observacion_inspector',
+    ];
 
     protected $filesUrl = FILE_PATH . 'Arbolado/solicitud_poda/';
 
