@@ -2,45 +2,121 @@
 
 namespace App\Controllers\Arbolado;
 
+use App\Models\Arbolado\Arb_Archivo;
 use App\Traits\Arbolado\TemplateEmailSolicitud;
+use App\Traits\Arbolado\QuerysSql;
 
 use App\Models\Arbolado\Arb_Solicitud;
 use App\Models\Arbolado\Arb_Audit;
 
 use App\Models\Arbolado\MYPDF;
+use ErrorException;
 
 class Arb_SolicitudController
 {
-    use TemplateEmailSolicitud;
+    use TemplateEmailSolicitud, QuerysSql;
 
     public function __construct()
     {
         $GLOBALS['exect'][] = 'arb_solicitud';
     }
 
-    public function index($param = [], $ops = [])
+    public static function index($where)
     {
-        $data = new Arb_Solicitud();
-        $data = $data->list($param, $ops)->value;
-        return $data;
+        $solicitud = new Arb_Solicitud();
+
+        $sql = self::getSqlSolicitudes($where);
+        $data = $solicitud->executeSqlQuery($sql, false);
+        $data = self::formatSolicitudDataArray($data);
+
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
     }
 
-    public function get($params)
+    public static function getById()
+    {
+        $solicitud = new Arb_Solicitud();
+
+        $id = $_GET['id'];
+        $sql = self::getSqlSolicitudes("sol.id = $id");
+        $data = $solicitud->executeSqlQuery($sql, true);
+        $data = self::formatSolicitudData($data);
+        $data['archivos'] = $solicitud->archivos($id);
+
+        if (!$data instanceof ErrorException) {
+            if ($data !== false) {
+                sendRes($data);
+            } else {
+                sendRes(null, 'No se encontro la solicitud', $_GET);
+            }
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+        exit;
+    }
+
+    public static function get($params)
     {
         $data = new Arb_Solicitud();
         $data = $data->get($params)->value;
         return $data;
     }
 
-    public function store($res)
+    public static function store($res)
     {
         $res['estado'] = 'nuevo';
         $data = new Arb_Solicitud();
         $data->set($res);
-        return $data->save();
+
+        $id = $data->save();
+
+        if (!$id instanceof ErrorException) {
+            $arbArchivoController = new Arb_ArchivoController();
+
+            foreach ($_FILES as $key => $file) {
+                /* Generamos un nombre unico para el archivo */
+                $nameFile = uniqid() . getExtFile($file);
+
+                /* Guardamos el nombre del archivo en la tabla */
+                $req = ['id_solicitud' => $id, 'name' => $nameFile];
+                $archivo = $arbArchivoController->store($req);
+
+                /* copiamos el archivo en la carpeta correspondiente */
+                $path = getPathFile($file, FILE_PATH_LOCAL . "arbolado/solicitud_poda/$id/", $nameFile);
+                $copiado = copy($file['tmp_name'], $path);
+
+                if ($archivo instanceof ErrorException || !$copiado) {
+                    /* Si hubo un error en algun archivo */
+                    self::delete($id);
+                    sendRes(null, $archivo, $_GET);
+                    exit;
+                }
+            }
+
+            /* Enviamos el correo electronico */
+            $data  = [
+                'email' => $_POST['email'],
+                'tipo' => $_POST['tipo'],
+                'solicita' => $_POST['solicita'],
+                'ubicacion' => $_POST['ubicacion'],
+                'motivo' => $_POST['motivo'],
+                'cantidad' => $_POST['cantidad']
+            ];
+            self::sendEmail($id, 'envio', $data);
+
+            sendRes(['id' => $id]);
+        } else {
+            sendRes(null, $id->getMessage(), $_GET);
+        };
+        exit;
     }
 
-    public function update($req, $id)
+    public static function update($req, $id)
     {
         /* Generamos registro para la auditoria */
         $audit = new Arb_Audit();
@@ -185,9 +261,16 @@ class Arb_SolicitudController
         $pdf->Output(ADJUNTOS_PATH . $fileName, 'F');
     }
 
-    public function delete($id)
+    public static function delete($id)
     {
         $data = new Arb_Solicitud();
-        return $data->delete($id);
+        $data = $data->delete($id);
+
+        if (!$data instanceof ErrorException) {
+            sendRes(['id' => $id]);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
     }
 }

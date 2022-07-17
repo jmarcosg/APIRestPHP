@@ -61,8 +61,8 @@ class BaseModel
             $this->value = $data;
 
             /* Ejecutamos los metodos para obtener las relaciones */
-            $methods = $this->filterMethods(get_class_methods($this));
-            foreach ($methods as $method) $this->$method();
+            /* $methods = $this->filterMethods(get_class_methods($this));
+            foreach ($methods as $method) $this->$method(); */
         } else {
             logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
             $this->value = $result;
@@ -79,10 +79,10 @@ class BaseModel
             $this->value = $conn->fetch_assoc($result);
 
             /* Ejecutamos los metodos para obtener las relaciones */
-            if ($this->value) {
+            /* if ($this->value) {
                 $methods = $this->filterMethods(get_class_methods($this));
                 foreach ($methods as $method) $this->$method();
-            }
+            } */
         } else {
             logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
             $this->value = $result;

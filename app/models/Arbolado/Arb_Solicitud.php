@@ -14,14 +14,14 @@ class Arb_Solicitud extends BaseModel
     protected $softDeleted = 'deleted_at';
 
     protected $fillable = [
-        'id_usuario', 
-        'id_wappersonas', 
-        'tipo', 
-        'solicita', 
-        'ubicacion', 
-        'motivo', 
-        'cantidad', 
-        'contacto', 
+        'id_usuario',
+        'id_wappersonas',
+        'tipo',
+        'solicita',
+        'ubicacion',
+        'motivo',
+        'cantidad',
+        'contacto',
         'estado',
         'observacion',
         'id_inspector',
@@ -35,24 +35,16 @@ class Arb_Solicitud extends BaseModel
 
     protected $filesUrl = FILE_PATH . 'Arbolado/solicitud_poda/';
 
-    function wapPersona()
+    function archivos($id)
     {
-        return $this->hasOne(WapPersona::class, 'id_wappersonas',  'ReferenciaID');
-    }
+        $archivo = new Arb_Archivo();
+        $archivos = $archivo->list(['id_solicitud' => $id])->value;
 
-    function archivos()
-    {
-        $colleccion = $this->hasMany(Arb_Archivo::class, 'id',  'id_solicitud');
-
-        if (isset($colleccion->value['archivos'])) {
-            $archivos = $colleccion->value['archivos'];
-            foreach ($archivos as $key => $archivo) {
-                $path = $this->filesUrl . $colleccion->value['id'] . '/' . $archivo['name'];
-                $colleccion->value['archivos'][$key]['path'] = $path;
-            }
+        foreach ($archivos as $key => $archivo) {
+            $path = $this->filesUrl . $id . '/' . $archivo['name'];
+            $archivos[$key]['path'] = $path;
         }
 
-
-        return $colleccion;
+        return $archivos;
     }
 }

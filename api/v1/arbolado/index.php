@@ -1,12 +1,9 @@
 <?php
 
 use App\Controllers\Arbolado\Arb_SolicitudController;
-use App\Controllers\Arbolado\Arb_ArchivoController;
-use App\Controllers\Arbolado\Arb_InspectorController;
-
-$arbSolicitudController = new Arb_SolicitudController();
 
 /* Metodo GET */
+
 if ($url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0 && isset($_GET['action'])) {
 		$action = $_GET['action'];
@@ -14,80 +11,77 @@ if ($url['method'] == 'GET') {
 
 		switch ($action) {
 			case '0':
-				/* Obtenemos todas las solicitudes, o funcion del estado */
-				$_GET['TOP'] = 1000;
-				$arbolado = $arbSolicitudController->index($_GET, ['order' => ' ORDER BY id DESC ']);
+				/* Obtenemos todas las solicitudes de poda */
+				Arb_SolicitudController::index("1=1");
 				break;
 
 			case '1':
-				/* Obtenemos una solicitud puntual */
-				$arbolado = $arbSolicitudController->get($_GET);
+				/* Obtenemos todas las solicitudes de poda nuevas */
+				Arb_SolicitudController::index("estado = 'nuevo'");
+				break;
+
+			case '2':
+				/* Obtenemos todas las solicitudes de poda aprobadas */
+				Arb_SolicitudController::index("estado = 'aprobado'");
+				break;
+
+			case '3':
+				/* Obtenemos todas las solicitudes de poda rechazadas */
+				Arb_SolicitudController::index("estado = 'rechazado'");
+				break;
+
+			case '4':
+				/* Obtenemos todas las solicitudes de poda del usuario */
+				$id_usuario = $_GET['id_usuario'];
+				Arb_SolicitudController::index("id_usuario = $id_usuario");
+				break;
+
+			case '5':
+				/* Obtenemos todas las solicitudes de poda nuevas  del usuario */
+				$id_usuario = $_GET['id_usuario'];
+				Arb_SolicitudController::index("id_usuario = $id_usuario AND estado = 'nuevo'");
+				break;
+
+			case '6':
+				/* Obtenemos todas las solicitudes de poda aprobadas  del usuario */
+				$id_usuario = $_GET['id_usuario'];
+				Arb_SolicitudController::index("id_usuario = $id_usuario AND estado = 'aprobado'");
+				break;
+
+			case '7':
+				/* Obtenemos todas las solicitudes de poda rechazadas  del usuario */
+				$id_usuario = $_GET['id_usuario'];
+				Arb_SolicitudController::index("estado = 'rechazado'");
+				break;
+
+			case '8':
+				Arb_SolicitudController::getById($_GET);
 				break;
 
 			default:
-				$arbolado = new ErrorException('El action no es valido');
-				break;
+				$error = new ErrorException('El action no es valido');
+				sendRes(null, $error->getMessage(), $_GET);
+				exit;
 		}
-
-		/* Envio del mensaje */
-		if (!$arbolado instanceof ErrorException) {
-			if ($arbolado !== false) {
-				sendRes($arbolado);
-			} else {
-				sendRes(null, 'No se encontro la solicitud', $_GET);
-			}
-		} else {
-			sendRes(null, $arbolado->getMessage(), $_GET);
-		};
-	} else {
 	}
-	eClean();
 }
 
 /* Metodo POST */
 if ($url['method'] == 'POST') {
+	$action = $_POST['action'];
+	unset($_POST['action']);
 
-	/* Guardamos la solicitud */
-	$id = $arbSolicitudController->store($_POST);
-	if (!$id instanceof ErrorException) {
-		$arbArchivoController = new Arb_ArchivoController();
+	switch ($action) {
+		case '0':
+			/* Guardamos una solicitud de poda */
+			Arb_SolicitudController::store($_POST);
+			break;
 
-		foreach ($_FILES as $key => $file) {
-			/* Generamos un nombre unico para el archivo */
-			$nameFile = uniqid() . getExtFile($file);
-
-			/* Guardamos el nombre del archivo en la tabla */
-			$req = ['id_solicitud' => $id, 'name' => $nameFile];
-			$archivo = $arbArchivoController->store($req);
-
-			/* copiamos el archivo en la carpeta correspondiente */
-			$path = getPathFile($file, FILE_PATH_LOCAL . "arbolado/solicitud_poda/$id/", $nameFile);
-			$copiado = copy($file['tmp_name'], $path);
-
-			if ($archivo instanceof ErrorException || !$copiado) {
-				/* Si hubo un error en algun archivo */
-				$arbSolicitudController->delete($id);
-				sendRes(null, $archivo, $_GET);
-				exit;
-			}
-		}
-
-		/* Enviamos el correo electronico */
-		$data  = [
-			'email' => $_POST['email'],
-			'tipo' => $_POST['tipo'],
-			'solicita' => $_POST['solicita'],
-			'ubicacion' => $_POST['ubicacion'],
-			'motivo' => $_POST['motivo'],
-			'cantidad' => $_POST['cantidad']
-		];
-		$arbSolicitudController->sendEmail($id, 'envio', $data);
-
-		sendRes(['id' => $id]);
-	} else {
-		sendRes(null, $id->getMessage(), $_GET);
-	};
-	eClean();
+		default:
+			$error = new ErrorException('El action no es valido');
+			sendRes(null, $error->getMessage(), $_GET);
+			exit;
+	}
 }
 
 /* Metodo PUT */
@@ -124,14 +118,7 @@ if ($url['method'] == 'PUT') {
 
 /* Metodo DELETE */
 if ($url['method'] == 'DELETE') {
-	$id = $url['id'];
-	$arbolado = $arbSolicitudController->delete($url['id']);
-	if (!$arbolado instanceof ErrorException) {
-		sendRes(['ReferenciaID' => $id]);
-	} else {
-		sendRes(null, $arbolado->getMessage(), ['ReferenciaID' => $id]);
-	};
-	eClean();
+	Arb_SolicitudController::delete($url['id']);
 }
 
 header("HTTP/1.1 200 Bad Request");

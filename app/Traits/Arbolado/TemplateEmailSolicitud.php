@@ -3,41 +3,39 @@
 namespace App\Traits\Arbolado;
 
 use ErrorException;
-use App\Controllers\Arbolado\Arb_PodadorController;
 use App\Controllers\Arbolado\Arb_SolicitudController;
 
 trait TemplateEmailSolicitud
 {
-
-    public function sendEmail($id, $type, $data)
+    public static function  sendEmail($id, $type, $data)
     {
         $subject = "Sistema Arbolado - Solicitud N° $id";
 
         $attachments = null;
-        if ($type == 'envio') $body = $this->templateSolicitudEmail($data);
+        if ($type == 'envio') $body = self::templateSolicitudEmail($data);
 
         if ($type == 'aprobado') {
             $solicitudController =  new Arb_SolicitudController();
             $fileName = $id . '_' . date('Ymd') . '.pdf';
             $solicitudController->getSolicitudPodaPdf($id, $fileName);
             $attachments = [$fileName];
-            $body = $this->templateSolicitudAprobadaEmail($data);
+            $body = self::templateSolicitudAprobadaEmail($data);
         }
 
-        if ($type == 'rechazado') $body = $this->templateSolicitudRechazadaEmail($data);
+        if ($type == 'rechazado') $body = self::templateSolicitudRechazadaEmail($data);
 
         $response = sendEmail($data['email'], $subject, $body, $attachments);
 
         if ($response['error']) {
             $error = new ErrorException($response['error']);
-            logFileEE('v1/arbolado', $error, get_class($this), __FUNCTION__);
+            logFileEE('v1/arbolado', $error, get_class(), __FUNCTION__);
         }
     }
 
     /** 
      * Retorna el template de correo electronico para las solicitudes de poda enviadas por el usuario 
      * */
-    protected function templateSolicitudEmail($data)
+    protected static function templateSolicitudEmail($data)
     {
         $tipo = $data['tipo'];
         $solicita = $data['solicita'];
@@ -80,7 +78,7 @@ trait TemplateEmailSolicitud
     /** 
      * Retorna el template de correo electronico para las solicitudes de poda aprobadas
      * */
-    protected function templateSolicitudAprobadaEmail($data)
+    protected static function templateSolicitudAprobadaEmail($data)
     {
         $id = $data['id'];
         $observacion = $data['observacion'];
@@ -117,7 +115,7 @@ trait TemplateEmailSolicitud
     /** 
      * Retorna el template de correo electronico para las solicitudes de poda rechazadas
      * */
-    protected function templateSolicitudRechazadaEmail($data)
+    protected static function templateSolicitudRechazadaEmail($data)
     {
         $id = $data['id'];
         $observacion = $data['observacion'];
