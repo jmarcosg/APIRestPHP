@@ -28,6 +28,7 @@ trait SolicitudPodaSql
                 sol.solicita as solicita,
                 sol.ubicacion as ubicacion,
                 sol.motivo as motivo,
+                sol.contacto as contacto,
                 sol.cantidad as cantidad,
                 sol.estado as estado,
                 sol.observacion as observacion,

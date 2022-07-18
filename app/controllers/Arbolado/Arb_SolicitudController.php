@@ -118,8 +118,6 @@ class Arb_SolicitudController
 
     public static function update($req, $id)
     {
-
-
         /* Generamos registro para la auditoria */
         $audit = new Arb_Audit();
         $audit->set([
@@ -138,6 +136,13 @@ class Arb_SolicitudController
 
         /* Modificamos el registro */
         $data = new Arb_Solicitud();
+        if ($req['estado'] == 'rechazado') {
+            unset($req["cantidad_autorizado"]);
+            unset($req["cantidad_reponer"]);
+            unset($req["dias_reponer"]);
+            unset($req["especie"]);
+            unset($req["constancia_danio"]);
+        }
         $arbolado = $data->update($req, $id);
 
         if (!$arbolado instanceof ErrorException) {
@@ -153,7 +158,7 @@ class Arb_SolicitudController
             $req['id'] = $id;
             sendRes($req);
         } else {
-            sendRes(null, $arbolado->getMessage(), ['ReferenciaID' => $id]);
+            sendRes(null, $arbolado->getMessage(), ['id' => $id]);
         };
         exit;
     }
