@@ -4,7 +4,7 @@ namespace App\Controllers\Arbolado;
 
 use App\Models\Arbolado\Arb_Archivo;
 use App\Traits\Arbolado\TemplateEmailSolicitud;
-use App\Traits\Arbolado\QuerysSql;
+use App\Traits\Arbolado\SolicitudPodaSql;
 
 use App\Models\Arbolado\Arb_Solicitud;
 use App\Models\Arbolado\Arb_Audit;
@@ -14,20 +14,20 @@ use ErrorException;
 
 class Arb_SolicitudController
 {
-    use TemplateEmailSolicitud, QuerysSql;
+    use TemplateEmailSolicitud, SolicitudPodaSql;
 
     public function __construct()
     {
         $GLOBALS['exect'][] = 'arb_solicitud';
     }
 
-    public static function index($where)
+    public static function index($where = "1=1")
     {
         $solicitud = new Arb_Solicitud();
 
-        $sql = self::getSqlSolicitudes($where);
+        $sql = self::getSql($where);
         $data = $solicitud->executeSqlQuery($sql, false);
-        $data = self::formatSolicitudDataArray($data);
+        $data = self::formatDataArray($data);
 
         if (!$data instanceof ErrorException) {
             sendRes($data);
@@ -43,9 +43,9 @@ class Arb_SolicitudController
         $solicitud = new Arb_Solicitud();
 
         $id = $_GET['id'];
-        $sql = self::getSqlSolicitudes("sol.id = $id");
+        $sql = self::getSql("sol.id = $id");
         $data = $solicitud->executeSqlQuery($sql, true);
-        $data = self::formatSolicitudData($data);
+        $data = self::formatData($data);
         $data['archivos'] = $solicitud->archivos($id);
 
         if (!$data instanceof ErrorException) {
@@ -118,6 +118,8 @@ class Arb_SolicitudController
 
     public static function update($req, $id)
     {
+
+
         /* Generamos registro para la auditoria */
         $audit = new Arb_Audit();
         $audit->set([
@@ -128,9 +130,32 @@ class Arb_SolicitudController
         ]);
         $audit->save();
 
+        /* Extraemos el contacto y el email  */
+        $contacto = $req['contacto'];
+        $email = $req['email'];
+        unset($req['contacto']);
+        unset($req['email']);
+
         /* Modificamos el registro */
         $data = new Arb_Solicitud();
-        return $data->update($req, $id);
+        $arbolado = $data->update($req, $id);
+
+        if (!$arbolado instanceof ErrorException) {
+            /* Enviamos el correo electronico */
+            $data = [
+                'id' => $id,
+                'email' => $email,
+                'contacto' => $contacto,
+                'observacion' => $req['observacion']
+            ];
+
+            //self::sendEmail($id, $req['estado'], $data);
+            $req['id'] = $id;
+            sendRes($req);
+        } else {
+            sendRes(null, $arbolado->getMessage(), ['ReferenciaID' => $id]);
+        };
+        exit;
     }
 
     public function getSolicitudPodaPdf($id, $fileName)

@@ -1,6 +1,9 @@
 <?php
 
+use App\Controllers\Arbolado\Arb_EvaluacionController;
+use App\Controllers\Arbolado\Arb_InspectorController;
 use App\Controllers\Arbolado\Arb_SolicitudController;
+use App\Controllers\Arbolado\Arb_PodadorController;
 
 /* Metodo GET */
 
@@ -12,7 +15,7 @@ if ($url['method'] == 'GET') {
 		switch ($action) {
 			case '0':
 				/* Obtenemos todas las solicitudes de poda */
-				Arb_SolicitudController::index("1=1");
+				Arb_SolicitudController::index();
 				break;
 
 			case '1':
@@ -55,8 +58,65 @@ if ($url['method'] == 'GET') {
 				break;
 
 			case '8':
+				/* Solicitud de poda por ID */
 				Arb_SolicitudController::getById($_GET);
 				break;
+
+			case '9':
+				/* Solitides de podador - Todas */
+				Arb_PodadorController::index();
+				break;
+
+			case '10':
+				/* Solitides de podador - Nuevas */
+				Arb_PodadorController::index("estado = 'nuevo'");
+				break;
+
+			case '11':
+				/* Solitides de podador - Aprobadas */
+				Arb_PodadorController::index("estado = 'aprobado'");
+				break;
+
+			case '12':
+				/* Solitides de podador - Rechazadas */
+				Arb_PodadorController::index("estado = 'rechazado'");
+				break;
+
+			case '13':
+				/* Solitides de podador - Deshabilitados */
+				Arb_PodadorController::getDeshabilitados();
+				break;
+
+			case '14':
+				/* Solicitud de poda por ID */
+				Arb_PodadorController::getById($_GET);
+				break;
+
+			case '15':
+				/* Solicitud de poda por ID */
+				Arb_EvaluacionController::getEvaluacionMsg();
+				break;
+
+			case '16':
+				/* Solicitud de poda por ID */
+				Arb_EvaluacionController::getPresetEvaluacion();
+				break;
+
+			case '17':
+				/* Detalle de la solicitud*/
+				Arb_PodadorController::getEstadoSolicitudDetalle();
+
+			case '18':
+				/* Detalle de la solicitud*/
+				Arb_EvaluacionController::index($_GET, ['order' => ' ORDER BY id DESC ']);
+
+			case '19':
+				/* Detalle de la solicitud*/
+				Arb_EvaluacionController::index(['id_podador' => null]);
+
+			case '20':
+				/* Listado de inspectores */
+				Arb_InspectorController::index();
 
 			default:
 				$error = new ErrorException('El action no es valido');
@@ -77,6 +137,21 @@ if ($url['method'] == 'POST') {
 			Arb_SolicitudController::store($_POST);
 			break;
 
+		case '1':
+			/* Guardamos una solicitud de podador */
+			Arb_PodadorController::store();
+			break;
+
+		case '2':
+			/* Guardamos una evaluacion */
+			Arb_EvaluacionController::saveEvaluacion();
+			break;
+
+		case '3':
+			/* Guardamos un inspector */
+			Arb_InspectorController::store();
+			break;
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
@@ -87,38 +162,34 @@ if ($url['method'] == 'POST') {
 /* Metodo PUT */
 if ($url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
-	$id = $url['id'];
+	$action = $_PUT['action'];
+	unset($_PUT['action']);
 
-	/* Extraemos el contacto y el email  */
-	$contacto = $_PUT['contacto'];
-	$email = $_PUT['email'];
-	unset($_PUT['contacto']);
-	unset($_PUT['email']);
+	switch ($action) {
+		case '0':
+			Arb_SolicitudController::update($_PUT, $url['id']);
+			break;
 
-	$arbolado = $arbSolicitudController->update($_PUT, $id);
-
-	if (!$arbolado instanceof ErrorException) {
-		/* Enviamos el correo electronico */
-		$data = [
-			'id' => $id,
-			'email' => $email,
-			'contacto' => $contacto,
-			'observacion' => $_PUT['observacion']
-		];
-
-
-		$arbSolicitudController->sendEmail($id, $_PUT['estado'], $data);
-		$_PUT['id'] = $id;
-		sendRes($_PUT);
-	} else {
-		sendRes(null, $arbolado->getMessage(), ['ReferenciaID' => $id]);
-	};
-	eClean();
+		case '1':
+			Arb_PodadorController::update($_PUT, $url['id']);
+			break;
+	}
 }
 
 /* Metodo DELETE */
 if ($url['method'] == 'DELETE') {
-	Arb_SolicitudController::delete($url['id']);
+	switch ($_GET['action']) {
+		case '0':
+			Arb_SolicitudController::delete($url['id']);
+			break;
+		case '3':
+			Arb_InspectorController::delete($url['id']);
+			break;
+
+		default:
+			# code...
+			break;
+	}
 }
 
 header("HTTP/1.1 200 Bad Request");

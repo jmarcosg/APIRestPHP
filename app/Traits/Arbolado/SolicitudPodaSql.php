@@ -3,9 +3,9 @@
 namespace App\Traits\Arbolado;
 
 
-trait QuerysSql
+trait SolicitudPodaSql
 {
-    private static function getSqlSolicitudes($where)
+    private static function getSql($where)
     {
         $sql =
             "SELECT 
@@ -49,7 +49,7 @@ trait QuerysSql
         return $sql;
     }
 
-    private static function formatSolicitudDataArray($solicitudes)
+    private static function formatDataArray($solicitudes)
     {
         foreach ($solicitudes as $keySol => $solicitud) {
 
@@ -86,7 +86,7 @@ trait QuerysSql
         return $solicitudes;
     }
 
-    private static function formatSolicitudData($solicitud)
+    private static function formatData($solicitud)
     {
 
         /* Obtenemos los elementos que contienen per_ini_ en la key */
@@ -118,6 +118,38 @@ trait QuerysSql
         $solicitud['inspector'] = $inspector;
 
         return $solicitud;
+    }
+
+    private static function getSqlPodadores($where)
+    {
+        $sql =
+            "SELECT 
+            sol.id as id,
+            /* Persona que inicio el tramite */
+            per.Nombre as per_nombre,
+            per.Documento as per_documento,
+            per.DomicilioLegal as per_domicilio,
+            per.Celular as per_celular,
+            per.CorreoElectronico as per_email,
+            per.Genero as per_genero,      
+            
+            /* Datos de la solicitud */
+            sol.certificado as certificado,
+            sol.capacitador as capacitador,
+            sol.telefono as telefono,
+            sol.observacion as observacion,
+            sol.estado as estado,
+            sol.fecha_vencimiento as fecha_vencimiento,
+            sol.fecha_revision as fecha_revision,
+            sol.fecha_deshabilitado as fecha_deshabilitado,
+            sol.motivo_deshabilitado as motivo_deshabilitado,
+            sol.fecha_alta as fecha_alta
+        FROM dbo.arb_podadores sol
+            LEFT JOIN dbo.wapPersonas per ON sol.id_wappersonas = per.ReferenciaID   
+        WHERE $where AND sol.deleted_at IS NULL
+        ORDER BY id DESC";
+
+        return $sql;
     }
 
     private static function filterByIncludeKey($array, $key)
