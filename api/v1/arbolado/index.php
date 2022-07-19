@@ -59,7 +59,7 @@ if ($url['method'] == 'GET') {
 
 			case '8':
 				/* Solicitud de poda por ID */
-				Arb_SolicitudController::getById($_GET);
+				Arb_SolicitudController::getById($_GET['id']);
 				break;
 
 			case '9':
@@ -88,8 +88,8 @@ if ($url['method'] == 'GET') {
 				break;
 
 			case '14':
-				/* Solicitud de poda por ID */
-				Arb_PodadorController::getById($_GET);
+				/* Solicitud de podador por ID */
+				Arb_PodadorController::getById($_GET['id']);
 				break;
 
 			case '15':
@@ -103,7 +103,7 @@ if ($url['method'] == 'GET') {
 				break;
 
 			case '17':
-				/* Detalle de la solicitud*/
+				/* Detalle de la solicitud */
 				Arb_PodadorController::getEstadoSolicitudDetalle();
 
 			case '18':

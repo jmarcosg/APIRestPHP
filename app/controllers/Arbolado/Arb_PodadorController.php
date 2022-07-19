@@ -347,20 +347,6 @@ class Arb_PodadorController
         exit;
     }
 
-    public function existeSol($id_usuario)
-    {
-        $params = ['id_usuario' => $id_usuario, 'estado' => 'nuevo', 'TOP' => 1];
-        $op = ['order' => ' ORDER BY id DESC '];
-
-        $solicitud = $this->index($params, $op);
-
-        if ($solicitud) {
-            return $solicitud[0];
-        }
-
-        return $solicitud;
-    }
-
     public static function getEstadoSolicitudDetalle()
     {
         $params = ['id_wappersonas' => $_GET['id_wappersonas'], 'TOP' => 1];
