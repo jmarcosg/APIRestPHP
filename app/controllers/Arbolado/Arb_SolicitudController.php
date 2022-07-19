@@ -152,7 +152,7 @@ class Arb_SolicitudController
                 'observacion' => $req['observacion']
             ];
 
-            //self::sendEmail($id, $req['estado'], $data);
+            self::sendEmail($id, $req['estado'], $data);
             $req['id'] = $id;
             sendRes($req);
         } else {
