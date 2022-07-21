@@ -224,6 +224,12 @@ function getTypeFile($str)
     }
 }
 
+function getBase64String($path, $file)
+{
+    $type = getTypeFile(explode('.', $file)[1]);
+    return "data:$type;base64," . base64_encode(file_get_contents($path));
+}
+
 function getExtFile($file)
 {
     if (!empty($file)) {

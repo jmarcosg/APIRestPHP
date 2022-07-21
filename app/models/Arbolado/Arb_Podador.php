@@ -35,9 +35,11 @@ class Arb_Podador extends BaseModel
     function certificado($certificado, $id)
     {
         if ($certificado) {
+            $path = $this->filesUrl . $id . '/' . $certificado;
+
             return [
                 'name' => $certificado,
-                'path' => $this->filesUrl . $id . '/' . $certificado,
+                'path' => getBase64String($path, $certificado),
             ];
         }
         return null;

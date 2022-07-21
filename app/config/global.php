@@ -30,15 +30,18 @@ define('TOKEN_KEY', $_ENV['TOKEN_KEY']);
 define('WEBLOGIN2', PROD ? 'localhost/api/webLogin2' : 'https://weblogin.muninqn.gov.ar/api/webLogin2');
 
 if (ENV == 'produccion') {
+    /** PRODUCCION */
     define('FILE_PATH', 'E:\Dataserver\Produccion\projects_files\\');
 }
 
 if (ENV == 'replica') {
+    /** REPLICA */
     define('FILE_PATH', 'E:\Dataserver\Replica\projects_files\\');
 }
 
 if (ENV == 'local') {
-    define('FILE_PATH', 'http://localhost/APIrest/files/');
+    /** LOCAL */
+    define('FILE_PATH', 'C:\xampp\htdocs\APIRest\files\\');
 }
 
 

@@ -2,7 +2,7 @@
 
 define('ROOT_PATH', substr(__DIR__, 0, strlen(__DIR__) - 10));
 define('PUBLIC_PATH', ROOT_PATH . 'public');
-define('FILE_PATH_LOCAL', ROOT_PATH . 'files/');
+/* define('FILE_PATH_LOCAL', ROOT_PATH . 'files/'); */
 define('V1_PATH', ROOT_PATH . 'api/v1/');
 
 /* Necesitamos definir correctamente esta ruta */
