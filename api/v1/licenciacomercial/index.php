@@ -13,58 +13,46 @@ if ($url['method'] == 'GET') {
 
 		case '1':
 			Lc_SolicitudController::getById();
-			break;
 
 		case '2':
-			/* Obtenemos la ultima solicitud */
-			$_GET['TOP'] = 1;
-			Lc_SolicitudController::get($_GET);
-			break;
+			/* Contribuyente - Ultima solicitud */
+			Lc_SolicitudController::get();
 
 		case '3':
-			/* Obtenemos todas las solicitudes para verificar los rubros */
+			/* Verificador Rubros - Todas */
 			Lc_SolicitudController::index("estado = 'ver_rubros' AND ver_rubros = 0 AND estado NOT LIKE '%rechazado%'");
-			break;
 
 		case '4':
-			/* Obtenemos todas las solicitudes aprobadas por verificación de rubros */
+			/* Verificador Rubros - Aprobadas */
 			Lc_SolicitudController::index("ver_rubros = '1' AND estado NOT LIKE '%rechazado%'");
-			break;
 
 		case '5':
-			/* Obtenemos todas las solicitudes rechazadas por verificación de rubros */
+			/* Verificador Rubros - Rechazadas  */
 			Lc_SolicitudController::index("estado = 'rubros_rechazado'");
-			break;
 
 		case '6':
-			/* Catastro, Rubros con nomenclatura */
+			/* Catastro - Todas */
 			Lc_SolicitudController::index("estado = 'cat' AND ver_catastro = 0 AND estado NOT LIKE '%rechazado%'");
-			break;
 
 		case '7':
-			/* Catastro, Rubros con nomenclatura - Listado de aprobados */
+			/* Catastro - Aprobadas */
 			Lc_SolicitudController::index("ver_catastro = 1 AND estado NOT LIKE '%rechazado%'");
-			break;
 
 		case '8':
-			/* Catastro, Rubros con nomenclatura - Listado de rechazados */
+			/* Catastro - Rechazadas   */
 			Lc_SolicitudController::index("estado = 'cat_rechazado'");
-			break;
 
 		case '9':
-			/* Verificación ambiental */
+			/* Verificación ambiental - Todas */
 			Lc_SolicitudController::index("estado = 'cat' AND ver_ambiental = 0 AND estado NOT LIKE '%rechazado%'");
-			break;
 
 		case '10':
-			/* Verificación ambiental - Listado de aprobados */
+			/* Verificación ambiental - Aprobadas */
 			Lc_SolicitudController::index("ver_ambiental = 1 AND estado NOT LIKE '%rechazado%'");
-			break;
 
 		case '11':
-			/* Verificación ambiental - Listado de rechazados */
+			/* Verificación ambiental - Rechazadas */
 			Lc_SolicitudController::index("estado = 'ambiental_rechazado'");
-			break;
 
 		default:
 			$error = new ErrorException('El action no es valido');

@@ -91,6 +91,7 @@ class Lc_SolicitudController
         $data = new Lc_Solicitud();
 
         $ops = ['order' => ' ORDER BY id DESC '];
+        $_GET['TOP'] = 1;
         $data = $data->list($_GET, $ops)->value;
 
         if (count($data) > 0) {
