@@ -37,7 +37,8 @@ class Lc_DocumentoController
             $filesUrl = $documento->filesUrl;
 
             if ($doc) {
-                $data[$key] = $filesUrl . $id_solicitud . "/" . $key . '/' . $doc;
+                $url = $filesUrl . $id_solicitud . "/" . $key . '/' . $doc;
+                $data[$key] = getBase64String($url, $doc);
             }
         }
         return $data;
@@ -61,10 +62,10 @@ class Lc_DocumentoController
         $_POST[$columnFile] = $nameFile;
 
         /* Borramos la carpeta del docuemento si existe */
-        deleteDir(FILE_PATH_LOCAL . "licencia_comercial/solicitud/$id_solicitud/$columnFile/");
+        deleteDir(FILE_PATH . "licencia_comercial/solicitud/$id_solicitud/$columnFile/");
 
         /* Generamops la carpeta y obtenemos el path para copiar el archivo */
-        $path = getPathFile($file, FILE_PATH_LOCAL . "licencia_comercial/solicitud/$id_solicitud/$columnFile/", $nameFile);
+        $path = getPathFile($file, FILE_PATH . "licencia_comercial/solicitud/$id_solicitud/$columnFile/", $nameFile);
 
         /* Capiamos el archivo */
         $copiado = copy($file['tmp_name'], $path);
@@ -74,15 +75,15 @@ class Lc_DocumentoController
             $documento = new Lc_Documento();
             $idDocumento = $documento->get(['id_solicitud' => $id_solicitud])->value['id'];
             $documento->update([$columnFile => $nameFile], $idDocumento);
-
             $url = $documento->filesUrl . $id_solicitud . '/' . $columnFile . '/' . $nameFile;
         }
 
         if ($url) {
-            sendRes(['url' => $url]);
+            sendRes(['url' => getBase64String($url, $nameFile)]);
         } else {
             sendRes(null, 'Hubo un error a subir un archivo', ['id' => $id_solicitud]);
         };
+        exit;
     }
 
     public function delete($id)

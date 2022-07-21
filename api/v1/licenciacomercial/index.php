@@ -76,10 +76,15 @@ if ($url['method'] == 'GET') {
 
 /* Metodo POST */
 if ($url['method'] == 'POST') {
-	if (isset($_POST['step']) && $_POST['step'] == '3') {
-		Lc_DocumentoController::update();
-	} else {
-		Lc_SolicitudController::store($_POST);
+	switch ($_POST['action']) {
+		case '1':
+			Lc_SolicitudController::store($_POST);
+			break;
+		case '3':
+			Lc_DocumentoController::update();
+			break;
+		default:
+			break;
 	}
 }
 

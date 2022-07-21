@@ -145,6 +145,7 @@ class Lc_SolicitudController
         /* Guardamos la solicitud */
         $_POST['estado'] = 'act';
 
+        $_POST['tiene_local'] = 1;
         $_POST['ver_rubros'] = 0;
         $_POST['ver_catastro'] = 0;
         $_POST['ver_ambiental'] = 0;
