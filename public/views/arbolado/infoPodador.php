@@ -20,21 +20,23 @@ if ($_GET['numero']) {
 
     $estado = null;
     $classEstado = '';
-    if (Arb_PodadorController::esDeshabilitado($datos)) {
-        $estado = 'Deshabilitado';
-        $classEstado = '.text-danger';
-    }
 
     if ($datos['estado'] == 'aprobado') {
         $estado = 'Aprobado';
         $classEstado = 'text-success';
     }
 
+    if (Arb_PodadorController::esDeshabilitado($datos)) {
+        $estado = 'Deshabilitado';
+        $classEstado = 'text-danger';
+    }
+
     $credencial = $datos["id"];
     $nombre = $datos["Nombre"];
     $dni = $datos["Documento"];
-    $venc = $datos["fecha_vencimiento"];
-    $revision = $datos["fecha_revision"];
+
+    $venc = date("d/m/Y", strtotime($datos["fecha_vencimiento"]));
+    $revision = date("d/m/Y", strtotime($datos["fecha_revision"]));
 
     $renaper = new RenaperController();
     $img = $renaper->getImage($datos['genero'], $dni);
@@ -64,7 +66,7 @@ if ($_GET['numero']) {
                     <h4 style="font-size:1.2rem">DNI: <?= $dni ?></h4>
                     <h5 style="font-size: 1rem;">Credencial: <?= $credencial ?></h5>
 
-                    <h5 style="font-size: 1rem;">Estado:
+                    <h5 style="font-size: 1.5rem;">Estado:
                         <span class=<?= $classEstado ?>>
                             <?= $estado ?>
                         </span>
