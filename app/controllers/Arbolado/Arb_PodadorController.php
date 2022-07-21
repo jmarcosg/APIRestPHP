@@ -155,7 +155,7 @@ class Arb_PodadorController
         $id = $data->save();
 
         /* copiamos el archivo en la carpeta correspondiente */
-        $path = getPathFile($file, FILE_PATH_LOCAL . "arbolado/podador/$id/", $nameFile);
+        $path = getPathFile($file, FILE_PATH . "arbolado/podador/$id/", $nameFile);
         $copiado = copy($file['tmp_name'], $path);
 
         if ($id instanceof ErrorException || !$copiado) {
