@@ -42,7 +42,7 @@ class Arb_Solicitud extends BaseModel
 
         foreach ($archivos as $key => $archivo) {
             $path = $this->filesUrl . $id . '/' . $archivo['name'];
-            $archivos[$key]['path'] = $path;
+            $archivos[$key]['path'] = base64_encode(file_get_contents($path));
         }
 
         return $archivos;
