@@ -210,6 +210,20 @@ function getPathFile($file, $path, $fileName)
     return $path;
 }
 
+function getTypeFile($str)
+{
+    switch ($str) {
+        case 'jpeg':
+            return 'image/jpeg';
+        case 'jpg':
+            return 'image/jpg';
+        case 'png':
+            return 'image/png';
+        case 'pdf':
+            return 'application/pdf';
+    }
+}
+
 function getExtFile($file)
 {
     if (!empty($file)) {
