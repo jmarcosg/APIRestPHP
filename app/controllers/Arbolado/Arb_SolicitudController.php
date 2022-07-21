@@ -93,6 +93,8 @@ class Arb_SolicitudController
                     self::delete($id);
                     sendRes(null, $archivo, $_GET);
                     exit;
+
+                    /* VER COMO BORRAR LOS ARCHIVOS */
                 }
             }
 

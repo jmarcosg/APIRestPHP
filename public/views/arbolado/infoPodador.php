@@ -6,17 +6,33 @@ use App\Controllers\Arbolado\Arb_PodadorController;
 use App\Controllers\RenaperController;
 
 if ($_GET['numero']) {
-    $n = $_GET['numero'];
+    $id = $_GET['numero'];
 
     $podadorController = new Arb_PodadorController();
-    $datos = $podadorController->getDatosCarnet($n);
+    $datos = $podadorController->getDatosCarnet($id);
 
     $datos = utf8ize($datos);
+
+    if ($datos['estado'] == 'rechazado') {
+        header("Location: https://www.neuquencapital.gov.ar/");
+        exit;
+    }
+
+    $estado = null;
+    $classEstado = '';
+    if (Arb_PodadorController::esDeshabilitado($datos)) {
+        $estado = 'Deshabilitado';
+        $classEstado = '.text-danger';
+    }
+
+    if ($datos['estado'] == 'aprobado') {
+        $estado = 'Aprobado';
+        $classEstado = 'text-success';
+    }
 
     $credencial = $datos["id"];
     $nombre = $datos["Nombre"];
     $dni = $datos["Documento"];
-    $estado = $datos["estado"];
     $venc = $datos["fecha_vencimiento"];
     $revision = $datos["fecha_revision"];
 
@@ -47,6 +63,13 @@ if ($_GET['numero']) {
                     <h3 style="font-size:1.5rem"><?= $nombre ?></h3>
                     <h4 style="font-size:1.2rem">DNI: <?= $dni ?></h4>
                     <h5 style="font-size: 1rem;">Credencial: <?= $credencial ?></h5>
+
+                    <h5 style="font-size: 1rem;">Estado:
+                        <span class=<?= $classEstado ?>>
+                            <?= $estado ?>
+                        </span>
+                    </h5>
+
                     <p class="text-dark" style="font-size: 0.8rem;">Fecha Otorgamiento: <?= $revision ?></p>
                     <p class="text-dark" style="font-size: 0.8rem;">Fecha Vencimiento: <?= $venc ?></p>
 

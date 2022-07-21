@@ -50,7 +50,7 @@ class Arb_InspectorController
     public static function store()
     {
         $data = new Arb_Inspector();
-        $exist = $data->get(['dni' => $_POST['dni']])->value;
+        $exist = $data->get(['dni' => $_POST['dni'], 'deleted_at' => null])->value;
 
         if (!$exist) {
             /* Guardamos el data */

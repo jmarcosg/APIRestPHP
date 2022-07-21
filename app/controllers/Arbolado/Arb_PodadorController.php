@@ -413,6 +413,7 @@ class Arb_PodadorController
                 certificado,
                 estado,
                 fecha_vencimiento,
+                fecha_deshabilitado,
                 fecha_revision,
                 genero
             FROM dbo.arb_podadores arb_pod
@@ -437,7 +438,7 @@ class Arb_PodadorController
         return "data:image/png;base64," . $imagen;
     }
 
-    private static function esDeshabilitado($data)
+    public static function esDeshabilitado($data)
     {
         return $data["fecha_deshabilitado"] > date('Y-m-d');
     }
