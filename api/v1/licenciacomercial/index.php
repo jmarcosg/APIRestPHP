@@ -54,6 +54,18 @@ if ($url['method'] == 'GET') {
 			/* Verificación ambiental - Rechazadas */
 			Lc_SolicitudController::index("estado = 'ambiental_rechazado'");
 
+		case '12':
+			/* Verificación documentos - Todas */
+			Lc_SolicitudController::index("estado = 'ver_doc' AND ver_documentos = 0 AND estado NOT LIKE '%rechazado%'");
+
+		case '13':
+			/* Verificación documentos - Aprobadas */
+			Lc_SolicitudController::index("ver_documentos = 1 AND estado NOT LIKE '%rechazado%'");
+
+		case '14':
+			/* Verificación documentos - Rechazadas */
+			Lc_SolicitudController::index("estado = 'doc_rechazado'");
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
