@@ -22,23 +22,22 @@ class Lc_DocumentoController
     public function getFilesUrl($params)
     {
         $documento = new Lc_Documento();
-        $data = $documento->get($params)->value;
 
-        unset($data["id"]);
-        unset($data["id_solicitud"]);
-        unset($data["deleted_at"]);
-        unset($data["fecha_alta"]);
+        $id_solicitud = $params['id_solicitud'];
+        $sql = self::getSqlDocumentos("id_solicitud = $id_solicitud");
+        $data = $documento->executeSqlQuery($sql, false);
 
         foreach ($data as $key => $doc) {
             global $filesUrl;
 
-            $id_solicitud = $params["id_solicitud"];
-
             $filesUrl = $documento->filesUrl;
 
-            if ($doc) {
-                $url = $filesUrl . $id_solicitud . "/" . $key . '/' . $doc;
-                $data[$key] = getBase64String($url, $doc);
+            if ($doc['documento']) {
+                $codigo = $doc['codigo'];
+                $url = $filesUrl . $id_solicitud . "/" . $codigo . '/' .  $doc['documento'];
+                $data[$key]['url'] = getBase64String($url, $doc['documento']);
+            } else {
+                $data[$key]['url'] = null;
             }
         }
         return $data;
@@ -55,17 +54,17 @@ class Lc_DocumentoController
     {
         $id_solicitud = $_POST['id_solicitud'];
 
-        $columnFile = $_POST['columnFile'];
-        $file = $_FILES[$columnFile];
+        $docType = $_POST['codigo'];
+        $file = $_FILES['file'];
 
         $nameFile = uniqid() . getExtFile($file);
-        $_POST[$columnFile] = $nameFile;
+        /* $_POST[$columnFile] = $nameFile; */
 
         /* Borramos la carpeta del docuemento si existe */
-        deleteDir(FILE_PATH . "licencia_comercial/solicitud/$id_solicitud/$columnFile/");
+        deleteDir(FILE_PATH . "licencia_comercial/solicitud/$id_solicitud/$docType/");
 
         /* Generamops la carpeta y obtenemos el path para copiar el archivo */
-        $path = getPathFile($file, FILE_PATH . "licencia_comercial/solicitud/$id_solicitud/$columnFile/", $nameFile);
+        $path = getPathFile($file, FILE_PATH . "licencia_comercial/solicitud/$id_solicitud/$docType/", $nameFile);
 
         /* Capiamos el archivo */
         $copiado = copy($file['tmp_name'], $path);
@@ -73,9 +72,11 @@ class Lc_DocumentoController
         $url = null;
         if ($copiado) {
             $documento = new Lc_Documento();
-            $idDocumento = $documento->get(['id_solicitud' => $id_solicitud])->value['id'];
-            $documento->update([$columnFile => $nameFile], $idDocumento);
-            $url = $documento->filesUrl . $id_solicitud . '/' . $columnFile . '/' . $nameFile;
+            $tipo_documento = $_POST['tipo_documento'];
+            $params = ['id_solicitud' => $id_solicitud, 'id_tipo_documento' => $tipo_documento];
+            $idDocumento = $documento->get($params)->value['id'];
+            $documento->update(['documento' => $nameFile], $idDocumento);
+            $url = $documento->filesUrl . $id_solicitud . '/' . $docType . '/' . $nameFile;
         }
 
         if ($url) {
@@ -96,5 +97,22 @@ class Lc_DocumentoController
     {
         $conn = new BaseDatos();
         $result = $conn->delete('lc_rubros', ['id_solicitud' => $id]);
+    }
+
+    public static function getSqlDocumentos($where)
+    {
+        $sql =
+            "SELECT 
+                doc.id as tipo_documento,
+                ld.documento as documento,
+                ld.verificado as verificado,
+                doc.nombre as nombre,
+                doc.codigo as codigo,
+                doc.formato as formato
+            FROM dbo.lc_documentos ld
+                LEFT JOIN dbo.tipos_documentos doc ON ld.id_tipo_documento = doc.id
+            WHERE $where";
+
+        return $sql;
     }
 }

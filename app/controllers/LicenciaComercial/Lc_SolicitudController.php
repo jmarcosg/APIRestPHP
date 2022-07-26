@@ -158,8 +158,10 @@ class Lc_SolicitudController
 
         /* Guardamos un registro de reserva para los documentos */
         $documento = new Lc_Documento();
-        $documento->set(['id_solicitud' => $id]);
-        $documento->save();
+        $documento->saveInitDocuments($id);
+
+        $_GET['id_usuario'] = $_POST['id_usuario'];
+        $solicitud = self::get();
 
         if (!$id instanceof ErrorException) {
             sendRes(['id' => $id]);

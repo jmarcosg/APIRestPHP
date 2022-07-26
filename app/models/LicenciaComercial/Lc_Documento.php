@@ -14,17 +14,17 @@ class Lc_Documento extends BaseModel
 
     protected $fillable = [
         'id_solicitud',
-        'constancia_afip',
-        'impuesto',
-        'constancia_convenio_dpr',
-        'contrato_social',
-        'certificado_vigencia',
-        'obra_actualizado',
-        'escritura',
-        'reglamento_copropiedad',
-        'reglamento_copropiedad',
-        'recibo_retributaria',
+        'id_tipo_documento',
+        'documento',
+        'verificado',
     ];
 
     public $filesUrl = FILE_PATH . 'licencia_comercial/solicitud/';
+
+    public function saveInitDocuments($idSolicitud)
+    {
+        $params = ['id_solicitud' => $idSolicitud, 'id_tipo_documento' => 1, 'verificado' => 0];
+        $this->set($params);
+        $this->save();
+    }
 }
