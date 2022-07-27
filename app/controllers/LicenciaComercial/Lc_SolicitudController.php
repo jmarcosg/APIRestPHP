@@ -58,7 +58,7 @@ class Lc_SolicitudController
             }
 
             /* Obtenemos los rubros cargados */
-            $rubro = new Lc_RubroController();
+            $rubro = new Lc_SolicitudRubroController();
             $rubros = $rubro->index(['id_solicitud' => $data['id']]);
 
             $rubrosArray = [];
@@ -108,7 +108,7 @@ class Lc_SolicitudController
                 }
 
                 /* Obtenemos los rubros cargados */
-                $rubro = new Lc_RubroController();
+                $rubro = new Lc_SolicitudRubroController();
                 $rubros = $rubro->index(['id_solicitud' => $data['id']]);
 
                 $rubrosArray = [];
@@ -269,7 +269,7 @@ class Lc_SolicitudController
         unset($req['rubros']);
 
         /* Borramos los rubros viejos */
-        $rubro = new Lc_RubroController();
+        $rubro = new Lc_SolicitudRubroController();
         $rubro->deleteBySolicitudId($id);
 
         /* Actualizamos los nuevos rubros */
@@ -472,7 +472,7 @@ class Lc_SolicitudController
         $solhistorial->set($solicitud);
         $idSolHistorial = $solhistorial->save();
 
-        $rubro = new Lc_RubroController();
+        $rubro = new Lc_SolicitudRubroController();
         $rubros = $rubro->index(['id_solicitud' => $id]);
 
         foreach ($rubros as $r) {

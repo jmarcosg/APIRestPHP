@@ -3,9 +3,9 @@
 namespace App\Controllers\LicenciaComercial;
 
 use App\Connections\BaseDatos;
-use App\Models\LicenciaComercial\Lc_Rubro;
+use App\Models\LicenciaComercial\Lc_SolicitudRubro;
 
-class Lc_RubroController
+class Lc_SolicitudRubroController
 {
     public function __construct()
     {
@@ -14,34 +14,34 @@ class Lc_RubroController
 
     public function index($param = [], $ops = [])
     {
-        $data = new Lc_Rubro();
+        $data = new Lc_SolicitudRubro();
         $data = $data->list($param, $ops)->value;
         return $data;
     }
 
     public function get($params)
     {
-        $data = new Lc_Rubro();
+        $data = new Lc_SolicitudRubro();
         $data = $data->get($params)->value;
         return $data;
     }
 
     public function store($res)
     {
-        $data = new Lc_Rubro();
+        $data = new Lc_SolicitudRubro();
         $data->set($res);
         return $data->save();
     }
 
     public function updateFirts($req, $id)
     {
-        $data = new Lc_Rubro();
+        $data = new Lc_SolicitudRubro();
         return $data->update($req, $id);
     }
 
     public function delete($id)
     {
-        $data = new Lc_Rubro();
+        $data = new Lc_SolicitudRubro();
         return $data->delete($id);
     }
 
