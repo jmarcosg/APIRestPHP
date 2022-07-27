@@ -69,9 +69,7 @@ class Lc_SolicitudController
             $data['rubros'] = $rubrosArray;
 
             /* Obtenemos los documentos de la tercera etapa */
-            $documento = new Lc_DocumentoController();
-            $documentos = $documento->getFilesUrl(['id_solicitud' => $data['id']]);
-            $data['documentos'] = $documentos;
+            $data['documentos'] = self::getDocumentsData($data['id']);
         }
 
         if (!$data instanceof ErrorException) {
@@ -121,9 +119,7 @@ class Lc_SolicitudController
                 $data['rubros'] = $rubrosArray;
 
                 /* Obtenemos los documentos  */
-                $documento = new Lc_DocumentoController();
-                $documentos = $documento->getFilesUrl(['id_solicitud' => $data['id']]);
-                $data['documentos'] = $documentos;
+                $data['documentos'] = self::getDocumentsData($data['id']);
             }
         } else {
             $data = false;
@@ -156,17 +152,25 @@ class Lc_SolicitudController
         $data->set($_POST);
         $id = $data->save();
 
+        $sql = self::getSqlSolicitudes("id = $id");
+        $solicitud = $data->executeSqlQuery($sql, true);
+        $solicitud = self::formatSolicitudData($solicitud);
+
         /* Guardamos un registro de reserva para los documentos */
         $documento = new Lc_Documento();
-        $documento->saveInitDocuments($id);
+        $documentoController = new Lc_DocumentoController();
+        $documento->saveInitDocuments($id, $solicitud);
 
-        $_GET['id_usuario'] = $_POST['id_usuario'];
-        $solicitud = self::get();
+        /* Obtenemos los documentos para que el usuario los cargue */
+        $documentos = self::getDocumentsData($id);
 
         if (!$id instanceof ErrorException) {
-            sendRes(['id' => $id]);
+            sendRes([
+                'id' => $id,
+                'documentos' => $documentos
+            ]);
         } else {
-            sendRes(null, $id->getMessage(), $_GET);
+            sendRes(null, $id->getMessage(), [$id]);
         };
         exit;
     }
@@ -174,17 +178,41 @@ class Lc_SolicitudController
     public static function updateFirts($req, $id)
     {
         $data = new Lc_Solicitud();
+
+        /* buscamos el tipo de docuemento que corresponde a un Poder */
+        $doc = new Lc_Documento();
+        $documento = $doc->get(['id_solicitud' => $id, 'id_tipo_documento' => 2])->value;
+
         if ($req["pertenece"] == 'propia') {
             $req['id_wappersonas_tercero'] = null;
             $req['dni_tercero'] = null;
             $req['tramite_tercero'] = null;
             $req['genero_tercero'] = null;
+
+            if ($documento) {
+                /* Si actualizo a propio y existe el documento lo borramos */
+                $idDocumento = $documento['id'];
+                $doc->delete($idDocumento);
+            }
         }
+
+        if ($req['pertenece'] == 'tercero' && !$documento) {
+            /* Si actualizo a tercero pero no existe el documento */
+            $params = ['id_solicitud' => $id, 'id_tipo_documento' => 2, 'verificado' => 0];
+            $doc->set($params);
+            $doc->save();
+        }
+
         $lc =  $data->update($req, $id);
 
+        /* Obtenemos los documentos  */
+        $documentos = self::getDocumentsData($id);
+
         if (!$lc instanceof ErrorException) {
-            $_PUT['id'] = $id;
-            sendRes($_PUT);
+            sendRes([
+                'id' => $id,
+                'documentos' => $documentos
+            ]);
         } else {
             sendRes(null, $lc->getMessage(), ['id' => $id]);
         };
@@ -465,6 +493,12 @@ class Lc_SolicitudController
             $rubro->set($r);
             $rubro->save();
         }
+    }
+
+    private static function getDocumentsData($id)
+    {
+        $documentoController = new Lc_DocumentoController();
+        return $documentoController->getFilesUrl(['id_solicitud' => $id]);
     }
 
     public function delete($id)
