@@ -4,6 +4,7 @@ namespace App\Controllers\LicenciaComercial;
 
 use App\Connections\BaseDatos;
 use App\Models\LicenciaComercial\Lc_Rubro;
+use ErrorException;
 
 class Lc_RubroController
 {
@@ -12,11 +13,24 @@ class Lc_RubroController
         $GLOBALS['exect'][] = 'lc_solicitud_rubros';
     }
 
-    public function index($param = [], $ops = [])
+    public static function index($param = [], $ops = [])
     {
         $data = new Lc_Rubro();
-        $data = $data->list($param, $ops)->value;
-        return $data;
+        $sql =
+            "SELECT 
+                codigo as value,
+                (select cast(codigo as varchar) + ' - ' + nombre) as label	
+            FROM dbo.lc_rubros";
+
+        $data = $data->executeSqlQuery($sql, false);
+
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
     }
 
     public function get($params)

@@ -26,6 +26,20 @@ class Lc_SolicitudRubroController
         return $data;
     }
 
+    public function getRubrosBySolicitud($id)
+    {
+        $sql =
+            "SELECT 
+            r.codigo as value,
+            (select cast(sr.codigo as varchar) + ' - ' + r.nombre) as label	
+        FROM dbo.lc_solicitud_rubros sr
+            LEFT JOIN dbo.lc_rubros r ON sr.codigo = r.codigo
+        WHERE sr.id_solicitud = $id";
+
+        $rubro = new Lc_SolicitudRubro();
+        return $rubro->executeSqlQuery($sql, false);
+    }
+
     public function store($res)
     {
         $data = new Lc_SolicitudRubro();
@@ -48,6 +62,6 @@ class Lc_SolicitudRubroController
     public function deleteBySolicitudId($id)
     {
         $conn = new BaseDatos();
-        $result = $conn->delete('lc_rubros', ['id_solicitud' => $id]);
+        $result = $conn->delete('lc_solicitud_rubros', ['id_solicitud' => $id]);
     }
 }

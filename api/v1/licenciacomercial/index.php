@@ -2,6 +2,7 @@
 
 use App\Controllers\LicenciaComercial\Lc_SolicitudController;
 use App\Controllers\LicenciaComercial\Lc_DocumentoController;
+use App\Controllers\LicenciaComercial\Lc_RubroController;
 
 /* Metodo GET */
 
@@ -66,6 +67,8 @@ if ($url['method'] == 'GET') {
 			/* Verificación documentos - Rechazadas */
 			Lc_SolicitudController::index("estado = 'doc_rechazado'");
 
+		case '20':
+			Lc_RubroController::index();
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);

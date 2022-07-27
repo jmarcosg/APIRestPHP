@@ -59,14 +59,13 @@ class Lc_SolicitudController
 
             /* Obtenemos los rubros cargados */
             $rubro = new Lc_SolicitudRubroController();
-            $rubros = $rubro->index(['id_solicitud' => $data['id']]);
+            $data['rubros'] = $rubro->getRubrosBySolicitud($data['id']);
 
-            $rubrosArray = [];
+            /* $rubrosArray = [];
             foreach ($rubros as $r) {
-                $rubrosArray[] = $r['nombre'];
+                $rubrosArray[] = $r['codigo'];
             }
-
-            $data['rubros'] = $rubrosArray;
+ */
 
             /* Obtenemos los documentos de la tercera etapa */
             $data['documentos'] = self::getDocumentsData($data['id']);
@@ -109,14 +108,7 @@ class Lc_SolicitudController
 
                 /* Obtenemos los rubros cargados */
                 $rubro = new Lc_SolicitudRubroController();
-                $rubros = $rubro->index(['id_solicitud' => $data['id']]);
-
-                $rubrosArray = [];
-                foreach ($rubros as $r) {
-                    $rubrosArray[] = $r['nombre'];
-                }
-
-                $data['rubros'] = $rubrosArray;
+                $data['rubros'] = $data['rubros'] = $rubro->getRubrosBySolicitud($data['id']);
 
                 /* Obtenemos los documentos  */
                 $data['documentos'] = self::getDocumentsData($data['id']);
@@ -273,9 +265,12 @@ class Lc_SolicitudController
         $rubro->deleteBySolicitudId($id);
 
         /* Actualizamos los nuevos rubros */
+        $rubro = new Lc_SolicitudRubro();
+        $rubro->set(['id_solicitud' => $id, 'codigo' => $rubros[0], 'principal' => 1]);
+        $rubro->save();
+        unset($rubros[0]);
         foreach ($rubros as $r) {
-            $rubro = new Lc_SolicitudRubro();
-            $rubro->set(['id_solicitud' => $id, 'nombre' => $r]);
+            $rubro->set(['id_solicitud' => $id, 'codigo' => $r]);
             $rubro->save();
         }
 
