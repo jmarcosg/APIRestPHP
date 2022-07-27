@@ -223,18 +223,6 @@ class Lc_SolicitudController
     {
         $data = new Lc_Solicitud();
 
-        $rubros = explode(",", $req['rubros']);
-        unset($req['rubros']);
-
-        $rubro = new Lc_RubroController();
-        $rubro->deleteBySolicitudId($id);
-
-        foreach ($rubros as $r) {
-            $rubro = new Lc_Rubro();
-            $rubro->set(['id_solicitud' => $id, 'nombre' => $r]);
-            $rubro->save();
-        }
-
         $data = $data->update($req, $id);
 
         if (!$data instanceof ErrorException) {
