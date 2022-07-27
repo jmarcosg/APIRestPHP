@@ -4,7 +4,7 @@ namespace App\Controllers\LicenciaComercial;
 
 use App\Models\LicenciaComercial\Lc_Solicitud;
 use App\Models\LicenciaComercial\Lc_SolicitudHistorial;
-use App\Models\LicenciaComercial\Lc_Rubro;
+use App\Models\LicenciaComercial\Lc_SolicitudRubro;
 use App\Models\LicenciaComercial\Lc_Documento;
 
 use App\Controllers\RenaperController;
@@ -274,11 +274,12 @@ class Lc_SolicitudController
 
         /* Actualizamos los nuevos rubros */
         foreach ($rubros as $r) {
-            $rubro = new Lc_Rubro();
+            $rubro = new Lc_SolicitudRubro();
             $rubro->set(['id_solicitud' => $id, 'nombre' => $r]);
             $rubro->save();
         }
 
+        unset($req['id_wappersonas_admin']);
         $data = $data->update($req, $id);
 
         if (!$data instanceof ErrorException) {
@@ -477,7 +478,7 @@ class Lc_SolicitudController
         foreach ($rubros as $r) {
             $r['id_solicitud_historial'] = $idSolHistorial;
             $r['id_solicitud'] = null;
-            $rubro = new Lc_Rubro();
+            $rubro = new Lc_SolicitudRubro();
             $rubro->set($r);
             $rubro->save();
         }

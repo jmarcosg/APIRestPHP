@@ -6,9 +6,9 @@ use App\Connections\BaseDatos;
 use App\Models\BaseModel;
 use ErrorException;
 
-class Lc_Rubro extends BaseModel
+class Lc_SolicitudRubro extends BaseModel
 {
-    protected $table = 'lc_rubros';
+    protected $table = 'lc_solicitud_rubros';
     protected $logPath = 'v1/licencia_comercial';
     protected $identity = 'id';
 
