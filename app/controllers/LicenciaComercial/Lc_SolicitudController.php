@@ -288,6 +288,41 @@ class Lc_SolicitudController
 
     /**
      * Modulo Verificacion de rubros
+     * Realiza Cambios en los rubros
+     */
+    public static function documentosUpdate($req, $id)
+    {
+        $data = new Lc_Solicitud();
+
+        /* Generamos una replica en el historico */
+        $admin =  $req['id_wappersonas_admin'];
+        self::setHistory($id, 'cambio_documentos', $admin);
+
+        $documentos = explode(",", $req['documentos']);
+        unset($req['documentos']);
+
+        /* Borramos los documentos con id mayor a 10 */
+        $documentoController = new Lc_DocumentoController();
+        $documentoController->deleteBySolicitudId($id);
+
+        /* Actualizamos los nuevos documentos */
+        $documento = new Lc_Documento();
+        foreach ($documentos as $d) {
+            $documento->set(['id_solicitud' => $id, 'id_tipo_documento' => $d]);
+            $documento->save();
+        }
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    /**
+     * Modulo Verificacion de rubros
      * Evalua la solicitud en funcion de los rubros / descripción actividad
      */
     public static function rubrosVeriUpdate($req, $id)

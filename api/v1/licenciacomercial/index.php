@@ -123,21 +123,26 @@ if ($url['method'] == 'PUT') {
 			break;
 
 		case '4':
-			/* Verificacion de rubros - Cambio de rubros */
+			/* Verificacion de rubros - Ingreso de rubros */
 			Lc_SolicitudController::rubrosUpdate($_PUT, $id);
 			break;
 
 		case '5':
+			/* Verificacion de rubros - Ingreso de documentacion */
+			Lc_SolicitudController::documentosUpdate($_PUT, $id);
+			break;
+
+		case '6':
 			/* Verificacion de rubros - Aprobacion */
 			Lc_SolicitudController::rubrosVeriUpdate($_PUT, $id);
 			break;
 
-		case '6':
+		case '7':
 			/* Catastro - Aprobacion */
 			Lc_SolicitudController::catastroVeriUpdate($_PUT, $id);
 			break;
 
-		case '7':
+		case '8':
 			/* Catastro - Verificacion ambiental */
 			Lc_SolicitudController::ambientalVeriUpdate($_PUT, $id);
 			break;
