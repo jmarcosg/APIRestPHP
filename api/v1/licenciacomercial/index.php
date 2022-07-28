@@ -3,6 +3,7 @@
 use App\Controllers\LicenciaComercial\Lc_SolicitudController;
 use App\Controllers\LicenciaComercial\Lc_DocumentoController;
 use App\Controllers\LicenciaComercial\Lc_RubroController;
+use App\Controllers\Common\TipoDocumentoController;
 
 /* Metodo GET */
 
@@ -68,7 +69,13 @@ if ($url['method'] == 'GET') {
 			Lc_SolicitudController::index("estado = 'doc_rechazado'");
 
 		case '20':
+			/* Listado de Rubros */
 			Lc_RubroController::index();
+
+		case '30':
+			/* Listado de Tipos de documentos */
+			TipoDocumentoController::index();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
