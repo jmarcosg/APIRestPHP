@@ -61,14 +61,12 @@ class Lc_SolicitudController
             $rubro = new Lc_SolicitudRubroController();
             $data['rubros'] = $rubro->getRubrosBySolicitud($data['id']);
 
-            /* $rubrosArray = [];
-            foreach ($rubros as $r) {
-                $rubrosArray[] = $r['codigo'];
-            }
- */
-
             /* Obtenemos los documentos de la tercera etapa */
             $data['documentos'] = self::getDocumentsData($data['id']);
+
+            /* Obtenemos los documentos de la tercera etapa */
+            $documento = new Lc_DocumentoController();
+            $data['documentosSelect'] = $documento->getDocumentosBySolicitud($data['id']);
         }
 
         if (!$data instanceof ErrorException) {
@@ -108,7 +106,7 @@ class Lc_SolicitudController
 
                 /* Obtenemos los rubros cargados */
                 $rubro = new Lc_SolicitudRubroController();
-                $data['rubros'] = $data['rubros'] = $rubro->getRubrosBySolicitud($data['id']);
+                $data['rubros'] = $rubro->getRubrosBySolicitud($data['id']);
 
                 /* Obtenemos los documentos  */
                 $data['documentos'] = self::getDocumentsData($data['id']);

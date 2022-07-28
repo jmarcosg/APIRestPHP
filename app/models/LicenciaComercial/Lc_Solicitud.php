@@ -13,7 +13,6 @@ class Lc_Solicitud extends BaseModel
     protected $softDeleted = 'deleted_at';
 
     protected $fillable = [
-        'id_documento',
         'id_usuario',
         'id_wappersonas',
         'pertenece',

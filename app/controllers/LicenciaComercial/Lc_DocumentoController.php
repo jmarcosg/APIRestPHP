@@ -117,6 +117,20 @@ class Lc_DocumentoController
         return $sql;
     }
 
+    public static function getDocumentosBySolicitud($id)
+    {
+        $sql =
+            "SELECT 
+                doc.id_tipo_documento as value,
+                tipo.nombre as label	
+            FROM dbo.lc_documentos doc
+                LEFT JOIN dbo.tipos_documentos tipo ON doc.id_tipo_documento = tipo.id
+            WHERE doc.id_solicitud = $id AND id_tipo_documento > 10";
+
+        $rubro = new Lc_Documento();
+        return $rubro->executeSqlQuery($sql, false);
+    }
+
     public static function getSqlDeleteDocumentos($id)
     {
     }
