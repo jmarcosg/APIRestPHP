@@ -452,6 +452,30 @@ class Lc_SolicitudController
     }
 
     /**
+     * Modulo Catastro - Verificación Ambiental
+     * Evalua la solicitud en funcion de los rubros / nomenclatura
+     */
+    public static function evalDocumento($req, $id)
+    {
+        $idSolicitud = $req['id_solicitud'];
+        $tipoDocumento = $req['tipo_documento'];
+        $sql = "SELECT * FROM lc_documentos WHERE id_solicitud = $idSolicitud AND id_tipo_documento = $tipoDocumento";
+
+        $data = new Lc_Documento();
+        $documento = $data->executeSqlQuery($sql);
+
+        $params = ['verificado' => $req['estado'], 'id_wap_personas_admin' => $req['id_wappersonas_admin']];
+        $result = $data->update($params, $documento['id']);
+
+        if ($result) {
+            sendRes(['id' => $id]);
+        } else {
+            sendRes(null, 'No se pudo actualizar el estado del documento', ['id' => $id]);
+        }
+        exit;
+    }
+
+    /**
      * Genera un registro de historial de la solicitud
      * @param String $id      Id de la solicitud
      * @param String $tipo    Tipo de historial

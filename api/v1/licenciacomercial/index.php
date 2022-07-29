@@ -137,6 +137,11 @@ if ($url['method'] == 'PUT') {
 			Lc_SolicitudController::ambientalVeriUpdate($_PUT, $id);
 			break;
 
+		case '10':
+			/* GeneralDocumentos - Evauluacion de documento */
+			Lc_SolicitudController::evalDocumento($_PUT, $id);
+			break;
+
 		default:
 			# code...
 			break;
