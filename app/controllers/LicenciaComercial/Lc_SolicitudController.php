@@ -245,16 +245,6 @@ class Lc_SolicitudController
      */
     public static function rubrosUpdate($req, $id)
     {
-        $data = new Lc_Solicitud();
-
-        /* Actualizamos la observacion por el cambio de rubro */
-        $obsRubros = $req['observacion_rubros'];
-        $data->update(['observacion_rubros' => $obsRubros], $id);
-
-        /* Generamos una replica en el historico */
-        $admin =  $req['id_wappersonas_admin'];
-        self::setHistory($id, 'cambio_rubros', $admin);
-
         $rubros = explode(",", $req['rubros']);
         unset($req['rubros']);
 
@@ -271,17 +261,6 @@ class Lc_SolicitudController
             $rubro->set(['id_solicitud' => $id, 'codigo' => $r]);
             $rubro->save();
         }
-
-        unset($req['id_wappersonas_admin']);
-        $data = $data->update($req, $id);
-
-        if (!$data instanceof ErrorException) {
-            $_PUT['id'] = $id;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
     }
 
     /**
@@ -290,12 +269,6 @@ class Lc_SolicitudController
      */
     public static function documentosUpdate($req, $id)
     {
-        $data = new Lc_Solicitud();
-
-        /* Generamos una replica en el historico */
-        $admin =  $req['id_wappersonas_admin'];
-        self::setHistory($id, 'cambio_documentos', $admin);
-
         $documentos = explode(",", $req['documentos']);
         unset($req['documentos']);
 
@@ -309,14 +282,6 @@ class Lc_SolicitudController
             $documento->set(['id_solicitud' => $id, 'id_tipo_documento' => $d]);
             $documento->save();
         }
-
-        if (!$data instanceof ErrorException) {
-            $_PUT['id'] = $id;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
     }
 
     /**
@@ -333,6 +298,10 @@ class Lc_SolicitudController
         unset($req['id_wappersonas_admin']);
 
         $estado = $req['estado'];
+        if ($estado == 'aprobado' || $estado === 'retornado') {
+            self::rubrosUpdate($req, $id);
+            self::documentosUpdate($req, $id);
+        }
         /* Si se aprueba y no tiene local lo mandamos a pedir los archivos */
         if ($estado == 'aprobado' && $solicitud['tiene_local'] === '0') {
             $req['estado'] = 'doc';
@@ -356,6 +325,8 @@ class Lc_SolicitudController
         }
 
         /* Guardamos la solcitidu */
+        unset($req['rubros']);
+        unset($req['documentos']);
         $data = $data->update($req, $id);
 
         /* Registramos un historial de la solicitud  */

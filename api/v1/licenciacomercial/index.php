@@ -122,16 +122,6 @@ if ($url['method'] == 'PUT') {
 			Lc_SolicitudController::updateThir($_PUT, $id);
 			break;
 
-		case '4':
-			/* Verificacion de rubros - Ingreso de rubros */
-			Lc_SolicitudController::rubrosUpdate($_PUT, $id);
-			break;
-
-		case '5':
-			/* Verificacion de rubros - Ingreso de documentacion */
-			Lc_SolicitudController::documentosUpdate($_PUT, $id);
-			break;
-
 		case '6':
 			/* Verificacion de rubros - Aprobacion */
 			Lc_SolicitudController::rubrosVeriUpdate($_PUT, $id);

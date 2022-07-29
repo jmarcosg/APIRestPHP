@@ -36,6 +36,8 @@ class Lc_DocumentoController
                 $codigo = $doc['codigo'];
                 $url = $filesUrl . $id_solicitud . "/" . $codigo . '/' .  $doc['documento'];
                 $data[$key]['url'] = getBase64String($url, $doc['documento']);
+                $data[$key]['loading'] = false;
+                $data[$key]['error'] = false;
             } else {
                 $data[$key]['url'] = null;
             }
