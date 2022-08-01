@@ -46,6 +46,19 @@ class Lc_SolicitudController
         $data = $solicitud->executeSqlQuery($sql, true);
         $data = self::formatSolicitudData($data);
 
+        /* Obtenemos la foto */
+        $renaper = new RenaperController();
+
+        $genero = $data["personaInicio"]["genero"];
+        $dni = $data["personaInicio"]["documento"];
+        $data['personaInicio']['foto'] = $renaper->getImage($genero, $dni)['imagen'];
+
+        if (isset($data["personaTercero"])) {
+            $genero = $data["personaTercero"]["genero"];
+            $dni = $data["personaTercero"]["documento"];
+            $data['personaTercero']['foto'] = $renaper->getImage($genero, $dni)['imagen'];
+        }
+
         if ($data) {
 
             /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
@@ -171,7 +184,8 @@ class Lc_SolicitudController
 
         /* buscamos el tipo de docuemento que corresponde a un Poder */
         $doc = new Lc_Documento();
-        $documento = $doc->get(['id_solicitud' => $id, 'id_tipo_documento' => 2])->value;
+        $poder = $doc->get(['id_solicitud' => $id, 'id_tipo_documento' => 2])->value;
+        $dni = $doc->get(['id_solicitud' => $id, 'id_tipo_documento' => 3])->value;
 
         if ($req["pertenece"] == 'propia') {
             $req['id_wappersonas_tercero'] = null;
@@ -179,16 +193,29 @@ class Lc_SolicitudController
             $req['tramite_tercero'] = null;
             $req['genero_tercero'] = null;
 
-            if ($documento) {
+            if ($poder) {
                 /* Si actualizo a propio y existe el documento lo borramos */
-                $idDocumento = $documento['id'];
+                $idDocumento = $poder['id'];
+                $doc->delete($idDocumento);
+            }
+
+            if ($dni) {
+                /* Si actualizo a propio y existe el documento lo borramos */
+                $idDocumento = $dni['id'];
                 $doc->delete($idDocumento);
             }
         }
 
-        if ($req['pertenece'] == 'tercero' && !$documento) {
+        if ($req['pertenece'] == 'tercero' && !$poder) {
             /* Si actualizo a tercero pero no existe el documento */
             $params = ['id_solicitud' => $id, 'id_tipo_documento' => 2, 'verificado' => 0];
+            $doc->set($params);
+            $doc->save();
+        }
+
+        if ($req['pertenece'] == 'tercero' && !$dni) {
+            /* Si actualizo a tercero pero no existe el documento */
+            $params = ['id_solicitud' => $id, 'id_tipo_documento' => 3, 'verificado' => 0];
             $doc->set($params);
             $doc->save();
         }

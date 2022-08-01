@@ -33,14 +33,14 @@ class Lc_Documento extends BaseModel
             $params = ['id_solicitud' => $idSolicitud, 'id_tipo_documento' => 2, 'verificado' => 0];
             $this->set($params);
             $this->save();
+
+            /* DNI por el PODER */
+            $params = ['id_solicitud' => $idSolicitud, 'id_tipo_documento' => 3, 'verificado' => 0];
+            $this->set($params);
+            $this->save();
         }
 
         if ($solicitud['tipo_persona'] == 'fisica') {
-            /* AFIP */
-            $params['id_tipo_documento'] = 3;
-            $this->set($params);
-            $this->save();
-
             /* AFIP */
             $params['id_tipo_documento'] = 4;
             $this->set($params);
@@ -50,14 +50,14 @@ class Lc_Documento extends BaseModel
             $params['id_tipo_documento'] = 5;
             $this->set($params);
             $this->save();
-        }
 
-        if ($solicitud['tipo_persona'] == 'juridica') {
             /* AFIP */
             $params['id_tipo_documento'] = 6;
             $this->set($params);
             $this->save();
+        }
 
+        if ($solicitud['tipo_persona'] == 'juridica') {
             /* AFIP */
             $params['id_tipo_documento'] = 7;
             $this->set($params);
@@ -75,6 +75,11 @@ class Lc_Documento extends BaseModel
 
             /* AFIP */
             $params['id_tipo_documento'] = 10;
+            $this->set($params);
+            $this->save();
+
+            /* AFIP */
+            $params['id_tipo_documento'] = 11;
             $this->set($params);
             $this->save();
         }
