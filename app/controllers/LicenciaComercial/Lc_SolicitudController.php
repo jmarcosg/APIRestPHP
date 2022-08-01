@@ -47,7 +47,7 @@ class Lc_SolicitudController
         $data = self::formatSolicitudData($data);
 
         /* Obtenemos la foto */
-        $renaper = new RenaperController();
+        /* $renaper = new RenaperController();
 
         $genero = $data["personaInicio"]["genero"];
         $dni = $data["personaInicio"]["documento"];
@@ -57,7 +57,7 @@ class Lc_SolicitudController
             $genero = $data["personaTercero"]["genero"];
             $dni = $data["personaTercero"]["documento"];
             $data['personaTercero']['foto'] = $renaper->getImage($genero, $dni)['imagen'];
-        }
+        } */
 
         if ($data) {
 
