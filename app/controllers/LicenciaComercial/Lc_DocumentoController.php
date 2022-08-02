@@ -124,7 +124,9 @@ class Lc_DocumentoController
         $sql =
             "SELECT 
                 doc.id_tipo_documento as value,
-                tipo.nombre as label	
+                tipo.nombre as label,
+                codigo as codigo,
+                requiere as req	
             FROM dbo.lc_documentos doc
                 LEFT JOIN dbo.tipos_documentos tipo ON doc.id_tipo_documento = tipo.id
             WHERE doc.id_solicitud = $id AND id_tipo_documento > 10";

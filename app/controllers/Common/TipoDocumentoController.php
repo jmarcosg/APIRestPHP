@@ -19,7 +19,9 @@ class TipoDocumentoController
         $sql =
             "SELECT 
                 id as value,
-                nombre as label
+                nombre as label,
+                codigo as codigo,
+                requiere as req
             FROM dbo.tipos_documentos
             WHERE id > 10";
 
