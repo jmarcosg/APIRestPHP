@@ -428,6 +428,58 @@ class Lc_SolicitudController
     }
 
     /**
+     * Modulo Verificacion de documentos
+     * Evalua la solicitud en funcion de documentos
+     */
+    public static function documentosVeriUpdate($req, $id)
+    {
+        $data = new Lc_Solicitud();
+        $solicitud = $data->get(['id' => $id])->value;
+
+        /* Para que no se pisen */
+        if ($solicitud['estado'] == 'ver_doc') {
+            /* Guaramos el ID del admin para generar registro de auditoria */
+            $admin =  $req['id_wappersonas_admin'];
+            unset($req['id_wappersonas_admin']);
+
+            $estado = $req['estado'];
+
+            /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
+            if ($estado == 'aprobado') {
+                $req['ver_documentos'] = '1';
+                $req['estado'] = 'finalizado';
+            }
+
+            /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
+            if ($estado == 'retornado') {
+                $req['estado'] = 'docs';
+                $req['ver_documentos'] = '0';
+            }
+
+            /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
+            if ($estado == 'rechazado') {
+                $req['estado'] = 'doc_rechazado';
+            }
+
+            $data = $data->update($req, $id);
+
+            /* Registramos un historial de la solicitud  */
+            self::setHistory($id, 'verificador_documentos', $admin);
+        } else {
+            $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
+        }
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            $_PUT['estado'] = $estado;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    /**
      * Modulo Catastro - Verificación Ambiental
      * Evalua la solicitud en funcion de los rubros / nomenclatura
      */
