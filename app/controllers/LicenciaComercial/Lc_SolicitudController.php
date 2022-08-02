@@ -306,7 +306,7 @@ class Lc_SolicitudController
         /* Actualizamos los nuevos documentos */
         $documento = new Lc_Documento();
         foreach ($documentos as $d) {
-            $documento->set(['id_solicitud' => $id, 'id_tipo_documento' => $d]);
+            $documento->set(['id_solicitud' => $id, 'id_tipo_documento' => $d, 'verificado' => 0]);
             $documento->save();
         }
     }
