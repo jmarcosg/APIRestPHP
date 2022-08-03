@@ -35,6 +35,7 @@ trait QuerysSql
                 sol.tipo_persona as tipo_persona,
                 sol.tiene_local as tiene_local,
                 sol.nomenclatura as nomenclatura,
+                sol.m2 as m2,
                 sol.descripcion_actividad as descripcion,
                 sol.estado as estado,
                 sol.observacion as observacion,
