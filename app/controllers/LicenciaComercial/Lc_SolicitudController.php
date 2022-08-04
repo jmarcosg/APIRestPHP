@@ -92,6 +92,7 @@ class Lc_SolicitudController
         if (count($data) > 0) {
             $data = $data[0];
 
+            /* ELIMINAR ESTA LINEA CUANDO SE TERMINE EL SISTEMA DE NOTI */
             if (str_contains($data['estado'], 'rechazado')) $data = false;
 
             if ($data) {
@@ -110,6 +111,9 @@ class Lc_SolicitudController
 
                 /* Obtenemos los documentos  */
                 $data['documentos'] = self::getDocumentsData($data['id']);
+
+                /* Obtenemos el hostorial */
+                $data['historial'] = Lc_SolicitudHistorialController::getHistorial($data['id']);
             }
         } else {
             $data = false;

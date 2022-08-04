@@ -272,6 +272,20 @@ class Lc_SolicitudHistorialController
         exit;
     }
 
+    public static function getHistorial($id){
+        $solicitud = new Lc_SolicitudHistorial();
+
+        $sql = self::getSqlHistorial("id_solicitud = $id");
+        $data = $solicitud->executeSqlQuery($sql, false);
+
+        if ($data) {
+            return $data;
+        }else{
+            return null;
+        }
+
+    }
+
     public function delete($id)
     {
         $data = new Lc_SolicitudHistorial;

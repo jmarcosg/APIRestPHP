@@ -53,6 +53,26 @@ trait QuerysSql
         return $sql;
     }
 
+    private static function getSqlHistorial($where)
+    {
+        $sql =
+            "SELECT                 
+                /* Persona que evaluo el tramite */
+                peradm.Nombre as admin,
+                
+                /* Datos de la solicitud */
+                sol.estado as estado,
+                sol.observacion as observacion,
+                sol.tipo_registro as tipo_registro,
+                sol.fecha_alta as fecha_alta
+            FROM dbo.lc_solicitudes_historial sol
+                LEFT JOIN dbo.wapPersonas peradm ON sol.id_wappersonas_admin = peradm.ReferenciaID 
+            WHERE $where
+            ORDER BY id DESC";
+
+        return $sql;
+    }
+
     private static function formatSolicitudDataArray($solicitudes)
     {
         foreach ($solicitudes as $keySol => $solicitud) {
