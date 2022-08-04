@@ -29,7 +29,6 @@ class Lc_SolicitudHistorial extends BaseModel
         'estado',
         'observacion',
         'ver_rubros',
-        'observacion_rubros',
         'ver_catastro',
         'ver_ambiental',
         'tipo_registro',

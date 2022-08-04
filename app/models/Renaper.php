@@ -62,7 +62,9 @@ class Renaper extends BaseModel
                     "genero" => $gender,
                     'numero' => $dni,
                     "tramite" => $tramite
-                ]),
+                ]), 
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . $token,
                     'Content-Type: application/json'

@@ -46,19 +46,6 @@ class Lc_SolicitudController
         $data = $solicitud->executeSqlQuery($sql, true);
         $data = self::formatSolicitudData($data);
 
-        /* Obtenemos la foto */
-        /* $renaper = new RenaperController();
-
-        $genero = $data["personaInicio"]["genero"];
-        $dni = $data["personaInicio"]["documento"];
-        $data['personaInicio']['foto'] = $renaper->getImage($genero, $dni)['imagen'];
-
-        if (isset($data["personaTercero"])) {
-            $genero = $data["personaTercero"]["genero"];
-            $dni = $data["personaTercero"]["documento"];
-            $data['personaTercero']['foto'] = $renaper->getImage($genero, $dni)['imagen'];
-        } */
-
         if ($data) {
 
             /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
@@ -161,7 +148,6 @@ class Lc_SolicitudController
 
         /* Guardamos un registro de reserva para los documentos */
         $documento = new Lc_Documento();
-        $documentoController = new Lc_DocumentoController();
         $documento->saveInitDocuments($id, $solicitud);
 
         /* Obtenemos los documentos para que el usuario los cargue */
@@ -182,7 +168,7 @@ class Lc_SolicitudController
     {
         $data = new Lc_Solicitud();
 
-        /* buscamos el tipo de docuemento que corresponde a un Poder */
+        /* buscamos el tipo de documento que corresponde a un Poder */
         $doc = new Lc_Documento();
         $poder = $doc->get(['id_solicitud' => $id, 'id_tipo_documento' => 2])->value;
         $dni = $doc->get(['id_solicitud' => $id, 'id_tipo_documento' => 3])->value;

@@ -129,13 +129,9 @@ class Lc_DocumentoController
                 requiere as req	
             FROM dbo.lc_documentos doc
                 LEFT JOIN dbo.tipos_documentos tipo ON doc.id_tipo_documento = tipo.id
-            WHERE doc.id_solicitud = $id AND id_tipo_documento > 10";
+            WHERE doc.id_solicitud = $id AND id_tipo_documento > 11";
 
-        $rubro = new Lc_Documento();
-        return $rubro->executeSqlQuery($sql, false);
-    }
-
-    public static function getSqlDeleteDocumentos($id)
-    {
+        $doc = new Lc_Documento();
+        return $doc->executeSqlQuery($sql, false);
     }
 }

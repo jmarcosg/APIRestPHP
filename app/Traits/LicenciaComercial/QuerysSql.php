@@ -40,7 +40,6 @@ trait QuerysSql
                 sol.estado as estado,
                 sol.observacion as observacion,
                 sol.ver_rubros as ver_rubros,
-                sol.observacion_rubros as observacion_rubros,
                 sol.ver_catastro as ver_catastro,
                 sol.ver_ambiental as ver_ambiental,
                 sol.ver_documentos as ver_documentos,
