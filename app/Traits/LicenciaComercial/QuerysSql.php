@@ -2,7 +2,6 @@
 
 namespace App\Traits\LicenciaComercial;
 
-
 trait QuerysSql
 {
     private static function getSqlSolicitudes($where)
@@ -61,9 +60,11 @@ trait QuerysSql
                 peradm.Nombre as admin,
                 
                 /* Datos de la solicitud */
+                sol.id as id,
                 sol.estado as estado,
                 sol.observacion as observacion,
                 sol.tipo_registro as tipo_registro,
+                sol.visto as visto,
                 sol.fecha_alta as fecha_alta
             FROM dbo.lc_solicitudes_historial sol
                 LEFT JOIN dbo.wapPersonas peradm ON sol.id_wappersonas_admin = peradm.ReferenciaID 
