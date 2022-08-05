@@ -33,5 +33,6 @@ class Lc_SolicitudHistorial extends BaseModel
         'ver_ambiental',
         'tipo_registro',
         'ver_documentos',
+        'visto'
     ];
 }

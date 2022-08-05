@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\LicenciaComercial\Lc_SolicitudController;
+use App\Controllers\LicenciaComercial\Lc_SolicitudHistorialController;
 use App\Controllers\LicenciaComercial\Lc_DocumentoController;
 use App\Controllers\LicenciaComercial\Lc_RubroController;
 use App\Controllers\Common\TipoDocumentoController;
@@ -92,6 +93,9 @@ if ($url['method'] == 'POST') {
 			break;
 		case '3':
 			Lc_DocumentoController::update();
+			break;
+		case '4':
+			Lc_SolicitudHistorialController::setView($_POST['id']);
 			break;
 		default:
 			break;

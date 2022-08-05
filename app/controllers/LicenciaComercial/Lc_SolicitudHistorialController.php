@@ -272,7 +272,23 @@ class Lc_SolicitudHistorialController
         exit;
     }
 
-    public static function getHistorial($id){
+    public static function setView($id)
+    {
+        $data = new Lc_SolicitudHistorial;
+
+        $data = $data->update(['visto' => '1'], $id);
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    public static function getHistorial($id)
+    {
         $solicitud = new Lc_SolicitudHistorial();
 
         $sql = self::getSqlHistorial("id_solicitud = $id");
@@ -280,10 +296,9 @@ class Lc_SolicitudHistorialController
 
         if ($data) {
             return $data;
-        }else{
+        } else {
             return null;
         }
-
     }
 
     public function delete($id)
