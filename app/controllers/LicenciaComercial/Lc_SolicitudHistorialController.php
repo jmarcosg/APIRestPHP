@@ -291,7 +291,7 @@ class Lc_SolicitudHistorialController
     {
         $solicitud = new Lc_SolicitudHistorial();
 
-        $sql = self::getSqlHistorial("id_solicitud = $id");
+        $sql = self::getSqlHistorial("id_usuario = $id");
         $data = $solicitud->executeSqlQuery($sql, false);
 
         if ($data) {

@@ -113,7 +113,7 @@ class Lc_SolicitudController
                 $data['documentos'] = self::getDocumentsData($data['id']);
 
                 /* Obtenemos el hostorial */
-                $data['historial'] = Lc_SolicitudHistorialController::getHistorial($data['id']);
+                $data['historial'] = Lc_SolicitudHistorialController::getHistorial($data['id_usuario']);
             }
         } else {
             $data = false;
@@ -347,7 +347,7 @@ class Lc_SolicitudController
         $data = $data->update($req, $id);
 
         /* Registramos un historial de la solicitud  */
-        self::setHistory($id, 'rubros_verificador', $admin);
+        self::setHistory($id, 'rubros_verificador', $admin, $estado);
 
         if (!$data instanceof ErrorException) {
             $_PUT['id'] = $id;
@@ -399,9 +399,8 @@ class Lc_SolicitudController
 
             $data = $data->update($req, $id);
 
-
             /* Registramos un historial de la solicitud  */
-            self::setHistory($id, 'catastro', $admin);
+            self::setHistory($id, 'catastro', $admin, $estado);
         } else {
             $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
         }
@@ -454,7 +453,7 @@ class Lc_SolicitudController
             $data = $data->update($req, $id);
 
             /* Registramos un historial de la solicitud  */
-            self::setHistory($id, 'verificador_documentos', $admin);
+            self::setHistory($id, 'verificador_documentos', $admin, $estado);
         } else {
             $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
         }
@@ -508,7 +507,7 @@ class Lc_SolicitudController
         $data = $data->update($req, $id);
 
         /* Registramos un historial de la solicitud  */
-        self::setHistory($id, 'verificacion_ambiental', $admin);
+        self::setHistory($id, 'verificacion_ambiental', $admin, $estado);
 
         if (!$data instanceof ErrorException) {
             $_PUT['id'] = $id;
@@ -551,14 +550,16 @@ class Lc_SolicitudController
      * @param String $admin   Id del admin que genera el historial 
      * @return void 
      */
-    private static function setHistory($id, $tipo, $admin)
+    private static function setHistory($id, $tipo, $admin, $estado)
     {
         $data = new Lc_Solicitud();
         $solicitud = $data->get(['id' => $id])->value;
 
         $solicitud['id_solicitud'] = $id;
-        $solicitud['tipo_registro'] = $tipo;
         $solicitud['id_wappersonas_admin'] = $admin;
+        $solicitud['estado'] = $estado;
+        $solicitud['tipo_registro'] = $tipo;
+        $solicitud['visto'] = 0;
 
         $solhistorial = new Lc_SolicitudHistorial();
         $solhistorial->set($solicitud);
