@@ -137,7 +137,7 @@ trait TemplateEmailSolicitud
                 <body>
                     <div class='container'>
                         <div class='row'>
-                            <h3>La solicitud Número: $id fue rechazada. Puede generar una nueva solicitud </h3>
+                            <h3>La solicitud Número: $id fue rechazada. Aguarde la visita de un inspector en su domicilio </h3>
                             <br />
                             <p>Observación: $observacion</p>
                         </div>
