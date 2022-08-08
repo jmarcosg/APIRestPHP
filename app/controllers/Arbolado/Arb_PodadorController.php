@@ -393,7 +393,7 @@ class Arb_PodadorController
                     $venc = date("d/m/Y", strtotime($venc));
                     $response = [
                         'estado' => 'vigente',
-                        'msg' => "El carnet se encuentra vigente hasta la fecha: $venc",
+                        'msg' => "La credencial se encuentra vigente hasta la fecha: $venc",
                     ];
                 }
             }
