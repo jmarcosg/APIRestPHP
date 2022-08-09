@@ -168,7 +168,7 @@ class Lc_SolicitudController
         exit;
     }
 
-    public static function updateFirts($req, $id)
+    public static function datosPersonales($req, $id)
     {
         $data = new Lc_Solicitud();
 
@@ -226,7 +226,7 @@ class Lc_SolicitudController
         exit;
     }
 
-    public static function updateSec($req, $id)
+    public static function actividad($req, $id)
     {
         $data = new Lc_Solicitud();
 
@@ -241,7 +241,7 @@ class Lc_SolicitudController
         exit;
     }
 
-    public static function updateThir($req, $id)
+    public static function documentacion($req, $id)
     {
         $data = new Lc_Solicitud();
 
