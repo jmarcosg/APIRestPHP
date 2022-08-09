@@ -113,17 +113,17 @@ if ($url['method'] == 'PUT') {
 	switch ($step) {
 		case '1':
 			/* Datos personales */
-			Lc_SolicitudController::updateFirts($_PUT, $id);
+			Lc_SolicitudController::datosPersonales($_PUT, $id);
 			break;
 
 		case '2':
 			/* Nomenclatura y rubros */
-			Lc_SolicitudController::updateSec($_PUT, $id);
+			Lc_SolicitudController::actividad($_PUT, $id);
 			break;
 
 		case '3':
 			/* Documentacion */
-			Lc_SolicitudController::updateThir($_PUT, $id);
+			Lc_SolicitudController::documentacion($_PUT, $id);
 			break;
 
 		case '6':

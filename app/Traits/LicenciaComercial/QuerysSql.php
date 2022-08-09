@@ -61,6 +61,7 @@ trait QuerysSql
                 
                 /* Datos de la solicitud */
                 sol.id as id,
+                sol.id_solicitud as id_solicitud,
                 sol.estado as estado,
                 sol.observacion as observacion,
                 sol.tipo_registro as tipo_registro,
