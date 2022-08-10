@@ -27,6 +27,8 @@ trait QuerysSql
                 persol.Genero as persol_genero,
                 
                 /* Datos de la solicitud */
+                sol.telefono as telefono,
+                sol.correo as correo,
                 sol.pertenece as pertenece,
                 sol.dni_tercero as dni_tercero,
                 sol.tramite_tercero as tramite_tercero,
