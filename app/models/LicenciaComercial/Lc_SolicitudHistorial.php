@@ -13,9 +13,10 @@ class Lc_SolicitudHistorial extends BaseModel
 
     protected $fillable = [
         'id_solicitud',
-        'id_documento',
         'id_usuario',
         'id_wappersonas',
+        'telefono',
+        'correo',
         'id_wappersonas_admin',
         'pertenece',
         'id_wappersonas_tercero',
@@ -23,6 +24,7 @@ class Lc_SolicitudHistorial extends BaseModel
         'tramite_tercero',
         'genero_tercero',
         'tipo_persona',
+        'cuit',
         'tiene_local',
         'nomenclatura',
         'descripcion_actividad',
