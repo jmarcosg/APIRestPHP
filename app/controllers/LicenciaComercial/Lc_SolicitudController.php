@@ -428,6 +428,19 @@ class Lc_SolicitudController
 
 
         if (!$data instanceof ErrorException) {
+
+            $data = new Lc_Solicitud();
+            $sql = self::getSqlSolicitudes("id = $id");
+            $solicitud = $data->executeSqlQuery($sql, true);
+            $solicitud = self::formatSolicitudData($solicitud);
+
+            if ($solicitud['ver_ambiental'] == 1) {
+                if ($estado === 'aprobado') self::sendEmail($id, 'catastro_aprobado', $solicitud);
+            }
+
+            if ($estado === 'rechazado') self::sendEmail($id, 'catastro_rechazado', $solicitud);
+            if ($estado === 'retornado') self::sendEmail($id, 'catastro_retornado', $solicitud);
+
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
             sendRes($_PUT);
@@ -480,6 +493,19 @@ class Lc_SolicitudController
         self::setHistory($id, 'verificacion_ambiental', $admin, $estado);
 
         if (!$data instanceof ErrorException) {
+
+            $data = new Lc_Solicitud();
+            $sql = self::getSqlSolicitudes("id = $id");
+            $solicitud = $data->executeSqlQuery($sql, true);
+            $solicitud = self::formatSolicitudData($solicitud);
+
+            if ($solicitud['ver_catastro'] == 1) {
+                if ($estado === 'aprobado') self::sendEmail($id, 'catastro_aprobado', $solicitud);
+            }
+
+            if ($estado === 'rechazado') self::sendEmail($id, 'ambiental_rechazado', $solicitud);
+            if ($estado === 'retornado') self::sendEmail($id, 'ambiental_retornado', $solicitud);
+
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
             sendRes($_PUT);
@@ -514,7 +540,7 @@ class Lc_SolicitudController
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
             if ($estado == 'retornado') {
-                $req['estado'] = 'docs';
+                $req['estado'] = 'doc';
                 $req['ver_documentos'] = '0';
             }
 

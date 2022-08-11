@@ -69,6 +69,10 @@ if ($url['method'] == 'GET') {
 			/* Verificación documentos - Rechazadas */
 			Lc_SolicitudController::index("estado = 'doc_rechazado'");
 
+		case '15':
+			/* Verificación documentos - Rechazadas */
+			Lc_SolicitudController::index("1 = 1");
+
 		case '20':
 			/* Listado de Rubros */
 			Lc_RubroController::index();
