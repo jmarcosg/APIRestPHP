@@ -138,7 +138,9 @@ class Lc_SolicitudController
         $_POST['estado'] = 'act';
 
         $_POST['tiene_local'] = 1;
+
         $_POST['ver_rubros'] = 0;
+        $_POST['ver_inicio'] = 0;
         $_POST['ver_catastro'] = 0;
         $_POST['ver_ambiental'] = 0;
         $_POST['ver_documentos'] = 0;
@@ -316,6 +318,50 @@ class Lc_SolicitudController
      * Modulo Verificacion de rubros
      * Evalua la solicitud en funcion de los rubros / descripción actividad
      */
+    public static function initVeriUpdate($req, $id)
+    {
+        $data = new Lc_Solicitud();
+
+        /* Guaramos el ID del admin para generar registro de auditoria */
+        $admin =  $req['id_wappersonas_admin'];
+        unset($req['id_wappersonas_admin']);
+
+        $estado = $req['estado'];
+
+        /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
+        if ($estado == 'aprobado') {
+            $req['estado'] = 'cat';
+        }
+
+        /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
+        if ($estado == 'retornado') {
+            $req['estado'] = 'act_retornado';
+        }
+
+        /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
+        if ($estado == 'rechazado') {
+            $req['estado'] = 'inicio_rechazado';
+        }
+
+        $data = $data->update($req, $id);
+
+        /* Registramos un historial de la solicitud  */
+        self::setHistory($id, 'verificacion_inicio', $admin, $estado);
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            $_PUT['estado'] = $estado;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    /**
+     * Modulo Verificacion de rubros
+     * Evalua la solicitud en funcion de los rubros / descripción actividad
+     */
     public static function rubrosVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
@@ -399,11 +445,7 @@ class Lc_SolicitudController
 
             /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
             if ($estado == 'aprobado') {
-                if ($solicitud['ver_ambiental'] === '1') {
-                    $req['estado'] = 'doc';
-                } else {
-                    $req['estado'] = 'cat';
-                }
+                $req['estado'] = 'ver_amb';
                 $req['ver_catastro'] = '1';
             }
 
@@ -450,7 +492,6 @@ class Lc_SolicitudController
         exit;
     }
 
-
     /**
      * Modulo Catastro - Verificación Ambiental
      * Evalua la solicitud en funcion de los rubros / nomenclatura
@@ -468,11 +509,7 @@ class Lc_SolicitudController
 
         /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
         if ($estado == 'aprobado') {
-            if ($solicitud['ver_catastro'] === '1') {
-                $req['estado'] = 'doc';
-            } else {
-                $req['estado'] = 'cat';
-            }
+            $req['estado'] = 'ver_rubros';
             $req['ver_ambiental'] = '1';
         }
 

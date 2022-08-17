@@ -2,9 +2,7 @@
 
 namespace App\Models\LicenciaComercial;
 
-use App\Connections\BaseDatos;
 use App\Models\BaseModel;
-use ErrorException;
 
 class Lc_Documento extends BaseModel
 {
