@@ -22,7 +22,7 @@ if ($url['method'] == 'GET') {
 			Lc_SolicitudController::get();
 
 		case '3':
-			/* Verificador Rubros - Todas */
+			/* Verificador Rubros - Nuevas */
 			Lc_SolicitudController::index("estado = 'ver_rubros' AND ver_rubros = 0 AND estado NOT LIKE '%rechazado%'");
 
 		case '4':
@@ -34,7 +34,7 @@ if ($url['method'] == 'GET') {
 			Lc_SolicitudController::index("estado = 'rubros_rechazado'");
 
 		case '6':
-			/* Catastro - Todas */
+			/* Catastro - Nuevas */
 			Lc_SolicitudController::index("estado = 'cat' AND ver_catastro = 0 AND estado NOT LIKE '%rechazado%'");
 
 		case '7':
@@ -46,7 +46,7 @@ if ($url['method'] == 'GET') {
 			Lc_SolicitudController::index("estado = 'cat_rechazado'");
 
 		case '9':
-			/* Verificación ambiental - Todas */
+			/* Verificación ambiental - Nuevas */
 			Lc_SolicitudController::index("estado = 'cat' AND ver_ambiental = 0 AND estado NOT LIKE '%rechazado%'");
 
 		case '10':
@@ -58,7 +58,7 @@ if ($url['method'] == 'GET') {
 			Lc_SolicitudController::index("estado = 'ambiental_rechazado'");
 
 		case '12':
-			/* Verificación documentos - Todas */
+			/* Verificación documentos - Nuevas */
 			Lc_SolicitudController::index("estado = 'ver_doc' AND ver_documentos = 0 AND estado NOT LIKE '%rechazado%'");
 
 		case '13':
@@ -70,6 +70,22 @@ if ($url['method'] == 'GET') {
 			Lc_SolicitudController::index("estado = 'doc_rechazado'");
 
 		case '15':
+			/* Verificación Inicio Tramite - Nuevas */
+			Lc_SolicitudController::index("estado = 'ver_inicio' AND ver_inicio = 0 AND estado NOT LIKE '%rechazado%'");
+
+		case '16':
+			/* Verificación Inicio Tramite  - Aprobadas */
+			Lc_SolicitudController::index("ver_inicio = 1 AND estado NOT LIKE '%rechazado%'");
+
+		case '17':
+			/* Verificación Inicio Tramite  - Rechazadas */
+			Lc_SolicitudController::index("estado = 'inicio_rechazado'");
+
+
+
+
+
+		case '19':
 			/* Verificación documentos - Rechazadas */
 			Lc_SolicitudController::index("1 = 1");
 
@@ -153,6 +169,11 @@ if ($url['method'] == 'PUT') {
 		case '10':
 			/* GeneralDocumentos - Evauluacion de documento */
 			Lc_SolicitudController::evalDocumento($_PUT, $id);
+			break;
+
+		case '11':
+			/* GeneralDocumentos - Evauluacion de documento */
+			Lc_SolicitudController::initVeriUpdate($_PUT, $id);
 			break;
 
 		default:

@@ -12,6 +12,7 @@ trait QuerysSql
                 /* Persona que inicio el tramite */
                 perini.Nombre as perini_nombre,
                 perini.Documento as perini_documento,
+                perini.cuil as perini_cuil,
                 perini.DomicilioLegal as perini_domicilio,
                 perini.Celular as perini_celular,
                 perini.CorreoElectronico as perini_email,
@@ -21,6 +22,7 @@ trait QuerysSql
                 sol.id_wappersonas_tercero as id_wappersonas_tercero,
                 persol.Nombre as persol_nombre,
                 persol.Documento as persol_documento,
+                persol.cuil as persol_cuil,
                 persol.DomicilioLegal as persol_domicilio,
                 persol.Celular as persol_celular,
                 persol.CorreoElectronico as persol_email,
