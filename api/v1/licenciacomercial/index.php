@@ -47,7 +47,7 @@ if ($url['method'] == 'GET') {
 
 		case '9':
 			/* Verificación ambiental - Nuevas */
-			Lc_SolicitudController::index("estado = 'cat' AND ver_ambiental = 0 AND estado NOT LIKE '%rechazado%'");
+			Lc_SolicitudController::index("estado = 'ver_amb' AND ver_ambiental = 0 AND estado NOT LIKE '%rechazado%'");
 
 		case '10':
 			/* Verificación ambiental - Aprobadas */

@@ -445,11 +445,7 @@ class Lc_SolicitudController
 
             /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
             if ($estado == 'aprobado') {
-                if ($solicitud['ver_ambiental'] === '1') {
-                    $req['estado'] = 'doc';
-                } else {
-                    $req['estado'] = 'cat';
-                }
+                $req['estado'] = 'ver_amb';
                 $req['ver_catastro'] = '1';
             }
 
@@ -513,11 +509,7 @@ class Lc_SolicitudController
 
         /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
         if ($estado == 'aprobado') {
-            if ($solicitud['ver_catastro'] === '1') {
-                $req['estado'] = 'doc';
-            } else {
-                $req['estado'] = 'cat';
-            }
+            $req['estado'] = 'ver_rubros';
             $req['ver_ambiental'] = '1';
         }
 
