@@ -382,11 +382,10 @@ class Lc_SolicitudController
             $data = $data->update($req, $id);
 
             /* Registramos un historial de la solicitud  */
-            self::setHistory($id, 'catastro', $admin, $estado);
+            self::setHistory($id, 'verificacion_catastro', $admin, $estado);
         } else {
             $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
         }
-
 
         if (!$data instanceof ErrorException) {
 
@@ -526,7 +525,7 @@ class Lc_SolicitudController
             $data = $data->update($req, $id);
 
             /* Registramos un historial de la solicitud  */
-            self::setHistory($id, 'rubros_verificador', $admin, $estado);
+            self::setHistory($id, 'verificacion_rubros', $admin, $estado);
         } else {
             $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
         }
