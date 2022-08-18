@@ -37,6 +37,7 @@ trait QuerysSql
                 sol.tramite_tercero as tramite_tercero,
                 sol.genero_tercero as genero_tercero,
                 sol.tipo_persona as tipo_persona,
+                sol.cuit as cuit,
                 sol.tiene_local as tiene_local,
                 sol.nomenclatura as nomenclatura,
                 sol.m2 as m2,
