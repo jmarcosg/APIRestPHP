@@ -2,12 +2,13 @@
 
 namespace App\Controllers\LicenciaComercial;
 
+use App\Controllers\RenaperController;
+
 use App\Models\LicenciaComercial\Lc_Solicitud;
 use App\Models\LicenciaComercial\Lc_SolicitudHistorial;
 use App\Models\LicenciaComercial\Lc_SolicitudRubro;
 use App\Models\LicenciaComercial\Lc_Documento;
 
-use App\Controllers\RenaperController;
 use App\Traits\LicenciaComercial\TemplateEmailSolicitud;
 use App\Traits\LicenciaComercial\QuerysSql;
 use ErrorException;
@@ -247,28 +248,6 @@ class Lc_SolicitudController
         exit;
     }
 
-    public static function documentacion($req, $id)
-    {
-        $data = new Lc_Solicitud();
-
-        $data = $data->update($req, $id);
-
-        if (!$data instanceof ErrorException) {
-
-            $data = new Lc_Solicitud();
-            $sql = self::getSqlSolicitudes("id = $id");
-            $solicitud = $data->executeSqlQuery($sql, true);
-            $solicitud = self::formatSolicitudData($solicitud);
-
-            self::sendEmail($id, 'documentacion', $solicitud);
-            $_PUT['id'] = $id;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
-    }
-
     /**
      * Modulo Verificacion de rubros
      * Realiza Cambios en los rubros
@@ -321,108 +300,48 @@ class Lc_SolicitudController
     public static function initVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
-
-        /* Guaramos el ID del admin para generar registro de auditoria */
-        $admin =  $req['id_wappersonas_admin'];
-        unset($req['id_wappersonas_admin']);
-
-        $estado = $req['estado'];
-
-        /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
-        if ($estado == 'aprobado') {
-            $req['estado'] = 'cat';
-        }
-
-        /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
-        if ($estado == 'retornado') {
-            $req['estado'] = 'act_retornado';
-        }
-
-        /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
-        if ($estado == 'rechazado') {
-            $req['estado'] = 'inicio_rechazado';
-        }
-
-        $data = $data->update($req, $id);
-
-        /* Registramos un historial de la solicitud  */
-        self::setHistory($id, 'verificacion_inicio', $admin, $estado);
-
-        if (!$data instanceof ErrorException) {
-            $_PUT['id'] = $id;
-            $_PUT['estado'] = $estado;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
-    }
-
-    /**
-     * Modulo Verificacion de rubros
-     * Evalua la solicitud en funcion de los rubros / descripción actividad
-     */
-    public static function rubrosVeriUpdate($req, $id)
-    {
-        $data = new Lc_Solicitud();
         $solicitud = $data->get(['id' => $id])->value;
 
-        /* Guaramos el ID del admin para generar registro de auditoria */
-        $admin =  $req['id_wappersonas_admin'];
-        unset($req['id_wappersonas_admin']);
+        if ($solicitud['estado'] == 'ver_inicio') {
 
-        $estado = $req['estado'];
-        if ($estado == 'aprobado' || $estado === 'retornado') {
-            self::rubrosUpdate($req, $id);
-            self::documentosUpdate($req, $id);
+            /* Guaramos el ID del admin para generar registro de auditoria */
+            $admin =  $req['id_wappersonas_admin'];
+            unset($req['id_wappersonas_admin']);
+
+            $estado = $req['estado'];
+
+            /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
+            if ($estado == 'aprobado') {
+                $req['estado'] = 'cat';
+                $req['ver_inicio'] = '1';
+            }
+
+            /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
+            if ($estado == 'retornado') {
+                $req['estado'] = 'act_retornado';
+            }
+
+            /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
+            if ($estado == 'rechazado') {
+                $req['estado'] = 'inicio_rechazado';
+            }
+
+            $data = $data->update($req, $id);
+
+            /* Registramos un historial de la solicitud  */
+            self::setHistory($id, 'verificacion_inicio', $admin, $estado);
+        } else {
+            $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
         }
-        /* Si se aprueba y no tiene local lo mandamos a pedir los archivos */
-        if ($estado == 'aprobado' && $solicitud['tiene_local'] === '0') {
-            $req['estado'] = 'doc';
-            $req['ver_rubros'] = '1';
-        }
-
-        /* Si se aprueba y tiene local lo mandamos a catastro */
-        if ($estado == 'aprobado' && $solicitud['tiene_local'] === '1') {
-            $req['estado'] = 'cat';
-            $req['ver_rubros'] = '1';
-        }
-
-        /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
-        if ($estado == 'retornado') {
-            $req['estado'] = 'act_retornado';
-        }
-
-        /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
-        if ($estado == 'rechazado') {
-            $req['estado'] = 'rubros_rechazado';
-        }
-
-        /* Guardamos la solcitidu */
-        unset($req['rubros']);
-        unset($req['documentos']);
-        $data = $data->update($req, $id);
-
-        /* Registramos un historial de la solicitud  */
-        self::setHistory($id, 'rubros_verificador', $admin, $estado);
 
         if (!$data instanceof ErrorException) {
-
-            $data = new Lc_Solicitud();
-            $sql = self::getSqlSolicitudes("id = $id");
-            $solicitud = $data->executeSqlQuery($sql, true);
-            $solicitud = self::formatSolicitudData($solicitud);
-
-            if ($estado == 'aprobado') self::sendEmail($id, 'rubros_aprobado', $solicitud);
-            if ($estado == 'rechazado') self::sendEmail($id, 'rubros_rechazado', $solicitud);
-            if ($estado == 'retornado') self::sendEmail($id, 'rubros_retornado', $solicitud);
-
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
             sendRes($_PUT);
         } else {
             sendRes(null, $data->getMessage(), ['id' => $id]);
         };
+
         exit;
     }
 
@@ -501,33 +420,38 @@ class Lc_SolicitudController
         $data = new Lc_Solicitud();
         $solicitud = $data->get(['id' => $id])->value;
 
-        /* Guaramos el ID del admin para generar registro de auditoria */
-        $admin =  $req['id_wappersonas_admin'];
-        unset($req['id_wappersonas_admin']);
+        if ($solicitud['estado'] == 'ver_amb') {
 
-        $estado = $req['estado'];
+            /* Guaramos el ID del admin para generar registro de auditoria */
+            $admin =  $req['id_wappersonas_admin'];
+            unset($req['id_wappersonas_admin']);
 
-        /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
-        if ($estado == 'aprobado') {
-            $req['estado'] = 'ver_rubros';
-            $req['ver_ambiental'] = '1';
+            $estado = $req['estado'];
+
+            /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
+            if ($estado == 'aprobado') {
+                $req['estado'] = 'ver_rubros';
+                $req['ver_ambiental'] = '1';
+            }
+
+            /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
+            if ($estado == 'retornado') {
+                $req['estado'] = 'ver_rubros';
+                $req['ver_rubros'] = '0';
+            }
+
+            /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
+            if ($estado == 'rechazado') {
+                $req['estado'] = 'ambiental_rechazado';
+            }
+
+            $data = $data->update($req, $id);
+
+            /* Registramos un historial de la solicitud  */
+            self::setHistory($id, 'verificacion_ambiental', $admin, $estado);
+        } else {
+            $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
         }
-
-        /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
-        if ($estado == 'retornado') {
-            $req['estado'] = 'ver_rubros';
-            $req['ver_rubros'] = '0';
-        }
-
-        /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
-        if ($estado == 'rechazado') {
-            $req['estado'] = 'ambiental_rechazado';
-        }
-
-        $data = $data->update($req, $id);
-
-        /* Registramos un historial de la solicitud  */
-        self::setHistory($id, 'verificacion_ambiental', $admin, $estado);
 
         if (!$data instanceof ErrorException) {
 
@@ -545,6 +469,104 @@ class Lc_SolicitudController
 
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    /**
+     * Modulo Verificacion de rubros
+     * Evalua la solicitud en funcion de los rubros / descripción actividad
+     */
+    public static function rubrosVeriUpdate($req, $id)
+    {
+
+        $data = new Lc_Solicitud();
+        $solicitud = $data->get(['id' => $id])->value;
+
+        if ($solicitud['estado'] == 'ver_rubros') {
+
+            /* Guaramos el ID del admin para generar registro de auditoria */
+            $admin =  $req['id_wappersonas_admin'];
+            unset($req['id_wappersonas_admin']);
+
+            $estado = $req['estado'];
+            if ($estado == 'aprobado' || $estado === 'retornado') {
+                self::rubrosUpdate($req, $id);
+                self::documentosUpdate($req, $id);
+            }
+
+            /* Si se aprueba y no tiene local lo mandamos a pedir los archivos */
+            if ($estado == 'aprobado' && $solicitud['tiene_local'] === '0') {
+                $req['estado'] = 'doc';
+                $req['ver_rubros'] = '1';
+            }
+
+            /* Si se aprueba y tiene local lo mandamos a catastro */
+            if ($estado == 'aprobado' && $solicitud['tiene_local'] === '1') {
+                $req['estado'] = 'cat';
+                $req['ver_rubros'] = '1';
+            }
+
+            /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
+            if ($estado == 'retornado') {
+                $req['estado'] = 'act_retornado';
+            }
+
+            /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
+            if ($estado == 'rechazado') {
+                $req['estado'] = 'rubros_rechazado';
+            }
+
+            /* Guardamos la solcitidu */
+            unset($req['rubros']);
+            unset($req['documentos']);
+            $data = $data->update($req, $id);
+
+            /* Registramos un historial de la solicitud  */
+            self::setHistory($id, 'rubros_verificador', $admin, $estado);
+        } else {
+            $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
+        }
+
+        if (!$data instanceof ErrorException) {
+
+            $data = new Lc_Solicitud();
+            $sql = self::getSqlSolicitudes("id = $id");
+            $solicitud = $data->executeSqlQuery($sql, true);
+            $solicitud = self::formatSolicitudData($solicitud);
+
+            if ($estado == 'aprobado') self::sendEmail($id, 'rubros_aprobado', $solicitud);
+            if ($estado == 'rechazado') self::sendEmail($id, 'rubros_rechazado', $solicitud);
+            if ($estado == 'retornado') self::sendEmail($id, 'rubros_retornado', $solicitud);
+
+            $_PUT['id'] = $id;
+            $_PUT['estado'] = $estado;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+
+        exit;
+    }
+
+    public static function documentacion($req, $id)
+    {
+        $data = new Lc_Solicitud();
+
+        $data = $data->update($req, $id);
+
+        if (!$data instanceof ErrorException) {
+
+            $data = new Lc_Solicitud();
+            $sql = self::getSqlSolicitudes("id = $id");
+            $solicitud = $data->executeSqlQuery($sql, true);
+            $solicitud = self::formatSolicitudData($solicitud);
+
+            self::sendEmail($id, 'documentacion', $solicitud);
+            $_PUT['id'] = $id;
             sendRes($_PUT);
         } else {
             sendRes(null, $data->getMessage(), ['id' => $id]);
