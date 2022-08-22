@@ -146,6 +146,10 @@ class Lc_SolicitudController
         $_POST['ver_ambiental'] = 0;
         $_POST['ver_documentos'] = 0;
 
+        if ($_POST['tipo_persona'] == 'juridica') {
+            $_POST['pertenece'] == 'propio';
+        }
+
         $data = new Lc_Solicitud();
         $data->set($_POST);
         $id = $data->save();
@@ -318,7 +322,7 @@ class Lc_SolicitudController
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
             if ($estado == 'retornado') {
-                $req['estado'] = 'act_retornado';
+                $req['estado'] = 'act_retornado_inicio';
             }
 
             /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
@@ -370,8 +374,7 @@ class Lc_SolicitudController
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
             if ($estado == 'retornado') {
-                $req['estado'] = 'ver_rubros';
-                $req['ver_rubros'] = '0';
+                $req['estado'] = 'act_retornado_cat';
             }
 
             /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
