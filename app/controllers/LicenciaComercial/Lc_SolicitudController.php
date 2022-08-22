@@ -41,12 +41,8 @@ class Lc_SolicitudController
 
     public static function getById()
     {
-        $solicitud = new Lc_Solicitud();
-
         $id = $_GET['id'];
-        $sql = self::getSqlSolicitudes("id = $id");
-        $data = $solicitud->executeSqlQuery($sql, true);
-        $data = self::formatSolicitudData($data);
+        $data = self::getSolicitudByQuery("id = $id");
 
         if ($data) {
 
@@ -154,9 +150,7 @@ class Lc_SolicitudController
         $data->set($_POST);
         $id = $data->save();
 
-        $sql = self::getSqlSolicitudes("id = $id");
-        $solicitud = $data->executeSqlQuery($sql, true);
-        $solicitud = self::formatSolicitudData($solicitud);
+        $solicitud =  self::getSolicitudByQuery("id = $id");
 
         /* Guardamos un registro de reserva para los documentos */
         $documento = new Lc_Documento();
@@ -392,17 +386,14 @@ class Lc_SolicitudController
 
         if (!$data instanceof ErrorException) {
 
-            $data = new Lc_Solicitud();
-            $sql = self::getSqlSolicitudes("id = $id");
-            $solicitud = $data->executeSqlQuery($sql, true);
-            $solicitud = self::formatSolicitudData($solicitud);
+           /*  $solicitud =  self::getSolicitudByQuery("id = $id");
 
             if ($solicitud['ver_ambiental'] == 1) {
                 if ($estado === 'aprobado') self::sendEmail($id, 'catastro_aprobado', $solicitud);
             }
 
             if ($estado === 'rechazado') self::sendEmail($id, 'catastro_rechazado', $solicitud);
-            if ($estado === 'retornado') self::sendEmail($id, 'catastro_retornado', $solicitud);
+            if ($estado === 'retornado') self::sendEmail($id, 'catastro_retornado', $solicitud); */
 
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
@@ -457,17 +448,14 @@ class Lc_SolicitudController
 
         if (!$data instanceof ErrorException) {
 
-            $data = new Lc_Solicitud();
-            $sql = self::getSqlSolicitudes("id = $id");
-            $solicitud = $data->executeSqlQuery($sql, true);
-            $solicitud = self::formatSolicitudData($solicitud);
+            /* $solicitud =  self::getSolicitudByQuery("id = $id");
 
             if ($solicitud['ver_catastro'] == 1) {
                 if ($estado === 'aprobado') self::sendEmail($id, 'catastro_aprobado', $solicitud);
             }
 
             if ($estado === 'rechazado') self::sendEmail($id, 'ambiental_rechazado', $solicitud);
-            if ($estado === 'retornado') self::sendEmail($id, 'ambiental_retornado', $solicitud);
+            if ($estado === 'retornado') self::sendEmail($id, 'ambiental_retornado', $solicitud); */
 
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
@@ -535,10 +523,7 @@ class Lc_SolicitudController
 
         if (!$data instanceof ErrorException) {
 
-            $data = new Lc_Solicitud();
-            $sql = self::getSqlSolicitudes("id = $id");
-            $solicitud = $data->executeSqlQuery($sql, true);
-            $solicitud = self::formatSolicitudData($solicitud);
+            $solicitud =  self::getSolicitudByQuery("id = $id");
 
             if ($estado == 'aprobado') self::sendEmail($id, 'rubros_aprobado', $solicitud);
             if ($estado == 'rechazado') self::sendEmail($id, 'rubros_rechazado', $solicitud);
@@ -561,13 +546,9 @@ class Lc_SolicitudController
         $data = $data->update($req, $id);
 
         if (!$data instanceof ErrorException) {
-
-            $data = new Lc_Solicitud();
-            $sql = self::getSqlSolicitudes("id = $id");
-            $solicitud = $data->executeSqlQuery($sql, true);
-            $solicitud = self::formatSolicitudData($solicitud);
-
+            $solicitud =  self::getSolicitudByQuery("id = $id");
             self::sendEmail($id, 'documentacion', $solicitud);
+
             $_PUT['id'] = $id;
             sendRes($_PUT);
         } else {
@@ -620,10 +601,7 @@ class Lc_SolicitudController
 
         if (!$data instanceof ErrorException) {
 
-            $data = new Lc_Solicitud();
-            $sql = self::getSqlSolicitudes("id = $id");
-            $solicitud = $data->executeSqlQuery($sql, true);
-            $solicitud = self::formatSolicitudData($solicitud);
+            $solicitud =  self::getSolicitudByQuery("id = $id");
 
             if ($estado === 'aprobado') self::sendEmail($id, 'documentos_aprobado', $solicitud);
             if ($estado === 'rechazado') self::sendEmail($id, 'documentos_rechazado', $solicitud);
@@ -706,5 +684,15 @@ class Lc_SolicitudController
     {
         $data = new Lc_Solicitud();
         return $data->delete($id);
+    }
+
+    private static function getSolicitudByQuery($query)
+    {
+        $solicitud = new Lc_Solicitud();
+
+        $sql = self::getSqlSolicitudes($query);
+        $data = $solicitud->executeSqlQuery($sql, true);
+
+        return self::formatSolicitudData($data);
     }
 }
