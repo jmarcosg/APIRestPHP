@@ -86,7 +86,7 @@ if ($url['method'] == 'GET') {
 
 
 		case '19':
-			/* Verificación documentos - Rechazadas */
+			/* Administrador */
 			Lc_SolicitudController::index("1 = 1");
 
 		case '20':
