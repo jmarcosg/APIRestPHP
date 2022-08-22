@@ -89,6 +89,10 @@ if ($url['method'] == 'GET') {
 			/* Administrador */
 			Lc_SolicitudController::index("1 = 1");
 
+		case '21':
+			/* Administrador */
+			Lc_SolicitudHistorialController::getHistorialBySol($_GET['id']);
+
 		case '20':
 			/* Listado de Rubros */
 			Lc_RubroController::index();

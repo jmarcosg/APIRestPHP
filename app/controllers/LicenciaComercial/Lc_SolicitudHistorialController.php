@@ -287,7 +287,7 @@ class Lc_SolicitudHistorialController
         exit;
     }
 
-    public static function getHistorial($id)
+    public static function getHistorialByUser($id)
     {
         $solicitud = new Lc_SolicitudHistorial();
 
@@ -299,6 +299,17 @@ class Lc_SolicitudHistorialController
         } else {
             return null;
         }
+    }
+
+    public static function getHistorialBySol($id)
+    {
+        $solicitud = new Lc_SolicitudHistorial();
+
+        $sql = self::getSqlHistorial("id_solicitud = $id");
+        $data = $solicitud->executeSqlQuery($sql, false);
+
+        sendRes($data);
+        exit;
     }
 
     public function delete($id)

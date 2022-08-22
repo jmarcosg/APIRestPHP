@@ -111,7 +111,7 @@ class Lc_SolicitudController
                 $data['documentos'] = self::getDocumentsData($data['id']);
 
                 /* Obtenemos el hostorial */
-                $data['historial'] = Lc_SolicitudHistorialController::getHistorial($data['id_usuario']);
+                $data['historial'] = Lc_SolicitudHistorialController::getHistorialByUser($data['id_usuario']);
             }
         } else {
             $data = false;
