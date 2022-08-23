@@ -81,12 +81,8 @@ if ($url['method'] == 'GET') {
 			/* Verificación Inicio Tramite  - Rechazadas */
 			Lc_SolicitudController::index("estado = 'inicio_rechazado'");
 
-
-
-
-
 		case '19':
-			/* Administrador */
+			/* Administrador - Todos */
 			Lc_SolicitudController::index("1 = 1");
 
 		case '21':
