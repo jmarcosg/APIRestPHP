@@ -143,7 +143,7 @@ class Lc_SolicitudController
         $_POST['ver_documentos'] = 0;
 
         if ($_POST['tipo_persona'] == 'juridica') {
-            $_POST['pertenece'] == 'propio';
+            $_POST['pertenece'] = 'propia';
         }
 
         $data = new Lc_Solicitud();
