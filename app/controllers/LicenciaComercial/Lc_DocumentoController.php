@@ -97,7 +97,7 @@ class Lc_DocumentoController
 
     public function deleteBySolicitudId($id)
     {
-        $sql = "DELETE FROM lc_documentos WHERE id_solicitud = $id AND id_tipo_documento > 10";
+        $sql = "DELETE FROM lc_documentos WHERE id_solicitud = $id AND id_tipo_documento > 11";
         $conn = new BaseDatos();
         return $conn->query($sql);
     }
