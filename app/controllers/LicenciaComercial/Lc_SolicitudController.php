@@ -386,7 +386,7 @@ class Lc_SolicitudController
 
         if (!$data instanceof ErrorException) {
 
-           /*  $solicitud =  self::getSolicitudByQuery("id = $id");
+            /*  $solicitud =  self::getSolicitudByQuery("id = $id");
 
             if ($solicitud['ver_ambiental'] == 1) {
                 if ($estado === 'aprobado') self::sendEmail($id, 'catastro_aprobado', $solicitud);
