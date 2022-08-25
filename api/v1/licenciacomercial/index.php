@@ -129,6 +129,8 @@ if ($url['method'] == 'POST') {
 		case '4':
 			Lc_SolicitudHistorialController::setView($_POST['id']);
 			break;
+		case '5':
+			Lc_DocumentoController::updateNotas();
 		default:
 			break;
 	}

@@ -75,11 +75,6 @@ class Lc_Documento extends BaseModel
             $params['id_tipo_documento'] = 10;
             $this->set($params);
             $this->save();
-
-            /* AFIP */
-            $params['id_tipo_documento'] = 11;
-            $this->set($params);
-            $this->save();
         }
     }
 }

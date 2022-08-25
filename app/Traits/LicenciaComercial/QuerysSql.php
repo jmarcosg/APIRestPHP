@@ -51,6 +51,8 @@ trait QuerysSql
                 sol.ver_catastro as ver_catastro,
                 sol.ver_ambiental as ver_ambiental,
                 sol.ver_documentos as ver_documentos,
+                sol.notas_catastro as notas_catastro,
+                sol.notas_ambiente as notas_ambiente,
                 sol.fecha_alta as fecha_alta
             FROM dbo.lc_solicitudes sol
                 LEFT JOIN dbo.wapPersonas perini ON sol.id_wappersonas = perini.ReferenciaID 

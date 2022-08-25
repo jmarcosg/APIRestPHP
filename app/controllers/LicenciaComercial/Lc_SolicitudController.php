@@ -65,6 +65,10 @@ class Lc_SolicitudController
             /* Obtenemos los documentos de la tercera etapa */
             $documento = new Lc_DocumentoController();
             $data['documentosSelect'] = $documento->getDocumentosBySolicitud($data['id']);
+
+            /* Obtenemos las notas de catastro y ambiente */
+            $data['notas_catastro'] = self::getNota($data, 'notas_catastro');
+            $data['notas_ambiente'] = self::getNota($data, 'notas_ambiente');
         }
 
         if (!$data instanceof ErrorException) {
@@ -425,6 +429,8 @@ class Lc_SolicitudController
             if ($estado == 'aprobado') {
                 $req['estado'] = 'ver_rubros';
                 $req['ver_ambiental'] = '1';
+
+                self::documentosUpdate($req, $id);
             }
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
@@ -438,6 +444,7 @@ class Lc_SolicitudController
                 $req['estado'] = 'ambiental_rechazado';
             }
 
+            unset($req['documentos']);
             $data = $data->update($req, $id);
 
             /* Registramos un historial de la solicitud  */
@@ -694,5 +701,21 @@ class Lc_SolicitudController
         $data = $solicitud->executeSqlQuery($sql, true);
 
         return self::formatSolicitudData($data);
+    }
+
+    private static function getNota($data, $nota)
+    {
+        $id = $data['id'];
+        if ($data[$nota]) {
+            $documento = new Lc_Documento();
+            $filesUrl = $documento->filesUrl;
+            $url = $filesUrl . $id . "/" . $nota  . '/' .  $data[$nota];
+            return [
+                'url' => getBase64String($url, $data[$nota]),
+                'loading' =>  false,
+                'error' => false
+            ];
+        }
+        return null;
     }
 }
