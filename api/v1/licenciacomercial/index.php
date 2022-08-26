@@ -105,7 +105,7 @@ if ($url['method'] == 'GET') {
 			/* Administrador - Todos */
 			Lc_SolicitudController::index("1 = 1");
 
-		case '21':
+		case '100':
 			/* Administrador */
 			Lc_SolicitudHistorialController::getHistorialBySol($_GET['id']);
 
