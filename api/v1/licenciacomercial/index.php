@@ -22,80 +22,92 @@ if ($url['method'] == 'GET') {
 			Lc_SolicitudController::get();
 
 		case '3':
-			/* Verificador Rubros - Nuevas */
-			Lc_SolicitudController::index("estado = 'ver_rubros' AND ver_rubros = 0 AND estado NOT LIKE '%rechazado%'");
-
-		case '4':
-			/* Verificador Rubros - Aprobadas */
-			Lc_SolicitudController::index("ver_rubros = '1' AND estado NOT LIKE '%rechazado%'");
-
-		case '5':
-			/* Verificador Rubros - Rechazadas  */
-			Lc_SolicitudController::index("estado = 'rubros_rechazado'");
-
-		case '6':
-			/* Catastro - Nuevas */
-			Lc_SolicitudController::index("estado = 'cat' AND ver_catastro = 0 AND estado NOT LIKE '%rechazado%'");
-
-		case '7':
-			/* Catastro - Aprobadas */
-			Lc_SolicitudController::index("ver_catastro = 1 AND estado NOT LIKE '%rechazado%'");
-
-		case '8':
-			/* Catastro - Rechazadas   */
-			Lc_SolicitudController::index("estado = 'cat_rechazado'");
-
-		case '9':
-			/* Verificación ambiental - Nuevas */
-			Lc_SolicitudController::index("estado = 'ver_amb' AND ver_ambiental = 0 AND estado NOT LIKE '%rechazado%'");
-
-		case '10':
-			/* Verificación ambiental - Aprobadas */
-			Lc_SolicitudController::index("ver_ambiental = 1 AND estado NOT LIKE '%rechazado%'");
-
-		case '11':
-			/* Verificación ambiental - Rechazadas */
-			Lc_SolicitudController::index("estado = 'ambiental_rechazado'");
-
-		case '12':
-			/* Verificación documentos - Nuevas */
-			Lc_SolicitudController::index("estado = 'ver_doc' AND ver_documentos = 0 AND estado NOT LIKE '%rechazado%'");
-
-		case '13':
-			/* Verificación documentos - Aprobadas */
-			Lc_SolicitudController::index("ver_documentos = 1 AND estado NOT LIKE '%rechazado%'");
-
-		case '14':
-			/* Verificación documentos - Rechazadas */
-			Lc_SolicitudController::index("estado = 'doc_rechazado'");
-
-		case '15':
-			/* Verificación Inicio Tramite - Nuevas */
-			Lc_SolicitudController::index("estado = 'ver_inicio' AND ver_inicio = 0 AND estado NOT LIKE '%rechazado%'");
-
-		case '16':
-			/* Verificación Inicio Tramite  - Aprobadas */
-			Lc_SolicitudController::index("ver_inicio = 1 AND estado NOT LIKE '%rechazado%'");
-
-		case '17':
-			/* Verificación Inicio Tramite  - Rechazadas */
-			Lc_SolicitudController::index("estado = 'inicio_rechazado'");
-
-		case '19':
-			/* Administrador - Todos */
-			Lc_SolicitudController::index("1 = 1");
-
-		case '21':
-			/* Administrador */
-			Lc_SolicitudHistorialController::getHistorialBySol($_GET['id']);
-
-		case '20':
 			/* Listado de Rubros */
 			Lc_RubroController::index();
 
-		case '30':
+		case '4':
 			/* Listado de Tipos de documentos */
 			TipoDocumentoController::index();
+
+			/* ################################### */
+
+		case '10':
+			/* Verificación Inicio Tramite - Nuevas */
+			Lc_SolicitudController::index("estado = 'ver_inicio' AND ver_inicio = 0 AND estado NOT LIKE '%rechazado%'");
+
+		case '11':
+			/* Verificación Inicio Tramite  - Aprobadas */
+			Lc_SolicitudController::index("ver_inicio = 1 AND estado NOT LIKE '%rechazado%'");
+
+		case '12':
+			/* Verificación Inicio Tramite  - Rechazadas */
+			Lc_SolicitudController::index("estado = 'inicio_rechazado'");
+
+			/* ################################### */
+
+		case '20':
+			/* Catastro - Nuevas */
+			Lc_SolicitudController::index("estado = 'cat' AND ver_catastro = 0 AND estado NOT LIKE '%rechazado%'");
+
+		case '21':
+			/* Catastro - Aprobadas */
+			Lc_SolicitudController::index("ver_catastro = 1 AND estado NOT LIKE '%rechazado%'");
+
+		case '22':
+			/* Catastro - Rechazadas   */
+			Lc_SolicitudController::index("estado = 'cat_rechazado'");
+
+			/* ################################### */
+
+		case '30':
+			/* Verificación ambiental - Nuevas */
+			Lc_SolicitudController::index("estado = 'ver_amb' AND ver_ambiental = 0 AND estado NOT LIKE '%rechazado%'");
+
+		case '31':
+			/* Verificación ambiental - Aprobadas */
+			Lc_SolicitudController::index("ver_ambiental = 1 AND estado NOT LIKE '%rechazado%'");
+
+		case '32':
+			/* Verificación ambiental - Rechazadas */
+			Lc_SolicitudController::index("estado = 'ambiental_rechazado'");
+
+			/* ################################### */
+
+		case '40':
+			/* Verificador Rubros - Nuevas */
+			Lc_SolicitudController::index("estado = 'ver_rubros' AND ver_rubros = 0 AND estado NOT LIKE '%rechazado%'");
+
+		case '41':
+			/* Verificador Rubros - Aprobadas */
+			Lc_SolicitudController::index("ver_rubros = '1' AND estado NOT LIKE '%rechazado%'");
+
+		case '42':
+			/* Verificador Rubros - Rechazadas  */
+			Lc_SolicitudController::index("estado = 'rubros_rechazado'");
+
+			/* ################################### */
+
+		case '50':
+			/* Verificación documentos - Nuevas */
+			Lc_SolicitudController::index("estado = 'ver_doc' AND ver_documentos = 0 AND estado NOT LIKE '%rechazado%'");
+
+		case '51':
+			/* Verificación documentos - Aprobadas */
+			Lc_SolicitudController::index("ver_documentos = 1 AND estado NOT LIKE '%rechazado%'");
+
+		case '52':
+			/* Verificación documentos - Rechazadas */
+			Lc_SolicitudController::index("estado = 'doc_rechazado'");
+
+			/* ################################### */
+
+		case '70':
+			/* Administrador - Todos */
+			Lc_SolicitudController::index("1 = 1");
+
+		case '100':
+			/* Administrador */
+			Lc_SolicitudHistorialController::getHistorialBySol($_GET['id']);
 
 		default:
 			$error = new ErrorException('El action no es valido');
@@ -117,6 +129,8 @@ if ($url['method'] == 'POST') {
 		case '4':
 			Lc_SolicitudHistorialController::setView($_POST['id']);
 			break;
+		case '5':
+			Lc_DocumentoController::updateNotas();
 		default:
 			break;
 	}
