@@ -15,6 +15,8 @@ class Lc_SolicitudHistorial extends BaseModel
         'id_solicitud',
         'id_usuario',
         'id_wappersonas',
+        'nro_expediente',
+        'nro_licencia',
         'telefono',
         'correo',
         'domicilio_particular',

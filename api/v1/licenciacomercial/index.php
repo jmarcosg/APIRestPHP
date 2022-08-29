@@ -194,6 +194,16 @@ if ($url['method'] == 'PUT') {
 			Lc_SolicitudController::initVeriUpdate($_PUT, $id);
 			break;
 
+		case '13':
+			/* Auditoria - Set Expediente */
+			Lc_SolicitudController::setExpediente($_PUT, $id);
+			break;
+
+		case '14':
+			/* Auditoria - Set Expediente */
+			Lc_SolicitudController::setLicenciaComercial($_PUT, $id);
+			break;
+
 		default:
 			# code...
 			break;
