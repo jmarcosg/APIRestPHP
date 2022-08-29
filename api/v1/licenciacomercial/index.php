@@ -43,6 +43,10 @@ if ($url['method'] == 'GET') {
 			/* Verificación Inicio Tramite  - Rechazadas */
 			Lc_SolicitudController::index("estado = 'inicio_rechazado'");
 
+		case '13':
+			/* Verificación Inicio Tramite  - Retornado */
+			Lc_SolicitudController::index("estado LIKE '%retornado_inicio%'");
+
 			/* ################################### */
 
 		case '20':
@@ -56,6 +60,10 @@ if ($url['method'] == 'GET') {
 		case '22':
 			/* Catastro - Rechazadas   */
 			Lc_SolicitudController::index("estado = 'cat_rechazado'");
+
+		case '23':
+			/* Catastro - Retornado   */
+			Lc_SolicitudController::index("estado LIKE '%retornado_cat%'");
 
 			/* ################################### */
 
@@ -98,6 +106,10 @@ if ($url['method'] == 'GET') {
 		case '52':
 			/* Verificación documentos - Rechazadas */
 			Lc_SolicitudController::index("estado = 'doc_rechazado'");
+
+		case '53':
+			/* Verificación documentos - Retornado */
+			Lc_SolicitudController::index("estado LIKE '%retornado_documentos%'");
 
 			/* ################################### */
 

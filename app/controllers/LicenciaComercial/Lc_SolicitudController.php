@@ -589,7 +589,7 @@ class Lc_SolicitudController
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
             if ($estado == 'retornado') {
-                $req['estado'] = 'doc';
+                $req['estado'] = 'doc_retornado_documentos';
                 $req['ver_documentos'] = '0';
             }
 
