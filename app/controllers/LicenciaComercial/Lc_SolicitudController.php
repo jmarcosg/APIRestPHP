@@ -589,7 +589,7 @@ class Lc_SolicitudController
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
             if ($estado == 'retornado') {
-                $req['estado'] = 'doc';
+                $req['estado'] = 'doc_retornado_documentos';
                 $req['ver_documentos'] = '0';
             }
 
@@ -616,6 +616,58 @@ class Lc_SolicitudController
 
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    /**
+     * Modulo Auditoria
+     * Ingresa un número de expediente a la solicitud
+     */
+    public static function setExpediente($req, $id)
+    {
+        $data = new Lc_Solicitud();
+        $solicitud = $data->get(['id' => $id])->value;
+
+        $admin =  $req['id_wappersonas_admin'];
+        unset($req['id_wappersonas_admin']);
+
+        $data = $data->update($req, $id);
+
+        /* Registramos un historial de la solicitud  */
+        self::setHistory($id, 'ingreso_expediente', $admin, $solicitud['estado']);
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
+            sendRes($_PUT);
+        } else {
+            sendRes(null, $data->getMessage(), ['id' => $id]);
+        };
+        exit;
+    }
+
+    /**
+     * Modulo Auditoria
+     * Ingresa un número de licencia comercial a la solicitud
+     */
+    public static function setLicenciaComercial($req, $id)
+    {
+        $data = new Lc_Solicitud();
+        $solicitud = $data->get(['id' => $id])->value;
+
+        $admin =  $req['id_wappersonas_admin'];
+        unset($req['id_wappersonas_admin']);
+
+        $data = $data->update($req, $id);
+
+        /* Registramos un historial de la solicitud  */
+        self::setHistory($id, 'ingreso_licencia_comercial', $admin, $solicitud['estado']);
+
+        if (!$data instanceof ErrorException) {
+            $_PUT['id'] = $id;
             sendRes($_PUT);
         } else {
             sendRes(null, $data->getMessage(), ['id' => $id]);
