@@ -171,6 +171,22 @@ class Lc_DocumentoController
         return $doc->executeSqlQuery($sql, false);
     }
 
+    public static function getDocumentosSolicitados($id)
+    {
+        $sql =
+            "SELECT 
+                doc.id_tipo_documento as value,
+                tipo.nombre as label,
+                codigo as codigo,
+                requiere as req	
+            FROM dbo.lc_documentos doc
+                LEFT JOIN dbo.tipos_documentos tipo ON doc.id_tipo_documento = tipo.id
+            WHERE doc.id_solicitud = $id";
+
+        $doc = new Lc_Documento();
+        return $doc->executeSqlQuery($sql, false);
+    }
+
     public static function getDocumentosSelected($id)
     {
         $sql =

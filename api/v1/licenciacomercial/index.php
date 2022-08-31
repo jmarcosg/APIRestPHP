@@ -121,6 +121,9 @@ if ($url['method'] == 'GET') {
 			/* Auditoria - Todos */
 			Lc_SolicitudController::index("estado = 'finalizado'");
 
+		case '81':
+			Lc_SolicitudController::getSolicitudPdf($_GET['id']);
+
 		case '100':
 			/* Administrador */
 			Lc_SolicitudHistorialController::getHistorialBySol($_GET['id']);

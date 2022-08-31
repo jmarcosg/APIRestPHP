@@ -289,3 +289,8 @@ function deleteDir($dirPath)
         rmdir($dirPath);
     }
 }
+/** Convert the first character of each word to uppercase: */
+function firstUpper($string)
+{
+    return ucwords(strtolower($string));
+}
