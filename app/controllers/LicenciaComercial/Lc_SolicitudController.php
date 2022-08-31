@@ -11,11 +11,12 @@ use App\Models\LicenciaComercial\Lc_Documento;
 
 use App\Traits\LicenciaComercial\TemplateEmailSolicitud;
 use App\Traits\LicenciaComercial\QuerysSql;
+use App\Traits\LicenciaComercial\Reportes;
 use ErrorException;
 
 class Lc_SolicitudController
 {
-    use QuerysSql, TemplateEmailSolicitud;
+    use QuerysSql, TemplateEmailSolicitud, Reportes;
 
     public function __construct()
     {
@@ -496,14 +497,8 @@ class Lc_SolicitudController
             }
 
             /* Si se aprueba y no tiene local lo mandamos a pedir los archivos */
-            if ($estado == 'aprobado' && $solicitud['tiene_local'] === '0') {
+            if ($estado == 'aprobado') {
                 $req['estado'] = 'doc';
-                $req['ver_rubros'] = '1';
-            }
-
-            /* Si se aprueba y tiene local lo mandamos a catastro */
-            if ($estado == 'aprobado' && $solicitud['tiene_local'] === '1') {
-                $req['estado'] = 'cat';
                 $req['ver_rubros'] = '1';
             }
 
