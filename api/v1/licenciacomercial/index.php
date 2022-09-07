@@ -29,6 +29,10 @@ if ($url['method'] == 'GET') {
 			/* Listado de Tipos de documentos */
 			TipoDocumentoController::index();
 
+		case '5':
+			/* Listado de Tipos de documentos */
+			Lc_SolicitudController::indexById();
+
 			/* ################################### */
 
 		case '10':
@@ -160,10 +164,10 @@ if ($url['method'] == 'PUT') {
 	parse_str(file_get_contents('php://input'), $_PUT);
 	$id = $url['id'];
 
-	$step = $_PUT['step'];
-	unset($_PUT['step']);
+	$action = $_PUT['action'];
+	unset($_PUT['action']);
 
-	switch ($step) {
+	switch ($action) {
 		case '1':
 			/* Datos personales */
 			Lc_SolicitudController::datosPersonales($_PUT, $id);

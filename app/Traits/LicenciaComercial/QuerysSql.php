@@ -95,7 +95,6 @@ trait QuerysSql
             /* Obtenemos los elementos que contienen per_ini_ en la key */
             $personaInicio = self::filterByIncludeKey($solicitud, 'perini_');
 
-
             /* Limpiamos los keys */
             foreach ($solicitud as $key => $elem) {
                 if (str_contains($key, 'perini_')) {
@@ -105,8 +104,8 @@ trait QuerysSql
                     unset($solicitudes[$keySol][$key]);
                 }
             }
-            $solicitudes[$keySol]['personaInicio'] = $personaInicio;
 
+            $solicitudes[$keySol]['personaInicio'] = $personaInicio;
 
             if ($solicitud["id_wappersonas_tercero"]) {
                 /* Obtenemos los elementos que contienen per_sol_ en la key */
@@ -141,7 +140,6 @@ trait QuerysSql
         /* Obtenemos los elementos que contienen per_ini_ en la key */
         $personaInicio = self::filterByIncludeKey($solicitud, 'perini_');
 
-
         /* Limpiamos los keys */
         foreach ($solicitud as $key => $elem) {
             if (str_contains($key, 'perini_')) {
@@ -151,8 +149,8 @@ trait QuerysSql
                 unset($personaInicio[$key]);
             }
         }
-        $solicitud['personaInicio'] = $personaInicio;
 
+        $solicitud['personaInicio'] = $personaInicio;
 
         if ($solicitud["id_wappersonas_tercero"]) {
             /* Obtenemos los elementos que contienen per_sol_ en la key */
@@ -177,6 +175,7 @@ trait QuerysSql
                 }
             }
         }
+
         return $solicitud;
     }
 

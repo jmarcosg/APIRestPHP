@@ -70,6 +70,8 @@ class Lc_SolicitudController
             /* Obtenemos las notas de catastro y ambiente */
             $data['notas_catastro'] = self::getNota($data, 'notas_catastro');
             $data['notas_ambiente'] = self::getNota($data, 'notas_ambiente');
+
+            $data['historial'] = Lc_SolicitudHistorialController::getHistorialById($id);
         }
 
         if (!$data instanceof ErrorException) {
@@ -78,6 +80,19 @@ class Lc_SolicitudController
             } else {
                 sendRes(null, 'No se encontro la solicitud', $_GET);
             }
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+        exit;
+    }
+
+    public static function indexById()
+    {
+        $id = $_GET['id_usuario'];
+        $data = self::getSolicitudByQuery("id_usuario = $id", false);
+
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
         } else {
             sendRes(null, $data->getMessage(), $_GET);
         };
@@ -116,7 +131,7 @@ class Lc_SolicitudController
                 $data['documentos'] = self::getDocumentsData($data['id']);
 
                 /* Obtenemos el hostorial */
-                $data['historial'] = Lc_SolicitudHistorialController::getHistorialByUser($data['id_usuario']);
+                $data['historial'] = Lc_SolicitudHistorialController::getHistorialById($data['id']);
             }
         } else {
             $data = false;
@@ -740,14 +755,18 @@ class Lc_SolicitudController
         return $data->delete($id);
     }
 
-    private static function getSolicitudByQuery($query)
+    private static function getSolicitudByQuery($query, $fetch = true)
     {
         $solicitud = new Lc_Solicitud();
 
         $sql = self::getSqlSolicitudes($query);
-        $data = $solicitud->executeSqlQuery($sql, true);
+        $data = $solicitud->executeSqlQuery($sql, $fetch);
 
-        return self::formatSolicitudData($data);
+        if ($fetch) {
+            return self::formatSolicitudData($data);
+        } else {
+            return self::formatSolicitudDataArray($data);
+        }
     }
 
     private static function getNota($data, $nota)
