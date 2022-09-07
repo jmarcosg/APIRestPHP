@@ -287,11 +287,11 @@ class Lc_SolicitudHistorialController
         exit;
     }
 
-    public static function getHistorialByUser($id)
+    public static function getHistorialById($id)
     {
         $solicitud = new Lc_SolicitudHistorial();
 
-        $sql = self::getSqlHistorial("id_usuario = $id");
+        $sql = self::getSqlHistorial("id_solicitud = $id");
         $data = $solicitud->executeSqlQuery($sql, false);
 
         if ($data) {

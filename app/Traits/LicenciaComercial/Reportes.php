@@ -187,6 +187,22 @@ trait Reportes
             $pdf->Text($col, self::getRow($row, $inc), $value['label']);
         }
 
+        $pdf->SetFont('helvetica', 'B', 11);
+        $descRow = $row;
+        $pdf->Text($col, self::getRow($row, 10), 'Notas de Catastro: ');
+        $pdf->Text($col, self::getRow($row, 6), 'Notas de Ambiental: ');
+
+        if ($data['notas_catastro']) {
+            $pdf->Text(60, self::getRow($descRow, 10), 'SI');
+        } else {
+            $pdf->Text(60, self::getRow($descRow, 10), 'NO');
+        }
+
+        if ($data['notas_ambiente']) {
+            $pdf->Text(60, self::getRow($descRow, 6), 'SI');
+        } else {
+            $pdf->Text(60, self::getRow($descRow, 6), 'NO');
+        }
 
         /* Preparacion del archivo */
         $base64 = $pdf->Output('Listado_podadores.pdf', 'E');
