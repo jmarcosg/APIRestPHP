@@ -45,7 +45,7 @@ trait QuerysSql
                 sol.m2 as m2,
                 sol.nombre_fantasia as nombre_fantasia,
                 sol.direccion_comercial as direccion_comercial,
-                sol.descripcion_actividad as descripcion,
+                sol.descripcion_actividad as descripcion_actividad,
                 sol.estado as estado,
                 sol.observacion as observacion,
                 sol.ver_inicio as ver_inicio,
