@@ -32,16 +32,19 @@ define('WEBLOGIN2', PROD ? 'localhost/api/webLogin2' : 'https://weblogin.muninqn
 if (ENV == 'produccion') {
     /** PRODUCCION */
     define('FILE_PATH', 'E:\Dataserver\Produccion\projects_files\\');
+    define('WS_WEBLOGIN', 'https://weblogin.muninqn.gov.ar/api/getUserByToken/');
 }
 
 if (ENV == 'replica') {
     /** REPLICA */
     define('FILE_PATH', 'E:\Dataserver\Replica\projects_files\\');
+    define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
 }
 
 if (ENV == 'local') {
     /** LOCAL */
     define('FILE_PATH', 'C:\xampp\htdocs\APIRest\files\\');
+    define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
 }
 
 

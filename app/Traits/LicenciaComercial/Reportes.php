@@ -20,7 +20,7 @@ trait Reportes
 
         $data = utf8ize($data);
 
-        $descripcion  = self::getArrayWord($data['descripcion'], 14);
+        $descripcion  = self::getArrayWord($data['descripcion_actividad'], 14);
 
         $nro_expediente = $data['nro_expediente'];
         $nro_licencia = $data['nro_licencia'];
