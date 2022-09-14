@@ -2,8 +2,6 @@
 
 use App\Controllers\LoginController;
 
-$loginController = new LoginController();
-
 /* Metodo GET */
 if ($url['method'] == 'GET') {
 	if (isset($_GET) && count($_GET) > 0) {
