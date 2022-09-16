@@ -27,7 +27,6 @@ define('ENV', $_ENV['ENV']);
 define('TOKEN_KEY', $_ENV['TOKEN_KEY']);
 
 /* ######################### */
-define('WEBLOGIN2', PROD ? 'localhost/api/webLogin2' : 'https://weblogin.muninqn.gov.ar/api/webLogin2');
 
 if (ENV == 'produccion') {
     /** PRODUCCION */
@@ -47,7 +46,6 @@ if (ENV == 'local') {
     define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
 }
 
-
 /* Headers */
 include_once 'headers.php';
 
@@ -55,4 +53,6 @@ include_once 'headers.php';
 include 'db.php';
 
 /* Configuracion de la URL */
-include 'url.php';
+if (!isset($noUrl)) {
+    include 'url.php';
+}
