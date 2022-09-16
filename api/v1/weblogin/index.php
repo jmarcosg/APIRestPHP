@@ -1,24 +1,23 @@
 <?php
 
-use App\Controllers\LoginController;
+use App\Controllers\Weblogin\LoginController;
 
-/* Metodo GET */
+
 if ($url['method'] == 'GET') {
-	if (isset($_GET) && count($_GET) > 0) {
-		$user = $loginController->getUserData($_GET);
-		if (!$user instanceof ErrorException) {
-			if ($user) {
-				sendRes($user);
-			} else {
-				sendRes(null, 'No se encontro el usuario', $_GET);
-			}
-		} else {
-			sendRes(null, $user->getMessage(), $_GET);
-		};
-	} else {
-		header("HTTP/1.1 200 Bad Request");
+	$action = $_GET['action'];
+	unset($_GET['action']);
+
+	switch ($action) {
+
+		case 'legajo':
+			LoginController::getLegajoData();
+
+		default:
+			$error = new ErrorException('El action no es valido');
+			sendRes(null, $error->getMessage(), $_GET);
+			exit;
+			break;
 	}
-	eClean();
 }
 
 header("HTTP/1.1 200 Bad Request");

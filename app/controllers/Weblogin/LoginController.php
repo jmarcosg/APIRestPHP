@@ -70,4 +70,10 @@ class LoginController
             return $th;
         }
     }
+
+    public static function getLegajoData()
+    {
+        echo 'Estoy vivo';
+        exit;
+    }
 }
