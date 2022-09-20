@@ -12,6 +12,9 @@ if ($url['method'] == 'GET') {
 		case 'legajo':
 			LoginController::getLegajoData();
 
+		case 'acarreo':
+			LoginController::getAcarreoData();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
