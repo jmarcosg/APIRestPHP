@@ -2,19 +2,21 @@
 
 namespace App\Controllers\Weblogin;
 
+use App\Models\Weblogin\Weblogin;
 use ErrorException;
 
 class LoginController
 {
     use SqlQuery;
 
-    protected $logPath = 'v1/login';
-
-    public function getUserData($user, $pass)
+    public static function getUserData($user, $pass)
     {
-        $userData = $this->fetchUserData($user, $pass);
+        $userData = self::fetchUserData($user, $pass);
 
-        if ($userData instanceof ErrorException) return $userData;
+        if ($userData instanceof ErrorException) {
+            Weblogin::saveLog($userData->getMessage(), __CLASS__, __FUNCTION__);
+            return $userData;
+        }
 
         if ($userData && $userData->value && !$userData->error) {
             $data = [
@@ -26,15 +28,25 @@ class LoginController
             $dni = $userData->value->profile->documento;
 
             $referenciaId = $userData->value->profile->wapUsuarioID;
-            $data['fetch'] = $this->viewFetch($referenciaId, $dni);
+            $fetch = self::viewFetch($referenciaId, $dni);
 
-            return $data;
+            if (!$fetch instanceof ErrorException) {
+                $data['fetch'] = self::viewFetch($referenciaId, $dni);
+                sendRes($data);
+            } else {
+                Weblogin::saveLog($fetch, __CLASS__, __FUNCTION__);
+                sendRes(null, $fetch->getMessage(), $_GET);
+            }
         } else {
-            return new ErrorException($userData->error);
+            $error = new ErrorException($userData->error);
+            Weblogin::saveLog($error->getMessage(), __CLASS__, __FUNCTION__);
+            return $error;
         }
+
+        exit;
     }
 
-    public function fetchUserData($user, $pass)
+    public static function fetchUserData($user, $pass)
     {
         try {
             $postData = [
@@ -71,9 +83,44 @@ class LoginController
         }
     }
 
+    /** Obtenemos los datos del legajo en funcion del sexo y documento */
     public static function getLegajoData()
     {
-        echo 'Estoy vivo';
+        $sexo = $_GET['sexo'];
+        $doc =  $_GET['doc'];
+
+        $model = new Weblogin();
+
+        $sql = self::datosLegajo($sexo, $doc);
+        $data = $model->executeSqlQuery($sql);
+
+        if ($data) {
+            sendRes($data);
+        } else {
+            $error = new ErrorException("Problema al obtener el legajo | genero: $sexo | documento: $doc");
+            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
+            sendRes(null, $error->getMessage(), $_GET);
+        };
+        exit;
+    }
+
+    /** Obtenemos los datos del acarreo */
+    public static function getAcarreoData()
+    {
+        $id = $_GET['id'];
+
+        $model = new Weblogin();
+
+        $sql = self::datosAccareo($id);
+        $data = $model->executeSqlQuery($sql);
+
+        if ($data && !$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            $error = new ErrorException("Problema al obtener los datos del accareo | id: $id");
+            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
+            sendRes(null, $error->getMessage(), $_GET);
+        };
         exit;
     }
 }
