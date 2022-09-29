@@ -53,13 +53,14 @@ class Lc_Documento extends BaseModel
             $params['id_tipo_documento'] = 6;
             $this->set($params);
             $this->save();
+            
+            $params['id_tipo_documento'] = 7;
+            $this->set($params);
+            $this->save();
         }
 
         if ($solicitud['tipo_persona'] == 'juridica') {
             /* AFIP */
-            $params['id_tipo_documento'] = 7;
-            $this->set($params);
-            $this->save();
 
             /* AFIP */
             $params['id_tipo_documento'] = 8;
