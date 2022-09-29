@@ -196,57 +196,28 @@ class Lc_SolicitudController
     public static function datosPersonales($req, $id)
     {
         $data = new Lc_Solicitud();
+        $savedSolicitud = $data->get(['id' => $id])->value;
 
         /* buscamos el tipo de documento que corresponde a un Poder */
         $doc = new Lc_Documento();
-        $poder = $doc->get(['id_solicitud' => $id, 'id_tipo_documento' => 2])->value;
-        $dni = $doc->get(['id_solicitud' => $id, 'id_tipo_documento' => 3])->value;
 
-        if ($req["pertenece"] == 'propia') {
-            $req['id_wappersonas_tercero'] = null;
-            $req['dni_tercero'] = null;
-            $req['tramite_tercero'] = null;
-            $req['genero_tercero'] = null;
-
-            if ($poder) {
-                /* Si actualizo a propio y existe el documento lo borramos */
-                $idDocumento = $poder['id'];
-                $doc->delete($idDocumento);
-            }
-
-            if ($dni) {
-                /* Si actualizo a propio y existe el documento lo borramos */
-                $idDocumento = $dni['id'];
-                $doc->delete($idDocumento);
-            }
+        if ($savedSolicitud['tipo_persona'] != $req['tipo_persona'] || $savedSolicitud['pertenece'] != $req['pertenece']) {
+            $doc->deleteInitDocuments($id);
+            $doc->saveInitDocuments($id, $req);
         }
 
-        if ($req['pertenece'] == 'tercero' && !$poder) {
-            /* Si actualizo a tercero pero no existe el documento */
-            $params = ['id_solicitud' => $id, 'id_tipo_documento' => 2, 'verificado' => 0];
-            $doc->set($params);
-            $doc->save();
-        }
-
-        if ($req['pertenece'] == 'tercero' && !$dni) {
-            /* Si actualizo a tercero pero no existe el documento */
-            $params = ['id_solicitud' => $id, 'id_tipo_documento' => 3, 'verificado' => 0];
-            $doc->set($params);
-            $doc->save();
-        }
-
-        $lc =  $data->update($req, $id);
+        $solicitud =  $data->update($req, $id);
 
         /* Obtenemos los documentos  */
         $documentos = self::getDocumentsData($id);
 
-        if (!$lc instanceof ErrorException) {
+        if (!$solicitud instanceof ErrorException) {
             sendRes([
                 'id' => $id,
                 'documentos' => $documentos
             ]);
         } else {
-            sendRes(null, $lc->getMessage(), ['id' => $id]);
+            sendRes(null, $solicitud->getMessage(), ['id' => $id]);
         };
         exit;
     }
