@@ -308,11 +308,13 @@ class Lc_SolicitudController
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
             if ($estado == 'retornado') {
                 $req['estado'] = 'act_retornado_inicio';
+                self::sendEmail($id, 'inicio_retornado', $solicitud);
             }
 
             /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
             if ($estado == 'rechazado') {
                 $req['estado'] = 'inicio_rechazado';
+                self::sendEmail($id, 'inicio_rechazado', $solicitud);
             }
 
             $data = $data->update($req, $id);
@@ -360,11 +362,13 @@ class Lc_SolicitudController
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
             if ($estado == 'retornado') {
                 $req['estado'] = 'act_retornado_cat';
+                self::sendEmail($id, 'catastro_retornado', $solicitud);
             }
 
             /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
             if ($estado == 'rechazado') {
                 $req['estado'] = 'cat_rechazado';
+                self::sendEmail($id, 'catastro_rechazado', $solicitud);
             }
 
             $data = $data->update($req, $id);
@@ -376,16 +380,6 @@ class Lc_SolicitudController
         }
 
         if (!$data instanceof ErrorException) {
-
-            /*  $solicitud =  self::getSolicitudByQuery("id = $id");
-
-            if ($solicitud['ver_ambiental'] == 1) {
-                if ($estado === 'aprobado') self::sendEmail($id, 'catastro_aprobado', $solicitud);
-            }
-
-            if ($estado === 'rechazado') self::sendEmail($id, 'catastro_rechazado', $solicitud);
-            if ($estado === 'retornado') self::sendEmail($id, 'catastro_retornado', $solicitud); */
-
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
             sendRes($_PUT);
@@ -429,6 +423,7 @@ class Lc_SolicitudController
             /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
             if ($estado == 'rechazado') {
                 $req['estado'] = 'ambiental_rechazado';
+                self::sendEmail($id, 'ambiental_rechazado', $solicitud);
             }
 
             unset($req['documentos']);
@@ -441,16 +436,6 @@ class Lc_SolicitudController
         }
 
         if (!$data instanceof ErrorException) {
-
-            /* $solicitud =  self::getSolicitudByQuery("id = $id");
-
-            if ($solicitud['ver_catastro'] == 1) {
-                if ($estado === 'aprobado') self::sendEmail($id, 'catastro_aprobado', $solicitud);
-            }
-
-            if ($estado === 'rechazado') self::sendEmail($id, 'ambiental_rechazado', $solicitud);
-            if ($estado === 'retornado') self::sendEmail($id, 'ambiental_retornado', $solicitud); */
-
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
             sendRes($_PUT);
@@ -515,7 +500,6 @@ class Lc_SolicitudController
 
             if ($estado == 'aprobado') self::sendEmail($id, 'rubros_aprobado', $solicitud);
             if ($estado == 'rechazado') self::sendEmail($id, 'rubros_rechazado', $solicitud);
-            if ($estado == 'retornado') self::sendEmail($id, 'rubros_retornado', $solicitud);
 
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
