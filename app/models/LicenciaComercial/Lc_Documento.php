@@ -53,7 +53,7 @@ class Lc_Documento extends BaseModel
             $params['id_tipo_documento'] = 6;
             $this->set($params);
             $this->save();
-            
+
             $params['id_tipo_documento'] = 7;
             $this->set($params);
             $this->save();
@@ -77,5 +77,15 @@ class Lc_Documento extends BaseModel
             $this->set($params);
             $this->save();
         }
+    }
+
+    public function deleteInitDocuments($idSolicitud)
+    {
+        $documentos = $this->list(['id_solicitud' => $idSolicitud])->value;
+
+        foreach ($documentos as $doc) {
+            $this->delete($doc['id']);
+        }
+
     }
 }
