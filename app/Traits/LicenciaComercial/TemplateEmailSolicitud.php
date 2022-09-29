@@ -13,19 +13,20 @@ trait TemplateEmailSolicitud
         /* Inicio tramite */
         if ($type == 'inicio') $body = self::init($data);
 
+        /* Modulo verificador inicial */
+        if ($type == 'inicio_rechazado') $body = self::verInicioRechazado($data);
+        if ($type == 'inicio_retornado') $body = self::verInicioRetornado($data);
+
+        /* Modulo verificador ambiental y catastro */
+        if ($type == 'catastro_rechazado') $body = self::verCatRechazado($data);
+        if ($type == 'catastro_retornado') $body = self::verCatRetornado($data);
+
+        /* Modulo verificador ambiental */
+        if ($type == 'ambiental_rechazado') $body = self::verAmbRechazado($data);
+
         /* Modulo verificador de rubros */
         if ($type == 'rubros_aprobado') $body = self::verRubrosAprobado($data);
         if ($type == 'rubros_rechazado') $body = self::verRubrosRechazado($data);
-        if ($type == 'rubros_retornado') $body = self::verRubrosRetornado($data);
-
-        /* Modulo verificador ambiental y catastro */
-        if ($type == 'catastro_aprobado') $body = self::catastroAprobado($data);
-        /*  */
-        if ($type == 'ambiental_rechazado') $body = self::verAmbRechazado($data);
-        if ($type == 'ambiental_retornado') $body = self::verAmbRetornado($data);
-
-        if ($type == 'catastro_rechazado') $body = self::verAmbRechazado($data);
-        if ($type == 'catastro_retornado') $body = self::verAmbRetornado($data);
 
         /* Envio a modulo verificador de documentos */
         if ($type == 'documentacion') $body = self::sendDocumentacion($data);
@@ -53,302 +54,143 @@ trait TemplateEmailSolicitud
         $id = $data['id'];
 
         $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Usted inicio un tramite de licencia comercial: $id</h3>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
+            "<div class='row'>
+                <h3>Usted inicio un tramite de licencia comercial: $id</h3>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
+        return $template;
+    }
+
+    /* Verificador incial */
+    protected static function verInicioRechazado($data)
+    {
+        $id = $data['id'];
+        $obs = $data['observacion'];
+
+        $template =
+            "<div class='row'>
+                <h3>Verficador inicial rechazó la solicitud: $id</h3>
+                <hr />
+                <p>Observacion: $obs</p>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
+        return $template;
+    }
+
+    protected static function verInicioRetornado($data)
+    {
+        $id = $data['id'];
+        $obs = $data['observacion'];
+
+        $template =
+            "<div class='row'>
+                <h3>Verficador inicial retornó la solicitud: $id</h3>
+                <hr />
+                <p>Observacion: $obs</p>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
+        return $template;
+    }
+
+    /* Catastro */
+    protected static function verCatRechazado($data)
+    {
+        $id = $data['id'];
+        $obs = $data['observacion'];
+
+        $template =
+            "<div class='row'>
+                <h3>Catastro rechazo la solicitud: $id</h3>
+                <hr />
+                <p>Observacion: $obs</p>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
+        return $template;
+    }
+
+    protected static function verCatRetornado($data)
+    {
+        $id = $data['id'];
+        $obs = $data['observacion'];
+
+        $template =
+            "<div class='row'>
+                <h3>Catastro retorno la solicitud: $id</h3>
+                <hr />
+                <p>Observacion: $obs</p>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
+        return $template;
+    }
+
+    /* Verificacion ambiental */
+    protected static function verAmbRechazado($data)
+    {
+        $id = $data['id'];
+        $obs = $data['observacion'];
+
+        $template =
+            "<div class='row'>
+                <h3>Verficador ambiental rechazo la solicitud: $id</h3> 
+                <hr />
+                <p>Observacion: $obs</p>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
         return $template;
     }
 
     /* Verificador de rubros */
     protected static function verRubrosAprobado($data)
     {
-
         $id = $data['id'];
         $obs = $data['observacion'];
 
         $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Verficador de rubros aprobo la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
+            "<div class='row'>
+                <h3>Verficador de rubros aprobo la solicitud: $id</h3>
+                <hr />
+                <p>Observacion: $obs</p>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
         return $template;
     }
 
     protected static function verRubrosRechazado($data)
     {
-
         $id = $data['id'];
         $obs = $data['observacion'];
 
         $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Verficador de rubros rechazo la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
-        return $template;
-    }
+            "<div class='row'>
+                <h3>Verficador de rubros rechazo la solicitud: $id</h3>
+                <hr />
+                <p>Observacion: $obs</p>
+                <hr />
+            </div>";
 
-    protected static function verRubrosRetornado($data)
-    {
+        $template = self::getTemplateInLayout($template);
 
-        $id = $data['id'];
-        $obs = $data['observacion'];
-
-        $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Verficador de rubros retorno la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
-        return $template;
-    }
-
-    /* Verificador de rubros */
-    protected static function catastroAprobado($data)
-    {
-
-        $id = $data['id'];
-        $obs = $data['observacion'];
-
-        $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Verficador ambiental y catastro aprobo la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
-        return $template;
-    }
-
-    protected static function verAmbRechazado($data)
-    {
-
-        $id = $data['id'];
-        $obs = $data['observacion'];
-
-        $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Verficador ambiental rechazo la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
-        return $template;
-    }
-
-    protected static function verAmbRetornado($data)
-    {
-
-        $id = $data['id'];
-        $obs = $data['observacion'];
-
-        $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Verficador ambiental retorno la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
-        return $template;
-    }
-
-    protected static function verCatRechazado($data)
-    {
-
-        $id = $data['id'];
-        $obs = $data['observacion'];
-
-        $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Catastro rechazo la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
-        return $template;
-    }
-
-    protected static function verCatRetornado($data)
-    {
-
-        $id = $data['id'];
-        $obs = $data['observacion'];
-
-        $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Catastro retorno la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
         return $template;
     }
 
@@ -356,110 +198,77 @@ trait TemplateEmailSolicitud
     protected static function sendDocumentacion($data)
     {
         $id = $data['id'];
+
         $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Usted envio la documentacion de la solicitud: $id</h3>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
+            "<div class='row'>
+                <h3>Usted envio la documentacion de la solicitud: $id</h3>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
         return $template;
     }
-
 
     /* Verificador de rubros */
     protected static function verDocumentosAprobado($data)
     {
-
         $id = $data['id'];
         $obs = $data['observacion'];
 
         $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Verficador de documentos aprobo la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
+            "<div class='row'>
+                <h3>Verficador de documentos aprobo la solicitud: $id</h3>
+                <hr />
+                <p>Observacion: $obs</p>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
         return $template;
     }
 
     protected static function verDocumentosRechazado($data)
     {
-
         $id = $data['id'];
         $obs = $data['observacion'];
 
         $template =
-            "<!DOCTYPE html>
-            <html lang='en'>
-                <head>
-                    <meta charset='UTF-8' />
-                    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-                    <link
-                        href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css'
-                        rel='stylesheet'
-                        integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC'
-                        crossorigin='anonymous'
-                    />
-                </head>
-                <body>
-                    <div class='container'>
-                        <div class='row'>
-                            <h3>Verficador de documentos rechazo la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
-                    </div>
-                </body>
-            </html>";
+            "<div class='row'>
+                <h3>Verficador de documentos rechazo la solicitud: $id</h3>
+                <hr />
+                <p>Observacion: $obs</p>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
         return $template;
     }
 
     protected static function verDocumentosRetornado($data)
     {
-
         $id = $data['id'];
         $obs = $data['observacion'];
 
         $template =
-            "<!DOCTYPE html>
+            "<div class='row'>
+                <h3>Verficador de documentos retorno la solicitud: $id</h3>
+                <hr />
+                <p>Observacion: $obs</p>
+                <hr />
+            </div>";
+
+        $template = self::getTemplateInLayout($template);
+
+        return $template;
+    }
+
+    /** Layout principal */
+    public static function getTemplateInLayout($template)
+    {
+        return "<!DOCTYPE html>
             <html lang='en'>
                 <head>
                     <meta charset='UTF-8' />
@@ -474,15 +283,9 @@ trait TemplateEmailSolicitud
                 </head>
                 <body>
                     <div class='container'>
-                        <div class='row'>
-                            <h3>Verficador de documentos retorno la solicitud: $id</h3>
-                            <hr />
-                            <p>Observacion: $obs</p>
-                            <hr />
-                        </div>
+                        $template
                     </div>
                 </body>
             </html>";
-        return $template;
     }
 }
