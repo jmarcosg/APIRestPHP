@@ -43,7 +43,7 @@ if (ENV == 'replica') {
 if (ENV == 'local') {
     /** LOCAL */
     define('FILE_PATH', 'C:\xampp\htdocs\APIRest\files\\');
-    define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
+    define('WS_WEBLOGIN', 'https://weblogin.muninqn.gov.ar/api/getUserByToken/');
 }
 
 /* Headers */
