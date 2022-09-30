@@ -4,9 +4,6 @@ use App\Controllers\Adopciones\Adop_AnimalesController;
 use App\Controllers\Adopciones\Adop_VecinosController;
 use App\Controllers\Adopciones\Adop_AdopcionesController;
 
-use App\Traits\QRIdentificacion\RequestGenerarQR;
-use App\Traits\QRIdentificacion\RequestGenerarVCard;
-
 if ($url['method'] == "GET") {
 	if (isset($_GET['action'])) {
 
@@ -18,8 +15,8 @@ if ($url['method'] == "GET") {
 
 				if (count($data) == 0) {
 					$data = [
-						'qr' => null,
-						'error' => "QR no encontrado"
+						'animal' => null,
+						'error' => "Animal no encontrado"
 					];
 				} else {
 					$data['error'] = null;
@@ -33,7 +30,7 @@ if ($url['method'] == "GET") {
 
 				if (count($data) == 0) {
 					$data = [
-						'usuario' => null,
+						'vecino' => null,
 						'error' => "Vecino no encontrado"
 					];
 				} else {
@@ -45,6 +42,15 @@ if ($url['method'] == "GET") {
 				// Listado de adopciones
 				$data = Adop_AdopcionesController::index();
 				break;
+
+			case 't':
+				echo "hola";
+				exit;
+
+			default:
+				$error = new ErrorException('El action no es valido');
+				sendRes(null, $error->getMessage(), $_GET);
+				exit;
 		}
 	} else {
 		$data = [
@@ -59,41 +65,69 @@ if ($url['method'] == "GET") {
 if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case '1':
-			// Crear animal
-			Adop_AnimalesController::store($_POST);
+			// Cargar animal
+			$cantAnimales = Adop_AnimalesController::index();
+			$idCarpeta = count($cantAnimales) + 1;
+			$pathCarpeta = "E:/Dataserver/Replica/projects_files/adopciones/" . $idCarpeta . "/";
+
 			$data = [
+				'imagen1_path' => $pathCarpeta . "/imagen-grande",
+				'imagen2_path' => $pathCarpeta . "/imagen-chica",
 				'nombre' => $_POST['nombre'],
 				'edad' => $_POST['raza'],
 				'tamanio' => $_POST['tamanio'],
 				'castrado' => $_POST['castrado'],
-				'descripcion' => $_POST['descripcion']
-			];
-			$persona = QRI_PersonaController::index($data)[0];
-			$usuario = QRI_UsuarioController::index(['email' => $_POST['mailUsuario']])[0];
-			$qrs = QRI_CodigoQRController::index();
-
-			$dataQR = [
-				'id_usuario' => $usuario['id'],
-				'id_persona_identificada' => $persona['id'],
-				'qr_path' => 'E:/Dataserver/Replica/projects_files/qr-identificacion/' . (count($qrs) + 1) . "/",
-				'qr_token' => md5($persona['email'] . $usuario['email'] . (count($qrs) + 1))
+				'descripcion' => $_POST['descripcion'],
+				'adoptado' => $_POST['adoptado'],
+				'fecha_ingreso' => $_POST['fecha_ingreso'],
+				'fecha_egreso' => $_POST['fecha_egreso'],
+				'fecha_modificacion' => $_POST['fecha_modificacion'],
+				'deshabilitado' => $_POST['deshabilitado']
 			];
 
-			if (QRI_CodigoQRController::store($dataQR)) {
-				$dataQR['sessionkey'] = $_POST['sessionkey'];
-				$dataQR['id_solicitud'] = count($qrs) + 1;
-				$resp = RequestGenerarQR::sendRequest($dataQR);
-
-				echo json_encode($resp);
+			if (Adop_AnimalesController::store($data)) {
+				$animal = Adop_AnimalesController::index($data)[0];
+				Adop_AnimalesController::storeImages($_FILES['imagenGrande'], $animal->get([])->value['imagen1_path'], $animal, "imagen1_path");
+				Adop_AnimalesController::storeImages($_FILES['imagenGrande'], $animal->get([])->value['imagen2_path'], $animal, "imagen2_path");
 			}
+
 			break;
 
 		case '2':
-			QRI_UsuarioController::store($_POST);
+			// Modificar animal
+			$idAnimalModificar = $_POST['id'];
+			$animal = Adop_AnimalesController::index(['id' => $idAnimalModificar])[0];
+			$pathCarpeta = "E:/Dataserver/Replica/projects_files/adopciones/" . $idCarpeta . "/";
+
+			$data = [
+				'imagen1_path' => $pathCarpeta . "/imagen-grande",
+				'imagen2_path' => $pathCarpeta . "/imagen-chica",
+				'nombre' => $_POST['nombre'],
+				'edad' => $_POST['raza'],
+				'tamanio' => $_POST['tamanio'],
+				'castrado' => $_POST['castrado'],
+				'descripcion' => $_POST['descripcion'],
+				'adoptado' => $_POST['adoptado'],
+				'fecha_ingreso' => $_POST['fecha_ingreso'],
+				'fecha_adopcion' => $_POST['fecha_adopcion'],
+				'fecha_modificacion' => $_POST['fecha_modificacion']
+			];
+
+			if (Adop_AnimalesController::store($data)) {
+				$animal = Adop_AnimalesController::index($data)[0];
+				Adop_AnimalesController::storeImages($_FILES['imagenGrande'], $animal->get([])->value['imagen1_path'], $animal, "imagen1_path");
+				Adop_AnimalesController::storeImages($_FILES['imagenGrande'], $animal->get([])->value['imagen2_path'], $animal, "imagen2_path");
+			}
+
 			break;
 
-		case '3':
-			echo json_encode(RequestGenerarVCard::generateVcard($_POST));
-			break;
+		default:
+			$error = new ErrorException('El action no es valido');
+			sendRes(null, $error->getMessage(), $_GET);
+			exit;
 	}
 }
+
+header("HTTP/1.1 200 Bad Request");
+
+eClean();
