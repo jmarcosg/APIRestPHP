@@ -4,25 +4,20 @@ namespace App\Models\Adopciones;
 
 use App\Models\BaseModel;
 
-class Adop_Animal extends BaseModel
+class Adop_Vecino extends BaseModel
 {
-    protected $table = 'adop_animales';
+    protected $table = 'ADOP_vecinos';
     protected $logPath = 'v1/adopciones';
     protected $identity = 'id';
 
     protected $fillable = [
-        'imagen1',
-        'imagen2',
         'nombre',
-        'edad',
-        'raza',
-        'tamanio',
-        'castrado',
-        'descripcion',
-        'adoptado',
-        'fecha_ingreso',
-        'fecha_egreso'
+        'dni',
+        'email',
+        'email_alternativo',
+        'telefono',
+        'telefono_alternativo',
+        'ciudad',
+        'domicilio'
     ];
-
-    public $filesUrl = FILE_PATH . 'adopciones/nuevo/';
 }
