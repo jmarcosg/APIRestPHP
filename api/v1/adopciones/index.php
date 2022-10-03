@@ -44,7 +44,7 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 't':
-				echo "hola";
+				echo "hola get";
 				exit;
 
 			default:
@@ -66,9 +66,16 @@ if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case '1':
 			// Cargar animal
+			$mensaje = "";
 			$cantAnimales = Adop_AnimalesController::index();
+			echo "hola index";
 			$idCarpeta = count($cantAnimales) + 1;
-			$pathCarpeta = "E:/Dataserver/Replica/projects_files/adopciones/" . $idCarpeta . "/";
+			echo $cantAnimales;
+			// $pathCarpeta = "E:/Dataserver/Replica/projects_files/adopciones/" . $idCarpeta . "/";
+			$pathCarpeta = "../../../files/adopciones" . $idCarpeta . "/";
+
+			echo $pathCarpeta;
+			$mensaje = "antes de carga de datos";
 
 			$data = [
 				'imagen1_path' => $pathCarpeta . "/imagen-grande",
@@ -79,18 +86,24 @@ if ($url['method'] == "POST") {
 				'castrado' => $_POST['castrado'],
 				'descripcion' => $_POST['descripcion'],
 				'adoptado' => $_POST['adoptado'],
+				'deshabilitado' => $_POST['deshabilitado'],
 				'fecha_ingreso' => $_POST['fecha_ingreso'],
 				'fecha_egreso' => $_POST['fecha_egreso'],
 				'fecha_modificacion' => $_POST['fecha_modificacion'],
-				'deshabilitado' => $_POST['deshabilitado']
+				'fecha_deshabilitado' => $_POST['fecha_deshabilitado']
 			];
 
+			$mensaje = "antes de carga de imagenes";
 			if (Adop_AnimalesController::store($data)) {
 				$animal = Adop_AnimalesController::index($data)[0];
 				Adop_AnimalesController::storeImages($_FILES['imagenGrande'], $animal->get([])->value['imagen1_path'], $animal, "imagen1_path");
 				Adop_AnimalesController::storeImages($_FILES['imagenGrande'], $animal->get([])->value['imagen2_path'], $animal, "imagen2_path");
+				$mensaje = "exito carga";
+			} else {
+				$mensaje = "error carga";
 			}
 
+			echo $mensaje;
 			break;
 
 		case '2':
@@ -120,6 +133,10 @@ if ($url['method'] == "POST") {
 			}
 
 			break;
+
+		case 't':
+			echo "hola post";
+			exit;
 
 		default:
 			$error = new ErrorException('El action no es valido');

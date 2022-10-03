@@ -20,8 +20,10 @@ class Adop_Animal extends BaseModel
         'castrado',
         'descripcion',
         'adoptado',
+        'deshabilitado',
         'fecha_ingreso',
         'fecha_modificacion',
+        'fecha_deshabilitado',
     ];
 
     public $filesUrl = FILE_PATH . 'adopciones/';

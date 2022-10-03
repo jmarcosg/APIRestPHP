@@ -15,6 +15,8 @@ class Adop_AnimalesController
     {
         $data = new Adop_Animal();
         $data = $data->list($param, $ops)->value;
+        print_r($data);
+        die();
         return $data;
     }
 
