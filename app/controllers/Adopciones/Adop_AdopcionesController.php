@@ -9,7 +9,7 @@ class Adop_AdopcionesController
 {
     public function __construct()
     {
-        $GLOBALS['exect'][] = 'ADOP_Adopciones';
+        $GLOBALS['exect'][] = 'ADOP_adopciones';
     }
 
     public static function index($param = [], $ops = [])

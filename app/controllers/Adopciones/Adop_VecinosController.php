@@ -9,7 +9,7 @@ class Adop_VecinosController
 {
     public function __construct()
     {
-        $GLOBALS['exect'][] = 'ADOP_Vecinos';
+        $GLOBALS['exect'][] = 'ADOP_vecinos';
     }
 
     public static function index($param = [], $ops = [])

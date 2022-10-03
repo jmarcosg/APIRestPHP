@@ -26,8 +26,6 @@ if ($url['method'] == "GET") {
 				// Listado de vecinos
 				$data = Adop_VecinosController::index();
 
-				echo var_dump($data);
-
 				if (count($data) == 0) {
 					$data = [
 						'vecino' => null,
@@ -66,41 +64,37 @@ if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case '1':
 			// Cargar animal
-			$mensaje = "";
 			$cantAnimales = Adop_AnimalesController::index();
-			echo "hola index";
 			$idCarpeta = count($cantAnimales) + 1;
-			echo $cantAnimales;
-			// $pathCarpeta = "E:/Dataserver/Replica/projects_files/adopciones/" . $idCarpeta . "/";
-			$pathCarpeta = "../../../files/adopciones" . $idCarpeta . "/";
-
-			echo $pathCarpeta;
-			$mensaje = "antes de carga de datos";
 
 			$data = [
-				'imagen1_path' => $pathCarpeta . "/imagen-grande",
-				'imagen2_path' => $pathCarpeta . "/imagen-chica",
+				'imagen1_path' => "/imagen-grande",
+				'imagen2_path' => "/imagen-chica",
 				'nombre' => $_POST['nombre'],
-				'edad' => $_POST['raza'],
+				'edad' => $_POST['edad'],
+				'raza' => $_POST['raza'],
 				'tamanio' => $_POST['tamanio'],
 				'castrado' => $_POST['castrado'],
 				'descripcion' => $_POST['descripcion'],
 				'adoptado' => $_POST['adoptado'],
 				'deshabilitado' => $_POST['deshabilitado'],
 				'fecha_ingreso' => $_POST['fecha_ingreso'],
-				'fecha_egreso' => $_POST['fecha_egreso'],
 				'fecha_modificacion' => $_POST['fecha_modificacion'],
 				'fecha_deshabilitado' => $_POST['fecha_deshabilitado']
 			];
 
-			$mensaje = "antes de carga de imagenes";
-			if (Adop_AnimalesController::store($data)) {
-				$animal = Adop_AnimalesController::index($data)[0];
-				Adop_AnimalesController::storeImages($_FILES['imagenGrande'], $animal->get([])->value['imagen1_path'], $animal, "imagen1_path");
-				Adop_AnimalesController::storeImages($_FILES['imagenGrande'], $animal->get([])->value['imagen2_path'], $animal, "imagen2_path");
+			$id = Adop_AnimalesController::store($data);
+
+			if (!$id instanceof ErrorException) {
+				$animal = Adop_AnimalesController::index($data);
+				// print_r($animal);
+				// die();
+				Adop_AnimalesController::storeImages($_FILES['imagen1_path'], $id, $animal, "imagen1_path");
+				Adop_AnimalesController::storeImages($_FILES['imagen2_path'], $id, $animal, "imagen2_path");
 				$mensaje = "exito carga";
 			} else {
-				$mensaje = "error carga";
+				$mensaje = $id->getMessage();
+				logFileEE('prueba', $id, null, null);
 			}
 
 			echo $mensaje;
@@ -110,28 +104,38 @@ if ($url['method'] == "POST") {
 			// Modificar animal
 			$idAnimalModificar = $_POST['id'];
 			$animal = Adop_AnimalesController::index(['id' => $idAnimalModificar])[0];
-			$pathCarpeta = "E:/Dataserver/Replica/projects_files/adopciones/" . $idCarpeta . "/";
 
 			$data = [
-				'imagen1_path' => $pathCarpeta . "/imagen-grande",
-				'imagen2_path' => $pathCarpeta . "/imagen-chica",
+				'imagen1_path' => "/imagen-grande",
+				'imagen2_path' => "/imagen-chica",
 				'nombre' => $_POST['nombre'],
-				'edad' => $_POST['raza'],
+				'edad' => $_POST['edad'],
+				'raza' => $_POST['raza'],
 				'tamanio' => $_POST['tamanio'],
 				'castrado' => $_POST['castrado'],
 				'descripcion' => $_POST['descripcion'],
 				'adoptado' => $_POST['adoptado'],
+				'deshabilitado' => $_POST['deshabilitado'],
 				'fecha_ingreso' => $_POST['fecha_ingreso'],
-				'fecha_adopcion' => $_POST['fecha_adopcion'],
-				'fecha_modificacion' => $_POST['fecha_modificacion']
+				'fecha_modificacion' => $_POST['fecha_modificacion'],
+				'fecha_deshabilitado' => $_POST['fecha_deshabilitado']
 			];
 
-			if (Adop_AnimalesController::store($data)) {
-				$animal = Adop_AnimalesController::index($data)[0];
-				Adop_AnimalesController::storeImages($_FILES['imagenGrande'], $animal->get([])->value['imagen1_path'], $animal, "imagen1_path");
-				Adop_AnimalesController::storeImages($_FILES['imagenGrande'], $animal->get([])->value['imagen2_path'], $animal, "imagen2_path");
+			$id = Adop_AnimalesController::store($data);
+
+			if (!$id instanceof ErrorException) {
+				$animal = Adop_AnimalesController::index($data);
+				// print_r($animal);
+				// die();
+				Adop_AnimalesController::storeImages($_FILES['imagen1_path'], $id, $animal, "imagen1_path");
+				Adop_AnimalesController::storeImages($_FILES['imagen2_path'], $id, $animal, "imagen2_path");
+				$mensaje = "exito carga";
+			} else {
+				$mensaje = $id->getMessage();
+				logFileEE('prueba', $id, null, null);
 			}
 
+			echo $mensaje;
 			break;
 
 		case 't':
