@@ -26,27 +26,38 @@ class Adop_Animal extends BaseModel
         'fecha_deshabilitado',
     ];
 
-    public $filesUrl = FILE_PATH . 'adopciones/animales/';
+    public $filesUrl = FILE_PATH . 'adopciones\\animales\\';
 
-    public static function storeImages($file, $id, $animal, $imagen)
+    public function storeImage($file, $id, $imagenPath)
     {
-        $adop_animal = new Adop_Animal();
+        print_r($file);
+        die();
         /* Agarramos la extension del archivo  */
         $fileExt = getExtFile($file);
 
         /* Borramos la carpeta del docuemento si existe */
-        deleteDir(FILE_PATH . "adopciones/animales/$id/");
+        deleteDir(FILE_PATH . "adopciones\\animales\\$id\\");
 
         /* Copiamos el archivo */
-        $copiado = copy($file['tmp_name'], self::$filesUrl . $fileExt);
+        $tmpFile = $file['tmp_name'];
+        $fileCopied = copy($tmpFile, $this->filesUrl . "animal" . $fileExt);
         $url = null;
 
-        if ($copiado) {
+        if ($fileCopied) {
+            $filesUrl = $this->filesUrl;
             $animal = new Adop_Animal();
-            $params = [];
-            $animal->update([$imagen => 'nombreArchivos'], $id);
+
+            mkdir("$filesUrl\\$id\\");
+
+            if ($imagenPath == "imagen1_path") {
+                $fileName = "imagen-grande";
+            } elseif ($imagenPath = "imagen2_path") {
+                $fileName = "imagen-chica";
+            }
+
+            $animal->update([$imagenPath => $fileName . $fileExt], $id);
             $url = $animal->get(['id' => $id])->value;
-            $url = self::$filesUrl . $url[$imagen];
+            $url = $this->filesUrl . "$id\\" . $url[$imagenPath];
         }
 
         if ($url) {
@@ -57,11 +68,4 @@ class Adop_Animal extends BaseModel
 
         exit;
     }
-
-    // public function saveAnimal($idSolicitud, $solicitud)
-    // {
-    //     $params = ['id_solicitud' => $idSolicitud, 'id_tipo_documento' => 1, 'verificado' => 0];
-    //     $this->set($params);
-    //     $this->save();
-    // }
 }

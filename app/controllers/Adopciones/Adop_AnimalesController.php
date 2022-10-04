@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Adopciones;
 
+use App\Connections\BaseDatos;
 use App\Models\Adopciones\Adop_Animal;
 
 class Adop_AnimalesController
@@ -18,6 +19,13 @@ class Adop_AnimalesController
         return $data;
     }
 
+    public function get($params)
+    {
+        $data = new Adop_Animal();
+        $data = $data->get($params)->value;
+        return $data;
+    }
+
     public static function store($res)
     {
         $data = new Adop_Animal();
@@ -25,9 +33,21 @@ class Adop_AnimalesController
         return $data->save();
     }
 
-    public static function storeImages($file, $id, $animal, $imagenPath)
+    public static function storeImage($file, $id, $imagenPath)
     {
-        Adop_Animal::storeImages($file, $id, $animal, $imagenPath);
-        /* Agarramos la extension del archivo  */
+        $data = new Adop_Animal();
+        return $data->storeImage($file, $id, $imagenPath);
+    }
+
+    public function update($req, $id)
+    {
+        $data = new Adop_Animal();
+        return $data->update($req, $id);
+    }
+
+    public function delete($id)
+    {
+        $data = new Adop_Animal();
+        return $data->delete($id);
     }
 }
