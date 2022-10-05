@@ -157,7 +157,19 @@ if ($url['method'] == "POST") {
 			break;
 
 		case '3':
-			echo "hola delete";
+			// Eliminar animal
+			$idAnimalEliminar = $_POST['id'];
+
+			$animalesController = new Adop_AnimalesController();
+			$animal = $animalesController->delete($idAnimalEliminar);
+
+			if (!$animal instanceof ErrorException) {
+				$mensaje = "Animal eliminado correctamente";
+			} else {
+				sendRes(null, $animal->getMessage(), null);
+			};
+			echo $mensaje;
+			eClean();
 			break;
 
 		case 't':
@@ -173,16 +185,20 @@ if ($url['method'] == "POST") {
 
 /* Metodo DELETE */
 
-if ($url['method'] == 'DELETE') {
-	$id = $url['id'];
-	$animal = $arbSolicitudController->delete($url['id']);
-	if (!$arbolado instanceof ErrorException) {
-		sendRes(['ReferenciaID' => $id]);
-	} else {
-		sendRes(null, $arbolado->getMessage(), ['ReferenciaID' => $id]);
-	};
-	eClean();
-}
+// if ($url['method'] == 'DELETE') {
+// 	$id = $url['id'];
+// 	print_r($url['id']);
+// 	die();
+// 	$animalesController = new Adop_AnimalesController();
+// 	$animal = $animalesController->delete($url['id']);
+
+// 	if (!$animal instanceof ErrorException) {
+// 		sendRes(['ReferenciaID' => $id]);
+// 	} else {
+// 		sendRes(null, $animal->getMessage(), null);
+// 	};
+// 	eClean();
+// }
 
 header("HTTP/1.1 200 Bad Request");
 
