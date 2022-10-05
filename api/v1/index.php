@@ -1,6 +1,5 @@
 <?php
 
-
 require_once '../../app/config/global.php';
 
 use App\Controllers\Common\LoginController;
@@ -13,6 +12,7 @@ if (LoginController::isLogin($token)) {
 		include "./" . $url['path'] . "/index.php";
 	} else {
 		sendRes(null, 'No existe el endpoint.');
+		header("HTTP/1.1 404 Not Found");
 	}
 } else {
 	sendRes(null, 'No se encuentra autorizado');

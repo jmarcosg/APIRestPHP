@@ -39,7 +39,7 @@ class LoginController
             }
         } else {
             $error = new ErrorException($userData->error);
-            Weblogin::saveLog($error->getMessage(), __CLASS__, __FUNCTION__);
+            Weblogin::saveLog($error->getMessage() . "user: $user, pass: $pass", __CLASS__, __FUNCTION__);
             return $error;
         }
 

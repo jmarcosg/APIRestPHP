@@ -7,11 +7,13 @@ use ErrorException;
 
 class Weblogin extends BaseModel
 {
+    protected $logPath = 'v1/WebLogin';
+
     public static function saveLog($error, $class, $function)
     {
         if (!$error instanceof ErrorException) {
             $error = new ErrorException($error);
         }
-        logFileEE('v1/weblogin', $error, $class, $function);
+        logFileEE(self::$logPath, $error, $class, $function);
     }
 }
