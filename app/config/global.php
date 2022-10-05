@@ -29,24 +29,27 @@ define('TOKEN_KEY', $_ENV['TOKEN_KEY']);
 /* ######################### */
 
 if (ENV == 'produccion') {
-    define('FILE_PATH', $_ENV['FILE_PATH_PRODUCCION']);
-    define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_PRODUCCION']);
+    /** PRODUCCION */
+    define('FILE_PATH', 'E:\Dataserver\Produccion\projects_files\\');
+    define('WS_WEBLOGIN', 'https://weblogin.muninqn.gov.ar/api/getUserByToken/');
 }
 
 if (ENV == 'replica') {
-    define('FILE_PATH', $_ENV['FILE_PATH_REPLICA']);
-    define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_REPLICA']);
+    /** REPLICA */
+    define('FILE_PATH', 'E:\Dataserver\Replica\projects_files\\');
+    define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
 }
 
 if (ENV == 'local') {
-    define('FILE_PATH', $_ENV['FILE_PATH_LOCAL']);
-    define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_LOCAL']);
+    /** LOCAL */
+    define('FILE_PATH', 'C:\xampp\htdocs\apirestphp\files\\');
+    define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
 }
 
 if (ENV == 'mac') {
     /** LOCAL */
     define('FILE_PATH', '');
-    define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_LOCAL']);
+    define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
 }
 
 /* Headers */

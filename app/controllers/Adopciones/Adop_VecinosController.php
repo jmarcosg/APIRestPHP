@@ -19,10 +19,29 @@ class Adop_VecinosController
         return $data;
     }
 
+    public function get($params)
+    {
+        $data = new Adop_Vecino();
+        $data = $data->get($params)->value;
+        return $data;
+    }
+
     public static function store($res)
     {
         $data = new Adop_Vecino();
         $data->set($res);
         return $data->save();
+    }
+
+    public function update($req, $id)
+    {
+        $data = new Adop_Vecino();
+        return $data->update($req, $id);
+    }
+
+    public function delete($id)
+    {
+        $data = new Adop_Vecino();
+        return $data->delete($id);
     }
 }

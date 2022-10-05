@@ -4,6 +4,7 @@ namespace App\Controllers\Adopciones;
 
 use App\Connections\BaseDatos;
 use App\Models\Adopciones\Adop_Animal;
+use ErrorException;
 
 class Adop_AnimalesController
 {
@@ -16,13 +17,6 @@ class Adop_AnimalesController
     {
         $data = new Adop_Animal();
         $data = $data->list($param, $ops)->value;
-        return $data;
-    }
-
-    public function get($params)
-    {
-        $data = new Adop_Animal();
-        $data = $data->get($params)->value;
         return $data;
     }
 

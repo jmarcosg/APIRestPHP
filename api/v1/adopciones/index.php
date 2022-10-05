@@ -10,7 +10,7 @@ if ($url['method'] == "GET") {
 	if (isset($_GET['action'])) {
 
 		switch ($_GET['action']) {
-			case '1':
+			case 'an1':
 				// Listado de animales
 				$animalesController = new Adop_AnimalesController();
 				$data = $animalesController->index();
@@ -18,15 +18,47 @@ if ($url['method'] == "GET") {
 				if (count($data) == 0) {
 					$data = [
 						'animal' => null,
-						'error' => "Animal no encontrado"
+						'error' => "No hay registros de animales"
 					];
 				} else {
 					$data['error'] = null;
 				}
 				break;
-			case '2':
+
+			case 'an2':
+				// Obtener animal por id
+				$animalesController = new Adop_AnimalesController();
+				$data = Adop_AnimalesController::index(['id' => $_GET['id']]);
+
+				if (count($data) == 0) {
+					$data = [
+						'animal' => null,
+						'error' => "Animal no encontrado"
+					];
+				} else {
+					$data = $data[0];
+					$data['error'] = null;
+				}
+				break;
+
+			case 'v1':
 				// Listado de vecinos
 				$data = Adop_VecinosController::index();
+
+				if (count($data) == 0) {
+					$data = [
+						'vecino' => null,
+						'error' => "No hay registros de vecinos"
+					];
+				} else {
+					$data['error'] = null;
+				}
+				break;
+
+			case 'v2':
+				// Obtener vecino por id
+				$vecinosController = new Adop_VecinosController();
+				$data = Adop_VecinosController::index(['id' => $_GET['id']]);
 
 				if (count($data) == 0) {
 					$data = [
@@ -34,13 +66,29 @@ if ($url['method'] == "GET") {
 						'error' => "Vecino no encontrado"
 					];
 				} else {
+					$data = $data[0];
 					$data['error'] = null;
 				}
 				break;
 
-			case '3':
+			case 'ad1':
 				// Listado de adopciones
 				$data = Adop_AdopcionesController::index();
+
+				if (count($data) == 0) {
+					$data = [
+						'adopcion' => null,
+						'error' => "No hay registros de adopciones"
+					];
+				} else {
+					$data['error'] = null;
+				}
+				break;
+
+			case 'ad2':
+				// Obtener adopcion por id
+				$adopcionesController = new Adop_AdopcionesController();
+				$data = Adop_AdopcionesController::index(['id' => $_GET['id']]);
 
 				if (count($data) == 0) {
 					$data = [
@@ -48,6 +96,7 @@ if ($url['method'] == "GET") {
 						'error' => "Adopcion no encontrada"
 					];
 				} else {
+					$data = $data[0];
 					$data['error'] = null;
 				}
 				break;
@@ -75,7 +124,7 @@ if ($url['method'] == "GET") {
 
 if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
-		case '1':
+		case 'an1':
 			// Cargar animal
 			$animales = Adop_AnimalesController::index();
 
@@ -97,18 +146,27 @@ if ($url['method'] == "POST") {
 
 			$id = Adop_AnimalesController::store($data);
 
-			// print_r($id);
-			// die();
-
 			if (!$id instanceof ErrorException) {
 				$imagen1Cargada = Adop_AnimalesController::storeImage($_FILES['imagen1'], $id, "imagen1_path");
-				//! No esta renombrando ni ¿reconociendo? la segunda imagen a subir
-				$imagen2Cargada = Adop_AnimalesController::storeImage($_FILES['imagen2'], $id, "imagen2_path");
+				if ($imagen1Cargada) {
+					$mensaje = "exito carga y guardado de imagen 1";
+					echo $mensaje;
 
-				if ($imagen1Cargada && $imagen2Cargada) {
-					$mensaje = "exito carga y guardado de imagenes";
+					//! No esta renombrando ni ¿reconociendo? la segunda imagen a subir
+					$imagen2Cargada = Adop_AnimalesController::storeImage($_FILES['imagen2'], $id, "imagen2_path");
+					print_r($imagen2Cargada);
+					die();
+
+					if ($imagen2Cargada) {
+						$mensaje = "exito carga y guardado de imagen 2";
+						echo $mensaje;
+					} else {
+						$mensaje = "error carga y/o guardado de imagen 2";
+						echo $mensaje;
+					}
 				} else {
-					$mensaje = "error en carga y guardado de imagenes";
+					$mensaje = "error carga y/o guardado de imagen 1";
+					echo $mensaje;
 				}
 			} else {
 				$mensaje = $id->getMessage();
@@ -119,7 +177,8 @@ if ($url['method'] == "POST") {
 			echo $mensaje;
 			break;
 
-		case '2':
+
+		case 'an2':
 			// Modificar animal
 			$idAnimalModificar = $_POST['id'];
 			$animal = Adop_AnimalesController::index(['id' => $idAnimalModificar])[0];
@@ -156,7 +215,8 @@ if ($url['method'] == "POST") {
 			echo $mensaje;
 			break;
 
-		case '3':
+
+		case 'an3':
 			// Eliminar animal
 			$idAnimalEliminar = $_POST['id'];
 
@@ -168,8 +228,129 @@ if ($url['method'] == "POST") {
 			} else {
 				sendRes(null, $animal->getMessage(), null);
 			};
+
 			echo $mensaje;
-			eClean();
+			break;
+
+		case 'v1':
+			// Cargar vecino
+			$vecinos = Adop_VecinosController::index();
+
+			// Verifico que el vecino a cargar no exista en la bd
+			$vecinoDistinto = Adop_VecinosController::index(['dni' => $_POST['dni']]);
+
+			if (count($vecinoDistinto) == 0) {
+				$data = [
+					'nombre' => deutf8ize($_POST['nombre']),
+					'dni' => $_POST['dni'],
+					'email' => $_POST['email'],
+					'email_alternativo' => $_POST['email_alternativo'],
+					'telefono' => $_POST['telefono'],
+					'telefono_alternativo' => $_POST['telefono_alternativo'],
+					'ciudad' => deutf8ize($_POST['ciudad']),
+					'domicilio' => deutf8ize($_POST['domicilio'])
+				];
+
+				// print_r($data);
+				// die();
+
+				$id = Adop_VecinosController::store($data);
+				// print_r($id);
+				// die();
+
+				if (!$id instanceof ErrorException) {
+					$mensaje = "exito carga vecino";
+				} else {
+					$mensaje = $id->getMessage();
+					// $mensaje = "prueba error";
+					logFileEE('prueba', $id, null, null);
+				}
+			} else {
+				$mensaje = "vecino ya cargado";
+			}
+
+			echo $mensaje;
+			break;
+
+		case 'v2':
+			// Modificar vecino
+			$vecinos = Adop_VecinosController::index();
+
+			$data = [
+				'nombre' => $_POST['nombre'],
+				// 'nombre' => deutf8ize($_POST['nombre']),
+				'dni' => $_POST['dni'],
+				'email' => $_POST['email'],
+				'email_alternativo' => $_POST['email_alternativo'],
+				'telefono' => $_POST['telefono'],
+				'telefono_alternativo' => $_POST['telefono_alternativo'],
+				'ciudad' => $_POST['ciudad'],
+				// 'ciudad' => deutf8ize($_POST['ciudad']),
+				'domicilio' => $_POST['domicilio']
+				// 'domicilio' => deutf8ize($_POST['domicilio'])
+			];
+
+			// print_r($data);
+			// die();
+
+			$id = Adop_VecinosController::store($data);
+			// print_r($id);
+			// die();
+
+			if (!$id instanceof ErrorException) {
+				$mensaje = "exito carga y guardado de imagenes";
+			} else {
+				$mensaje = $id->getMessage();
+				// $mensaje = "prueba error";
+				logFileEE('prueba', $id, null, null);
+			}
+
+			echo $mensaje;
+			break;
+
+		case 'v3':
+			//! hacer que se deshabilite el vecino, no borrar
+			// Eliminar vecino
+			$idVecinoEliminar = $_POST['id'];
+
+			$vecinosController = new Adop_VecinosController();
+			$vecino = $vecinosController->delete($idVecinoEliminar);
+
+			if (!$vecino instanceof ErrorException) {
+				$mensaje = "Vecino eliminado correctamente";
+			} else {
+				sendRes(null, $vecino->getMessage(), null);
+			};
+
+			echo $mensaje;
+			break;
+
+		case 'ad1':
+			// Cargar adopcion
+			$adopciones = Adop_AdopcionesController::index();
+
+			$data = [
+				'nombre' => deutf8ize($_POST['nombre']),
+				'dni' => $_POST['dni'],
+				'email' => $_POST['email'],
+				'email_alternativo' => $_POST['email_alternativo'],
+				'telefono' => $_POST['telefono'],
+				'telefono_alternativo' => $_POST['telefono_alternativo'],
+				'ciudad' => deutf8ize($_POST['ciudad']),
+				'domicilio' => deutf8ize($_POST['domicilio'])
+			];
+
+			$id = Adop_VecinosController::store($data);
+
+			if (!$id instanceof ErrorException) {
+				$mensaje = "exito carga vecino";
+			} else {
+				$mensaje = $id->getMessage();
+				// $mensaje = "prueba error";
+				logFileEE('prueba', $id, null, null);
+			}
+
+			echo $mensaje;
 			break;
 
 		case 't':
@@ -182,23 +363,6 @@ if ($url['method'] == "POST") {
 			exit;
 	}
 }
-
-/* Metodo DELETE */
-
-// if ($url['method'] == 'DELETE') {
-// 	$id = $url['id'];
-// 	print_r($url['id']);
-// 	die();
-// 	$animalesController = new Adop_AnimalesController();
-// 	$animal = $animalesController->delete($url['id']);
-
-// 	if (!$animal instanceof ErrorException) {
-// 		sendRes(['ReferenciaID' => $id]);
-// 	} else {
-// 		sendRes(null, $animal->getMessage(), null);
-// 	};
-// 	eClean();
-// }
 
 header("HTTP/1.1 200 Bad Request");
 
