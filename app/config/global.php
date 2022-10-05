@@ -1,7 +1,5 @@
 <?php
-$GLOBALS[] = [
-    'exect' => []
-];
+date_default_timezone_set('America/Argentina/Buenos_Aires');
 
 /* Root Path */
 include_once 'paths.php';
@@ -29,21 +27,18 @@ define('TOKEN_KEY', $_ENV['TOKEN_KEY']);
 /* ######################### */
 
 if (ENV == 'produccion') {
-    /** PRODUCCION */
-    define('FILE_PATH', 'E:\Dataserver\Produccion\projects_files\\');
-    define('WS_WEBLOGIN', 'https://weblogin.muninqn.gov.ar/api/getUserByToken/');
+    define('FILE_PATH', $_ENV['FILE_PATH_PRODUCCION']);
+    define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_PRODUCCION']);
 }
 
 if (ENV == 'replica') {
-    /** REPLICA */
-    define('FILE_PATH', 'E:\Dataserver\Replica\projects_files\\');
-    define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
+    define('FILE_PATH', $_ENV['FILE_PATH_REPLICA']);
+    define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_REPLICA']);
 }
 
 if (ENV == 'local') {
-    /** LOCAL */
-    define('FILE_PATH', 'C:\xampp\htdocs\APIRest\files\\');
-    define('WS_WEBLOGIN', 'https://weblogin.muninqn.gov.ar/api/getUserByToken/');
+    define('FILE_PATH', $_ENV['FILE_PATH_LOCAL']);
+    define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_LOCAL']);
 }
 
 /* Headers */
@@ -53,6 +48,4 @@ include_once 'headers.php';
 include 'db.php';
 
 /* Configuracion de la URL */
-if (!isset($noUrl)) {
-    include 'url.php';
-}
+include 'url.php';
