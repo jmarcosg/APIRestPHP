@@ -46,3 +46,6 @@ include_once 'headers.php';
 
 /* Database */
 include 'db.php';
+
+/* Configuracion de la URL */
+include 'url.php';
