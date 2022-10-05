@@ -5,7 +5,7 @@ require_once '../../app/config/global.php';
 use App\Controllers\Common\LoginController;
 
 $token = getBearerToken();
-
+/* s */
 if (LoginController::isLogin($token)) {
 	$file = "./" . $url['path'] . "/index.php";
 	if (file_exists($file)) {
