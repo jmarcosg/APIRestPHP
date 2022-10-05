@@ -30,41 +30,46 @@ class Adop_Animal extends BaseModel
 
     public function storeImage($file, $id, $imagenPath)
     {
-        print_r($file);
-        die();
         /* Agarramos la extension del archivo  */
         $fileExt = getExtFile($file);
+
+        /* Renombramos el archivo según su id de formulario */
+        if ($imagenPath == "imagen1_path") {
+            $fileName = "imagen-grande";
+        }
+        if ($imagenPath == "imagen2_path") {
+            $fileName = "imagen-chica";
+        }
 
         /* Borramos la carpeta del docuemento si existe */
         deleteDir(FILE_PATH . "adopciones\\animales\\$id\\");
 
-        /* Copiamos el archivo */
+        /* Copiamos el archivo y creamos su directorio */
         $tmpFile = $file['tmp_name'];
-        $fileCopied = copy($tmpFile, $this->filesUrl . "animal" . $fileExt);
-        $url = null;
 
-        if ($fileCopied) {
-            $filesUrl = $this->filesUrl;
+        $fileUrl = $this->filesUrl . "$id\\$fileName" . $fileExt;
+        $fileFolder = $this->filesUrl . "$id\\";
+        $folderCreated = mkdir("$fileFolder");
+
+        $fileCopied = copy($tmpFile, $fileUrl);
+        // $url = null;
+
+        if ($folderCreated && $fileCopied) {
+            // $filesUrl = $this->filesUrl;
             $animal = new Adop_Animal();
 
-            mkdir("$filesUrl\\$id\\");
-
-            if ($imagenPath == "imagen1_path") {
-                $fileName = "imagen-grande";
-            } elseif ($imagenPath = "imagen2_path") {
-                $fileName = "imagen-chica";
-            }
+            // mkdir("$filesUrl\\$id\\");
 
             $animal->update([$imagenPath => $fileName . $fileExt], $id);
-            $url = $animal->get(['id' => $id])->value;
-            $url = $this->filesUrl . "$id\\" . $url[$imagenPath];
+            // $url = $animal->get(['id' => $id])->value;
+            // $url = $this->filesUrl . "$id\\" . $url[$imagenPath];
         }
 
-        if ($url) {
-            sendRes(['url' => getBase64String($url, $url)]);
-        } else {
-            sendRes(null, 'Hubo un error al querer subir un archivo');
-        };
+        // if ($url) {
+        //     sendRes(['url' => getBase64String($url, $url)]);
+        // } else {
+        //     sendRes(null, 'Hubo un error al querer subir un archivo');
+        // };
 
         exit;
     }
