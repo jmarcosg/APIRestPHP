@@ -1,7 +1,7 @@
 <?php
 
 use App\Controllers\Weblogin\LoginController;
-
+use App\Controllers\Weblogin\WapAppsRecientesController;
 
 if ($url['method'] == 'GET') {
 	$action = $_GET['action'];
@@ -14,6 +14,28 @@ if ($url['method'] == 'GET') {
 
 		case 'acarreo':
 			LoginController::getAcarreoData();
+
+		default:
+			$error = new ErrorException('El action no es valido');
+			sendRes(null, $error->getMessage(), $_GET);
+			exit;
+			break;
+	}
+}
+
+
+
+if ($url['method'] == 'POST') {
+	$action = $_POST['action'];
+	unset($_POST['action']);
+
+	switch ($action) {
+
+		case 'getIntoApp':
+			WapAppsRecientesController::getIntoApp();
+
+		case 'checkIncomingApps':
+			WapAppsRecientesController::checkIncomingApps();
 
 		default:
 			$error = new ErrorException('El action no es valido');
