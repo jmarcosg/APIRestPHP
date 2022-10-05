@@ -4,6 +4,8 @@ use App\Controllers\Adopciones\Adop_AnimalesController;
 use App\Controllers\Adopciones\Adop_VecinosController;
 use App\Controllers\Adopciones\Adop_AdopcionesController;
 
+/* Metodo GET */
+
 if ($url['method'] == "GET") {
 	if (isset($_GET['action'])) {
 
@@ -69,6 +71,8 @@ if ($url['method'] == "GET") {
 	echo json_encode($data);
 }
 
+/* Metodo POST */
+
 if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case '1':
@@ -97,10 +101,15 @@ if ($url['method'] == "POST") {
 			// die();
 
 			if (!$id instanceof ErrorException) {
-				// $animal = Adop_AnimalesController::index();
-				Adop_AnimalesController::storeImage($_FILES['imagen1'], $id, "imagen1_path");
-				Adop_AnimalesController::storeImage($_FILES['imagen2'], $id, "imagen2_path");
-				$mensaje = "exito carga y guardado local";
+				$imagen1Cargada = Adop_AnimalesController::storeImage($_FILES['imagen1'], $id, "imagen1_path");
+				//! No esta renombrando ni ¿reconociendo? la segunda imagen a subir
+				$imagen2Cargada = Adop_AnimalesController::storeImage($_FILES['imagen2'], $id, "imagen2_path");
+
+				if ($imagen1Cargada && $imagen2Cargada) {
+					$mensaje = "exito carga y guardado de imagenes";
+				} else {
+					$mensaje = "error en carga y guardado de imagenes";
+				}
 			} else {
 				$mensaje = $id->getMessage();
 				// $mensaje = "prueba error";
@@ -147,8 +156,12 @@ if ($url['method'] == "POST") {
 			echo $mensaje;
 			break;
 
+		case '3':
+			echo "hola delete";
+			break;
+
 		case 't':
-			echo "hola post";
+			echo "test post";
 			exit;
 
 		default:
@@ -156,6 +169,19 @@ if ($url['method'] == "POST") {
 			sendRes(null, $error->getMessage(), $_GET);
 			exit;
 	}
+}
+
+/* Metodo DELETE */
+
+if ($url['method'] == 'DELETE') {
+	$id = $url['id'];
+	$animal = $arbSolicitudController->delete($url['id']);
+	if (!$arbolado instanceof ErrorException) {
+		sendRes(['ReferenciaID' => $id]);
+	} else {
+		sendRes(null, $arbolado->getMessage(), ['ReferenciaID' => $id]);
+	};
+	eClean();
 }
 
 header("HTTP/1.1 200 Bad Request");
