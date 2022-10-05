@@ -1,6 +1,5 @@
 <?php
 
-
 require_once '../../app/config/global.php';
 
 use App\Controllers\Common\LoginController;
