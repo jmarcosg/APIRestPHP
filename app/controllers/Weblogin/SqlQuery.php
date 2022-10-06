@@ -65,7 +65,9 @@ trait SqlQuery
     {
         $sql =
             "SELECT
+                a.ID_ACARREO as id_acarreo,
                 a.PATENTE AS patente,
+                m.ID_MOTIVO as id_motivo,
                 m.NOMBRE AS motivo,
                 p.NOMBRE AS playa,
                 p.DESCRIPCION AS direccion,

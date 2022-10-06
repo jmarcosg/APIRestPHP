@@ -303,6 +303,7 @@ class Lc_SolicitudController
             if ($estado == 'aprobado') {
                 $req['estado'] = 'cat';
                 $req['ver_inicio'] = '1';
+                self::sendEmail($id, 'inicio_aprobado', $solicitud);
             }
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
@@ -357,6 +358,7 @@ class Lc_SolicitudController
             if ($estado == 'aprobado') {
                 $req['estado'] = 'ver_amb';
                 $req['ver_catastro'] = '1';
+                self::sendEmail($id, 'catastro_aprobado', $solicitud);
             }
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
@@ -412,6 +414,7 @@ class Lc_SolicitudController
                 $req['ver_ambiental'] = '1';
 
                 self::documentosUpdate($req, $id);
+                self::sendEmail($id, 'ambiental_aprobado', $solicitud);
             }
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
@@ -469,7 +472,11 @@ class Lc_SolicitudController
 
             /* Si se aprueba y no tiene local lo mandamos a pedir los archivos */
             if ($estado == 'aprobado') {
-                $req['estado'] = 'doc';
+                if ($req["documentos"] == "") {
+                    $req['estado'] = 'ver_doc';
+                } else {
+                    $req['estado'] = 'doc';
+                }
                 $req['ver_rubros'] = '1';
             }
 

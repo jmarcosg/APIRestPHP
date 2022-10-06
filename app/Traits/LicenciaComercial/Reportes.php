@@ -170,8 +170,12 @@ trait Reportes
         $pdf->Text($col, self::getRow($row, $inc * 2), "Rubros:");
 
         $pdf->SetFont('helvetica', 'B', 9);
-        foreach ($data['rubros'] as $value) {
-            $pdf->Text($col, self::getRow($row, $inc), $value['label']);
+        foreach ($data['rubros'] as $key => $value) {
+            if ($key == 0) {
+                $pdf->Text($col, self::getRow($row, $inc), $value['label'] . ' *');
+            } else {
+                $pdf->Text($col, self::getRow($row, $inc), $value['label']);
+            }
             $pdf->SetFont('helvetica', '', 9);
         }
 
