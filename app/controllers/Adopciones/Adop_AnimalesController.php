@@ -33,7 +33,7 @@ class Adop_AnimalesController
         return $data->storeImage($file, $id, $imagenPath);
     }
 
-    public function update($req, $id)
+    public static function update($req, $id)
     {
         $data = new Adop_Animal();
         return $data->update($req, $id);

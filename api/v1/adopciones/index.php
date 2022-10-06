@@ -126,11 +126,9 @@ if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case 'an1':
 			// Cargar animal
-			$animales = Adop_AnimalesController::index();
-
 			$data = [
-				'imagen1_path' => $_FILES['imagen1']['name'],
-				'imagen2_path' => $_FILES['imagen2']['name'],
+				'imagen1_path' => "a",
+				'imagen2_path' => "a",
 				'nombre' => $_POST['nombre'],
 				'edad' => $_POST['edad'],
 				'raza' => $_POST['raza'],
@@ -139,42 +137,28 @@ if ($url['method'] == "POST") {
 				'descripcion' => $_POST['descripcion'],
 				'adoptado' => $_POST['adoptado'],
 				'deshabilitado' => $_POST['deshabilitado'],
-				'fecha_ingreso' => $_POST['fecha_ingreso'],
-				'fecha_modificacion' => $_POST['fecha_modificacion'],
-				'fecha_deshabilitado' => $_POST['fecha_deshabilitado']
+				'fecha_ingreso' => date('Y-m-d H:i:s'),
+				'fecha_modificacion' => null,
+				'fecha_deshabilitado' => null
 			];
 
 			$id = Adop_AnimalesController::store($data);
 
 			if (!$id instanceof ErrorException) {
-				$imagen1Cargada = Adop_AnimalesController::storeImage($_FILES['imagen1'], $id, "imagen1_path");
-				if ($imagen1Cargada) {
-					$mensaje = "exito carga y guardado de imagen 1";
-					echo $mensaje;
+				$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen1'], $id, "imagen1_path");
+				$imagen1 = $imagenCargada;
+				if ($imagenCargada) {
+					$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen2'], $id, "imagen2_path");
+					$imagen2 = $imagenCargada;
 
-					//! No esta renombrando ni ¿reconociendo? la segunda imagen a subir
-					$imagen2Cargada = Adop_AnimalesController::storeImage($_FILES['imagen2'], $id, "imagen2_path");
-					print_r($imagen2Cargada);
-					die();
-
-					if ($imagen2Cargada) {
-						$mensaje = "exito carga y guardado de imagen 2";
-						echo $mensaje;
-					} else {
-						$mensaje = "error carga y/o guardado de imagen 2";
-						echo $mensaje;
+					if ($imagenCargada) {
 					}
-				} else {
-					$mensaje = "error carga y/o guardado de imagen 1";
-					echo $mensaje;
 				}
 			} else {
 				$mensaje = $id->getMessage();
-				// $mensaje = "prueba error";
 				logFileEE('prueba', $id, null, null);
 			}
 
-			echo $mensaje;
 			break;
 
 
@@ -182,10 +166,10 @@ if ($url['method'] == "POST") {
 			// Modificar animal
 			$idAnimalModificar = $_POST['id'];
 			$animal = Adop_AnimalesController::index(['id' => $idAnimalModificar])[0];
+			$fechaIngreso = date($animal['fecha_ingreso']);
+			$fechaModificado = date('Y-m-d H:i:s');
 
 			$data = [
-				'imagen1_path' => $_POST['imagen1_path'],
-				'imagen2_path' => $_POST['imagen2_path'],
 				'nombre' => $_POST['nombre'],
 				'edad' => $_POST['edad'],
 				'raza' => $_POST['raza'],
@@ -194,25 +178,28 @@ if ($url['method'] == "POST") {
 				'descripcion' => $_POST['descripcion'],
 				'adoptado' => $_POST['adoptado'],
 				'deshabilitado' => $_POST['deshabilitado'],
-				'fecha_ingreso' => $_POST['fecha_ingreso'],
-				'fecha_modificacion' => $_POST['fecha_modificacion'],
-				'fecha_deshabilitado' => $_POST['fecha_deshabilitado']
+				'fecha_ingreso' => $fechaIngreso,
+				'fecha_modificacion' => $fechaModificado,
+				'fecha_deshabilitado' => null
 			];
 
-
-			$id = Adop_AnimalesController::store($data);
+			$id = Adop_AnimalesController::update($data, $idAnimalModificar);
 
 			if (!$id instanceof ErrorException) {
-				$animal = Adop_AnimalesController::index($data);
-				Adop_AnimalesController::storeImage($_FILES['imagen1_path'], $id, $animal, "imagen1_path");
-				Adop_AnimalesController::storeImage($_FILES['imagen2_path'], $id, $animal, "imagen2_path");
-				$mensaje = "exito carga";
+				$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen1'], $idAnimalModificar, "imagen1_path");
+				$imagen1 = $imagenCargada;
+				if ($imagenCargada) {
+					$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen2'], $idAnimalModificar, "imagen2_path");
+					$imagen2 = $imagenCargada;
+
+					if ($imagenCargada) {
+					}
+				}
 			} else {
 				$mensaje = $id->getMessage();
 				logFileEE('prueba', $id, null, null);
 			}
 
-			echo $mensaje;
 			break;
 
 

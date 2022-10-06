@@ -30,6 +30,8 @@ class Adop_Animal extends BaseModel
 
     public function storeImage($file, $id, $imagenPath)
     {
+        $fileCopied = false;
+
         /* Agarramos la extension del archivo  */
         $fileExt = getExtFile($file);
 
@@ -41,36 +43,41 @@ class Adop_Animal extends BaseModel
             $fileName = "imagen-chica";
         }
 
-        /* Borramos la carpeta del docuemento si existe */
-        deleteDir(FILE_PATH . "adopciones\\animales\\$id\\");
+        /* Borramos la imagen si existe a partir de su extension */
+        $i = 0;
+        $allowedExt = [".jpeg", ".jpg", ".png"];
+        $fileExists = false;
+        while (!$fileExists && $i < count($allowedExt)) {
+            $fileExists = file_exists(FILE_PATH . "adopciones\\animales\\$id\\$imagenPath" . $allowedExt[$i]);
+
+            if ($fileExists) {
+                $fileExt = $allowedExt[$i];
+                deleteDir(FILE_PATH . "adopciones\\animales\\$id\\$imagenPath" . $fileExt);
+            }
+
+            $i++;
+        }
+
 
         /* Copiamos el archivo y creamos su directorio */
         $tmpFile = $file['tmp_name'];
 
         $fileUrl = $this->filesUrl . "$id\\$fileName" . $fileExt;
         $fileFolder = $this->filesUrl . "$id\\";
-        $folderCreated = mkdir("$fileFolder");
 
-        $fileCopied = copy($tmpFile, $fileUrl);
-        // $url = null;
+        $folderExists = file_exists($fileFolder);
 
-        if ($folderCreated && $fileCopied) {
-            // $filesUrl = $this->filesUrl;
-            $animal = new Adop_Animal();
-
-            // mkdir("$filesUrl\\$id\\");
-
-            $animal->update([$imagenPath => $fileName . $fileExt], $id);
-            // $url = $animal->get(['id' => $id])->value;
-            // $url = $this->filesUrl . "$id\\" . $url[$imagenPath];
+        if (!$folderExists) {
+            mkdir("$fileFolder");
         }
 
-        // if ($url) {
-        //     sendRes(['url' => getBase64String($url, $url)]);
-        // } else {
-        //     sendRes(null, 'Hubo un error al querer subir un archivo');
-        // };
+        if (copy($tmpFile, $fileUrl)) {
+            $animal = new Adop_Animal();
+            $animal->update([$imagenPath => $fileUrl], $id);
+            $fileCopied = $fileUrl;
+        }
 
+        return $fileCopied;
         exit;
     }
 }
