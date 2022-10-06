@@ -33,7 +33,7 @@ class Adop_VecinosController
         return $data->save();
     }
 
-    public function update($req, $id)
+    public static function update($req, $id)
     {
         $data = new Adop_Vecino();
         return $data->update($req, $id);

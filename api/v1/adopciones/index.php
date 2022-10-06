@@ -202,7 +202,6 @@ if ($url['method'] == "POST") {
 
 			break;
 
-
 		case 'an3':
 			// Eliminar animal
 			$idAnimalEliminar = $_POST['id'];
@@ -238,12 +237,7 @@ if ($url['method'] == "POST") {
 					'domicilio' => deutf8ize($_POST['domicilio'])
 				];
 
-				// print_r($data);
-				// die();
-
 				$id = Adop_VecinosController::store($data);
-				// print_r($id);
-				// die();
 
 				if (!$id instanceof ErrorException) {
 					$mensaje = "exito carga vecino";
@@ -261,34 +255,29 @@ if ($url['method'] == "POST") {
 
 		case 'v2':
 			// Modificar vecino
-			$vecinos = Adop_VecinosController::index();
+			$idVecinoModificar = $_POST['id'];
+			$vecinos = Adop_VecinosController::index(['id' => $idVecinoModificar])[0];
 
 			$data = [
-				'nombre' => $_POST['nombre'],
 				// 'nombre' => deutf8ize($_POST['nombre']),
+				'nombre' => $_POST['nombre'],
 				'dni' => $_POST['dni'],
 				'email' => $_POST['email'],
 				'email_alternativo' => $_POST['email_alternativo'],
 				'telefono' => $_POST['telefono'],
 				'telefono_alternativo' => $_POST['telefono_alternativo'],
-				'ciudad' => $_POST['ciudad'],
 				// 'ciudad' => deutf8ize($_POST['ciudad']),
-				'domicilio' => $_POST['domicilio']
+				'ciudad' => $_POST['ciudad'],
 				// 'domicilio' => deutf8ize($_POST['domicilio'])
+				'domicilio' => $_POST['domicilio']
 			];
 
-			// print_r($data);
-			// die();
-
-			$id = Adop_VecinosController::store($data);
-			// print_r($id);
-			// die();
+			$id = Adop_VecinosController::update($data, $idVecinoModificar);
 
 			if (!$id instanceof ErrorException) {
-				$mensaje = "exito carga y guardado de imagenes";
+				$mensaje = "exito modificacion vecino";
 			} else {
 				$mensaje = $id->getMessage();
-				// $mensaje = "prueba error";
 				logFileEE('prueba', $id, null, null);
 			}
 
