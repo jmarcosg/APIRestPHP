@@ -43,6 +43,7 @@ class Adop_Animal extends BaseModel
         if (!$result || $result instanceof ErrorException) {
             return false;
         }
+
         return $result;
     }
 }
