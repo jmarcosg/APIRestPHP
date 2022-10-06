@@ -26,10 +26,14 @@ class Lc_Documento extends BaseModel
         $this->set($params);
         $this->save();
 
-        /* AFIP */
+        $params['id_tipo_documento'] = 10;
+        $this->set($params);
+        $this->save();
+
         $params['id_tipo_documento'] = 4;
         $this->set($params);
         $this->save();
+
 
         if ($solicitud['pertenece'] == 'tercero') {
             $params = ['id_solicitud' => $idSolicitud, 'id_tipo_documento' => 2, 'verificado' => 0];
@@ -62,11 +66,6 @@ class Lc_Documento extends BaseModel
 
             /* AFIP */
             $params['id_tipo_documento'] = 9;
-            $this->set($params);
-            $this->save();
-
-            /* AFIP */
-            $params['id_tipo_documento'] = 10;
             $this->set($params);
             $this->save();
         }
