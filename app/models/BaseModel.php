@@ -54,7 +54,6 @@ class BaseModel
         }
 
         $result = $conn->search($this->table, $param, $ops);
-        var_dump($result);
 
         if (!$result instanceof ErrorException) {
             $data = [];
