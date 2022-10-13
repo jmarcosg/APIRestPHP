@@ -11,7 +11,7 @@ if ($url['method'] == "GET") {
 
 		switch ($_GET['action']) {
 			case 'an1':
-				// Listado de animales
+				//* Listado de animales
 				$animalesController = new Adop_AnimalesController();
 				$data = $animalesController->index();
 
@@ -26,7 +26,7 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'an2':
-				// Obtener animal por id
+				//* Obtener animal por id
 				$animalesController = new Adop_AnimalesController();
 				$data = Adop_AnimalesController::index(['id' => $_GET['id']]);
 
@@ -42,7 +42,7 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'v1':
-				// Listado de vecinos
+				//* Listado de vecinos
 				$data = Adop_VecinosController::index();
 
 				if (count($data) == 0) {
@@ -56,7 +56,7 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'v2':
-				// Obtener vecino por id
+				//* Obtener vecino por id
 				$vecinosController = new Adop_VecinosController();
 				$data = Adop_VecinosController::index(['id' => $_GET['id']]);
 
@@ -72,7 +72,7 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'ad1':
-				// Listado de adopciones
+				//* Listado de adopciones
 				$data = Adop_AdopcionesController::index();
 
 				if (count($data) == 0) {
@@ -86,7 +86,7 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'ad2':
-				// Obtener adopcion por id
+				//* Obtener adopcion por id
 				$adopcionesController = new Adop_AdopcionesController();
 				$data = Adop_AdopcionesController::index(['id' => $_GET['id']]);
 
@@ -125,7 +125,7 @@ if ($url['method'] == "GET") {
 if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case 'an1':
-			// Cargar animal
+			//* Cargar animal
 			$data = [
 				'imagen1_path' => "a",
 				'imagen2_path' => "a",
@@ -161,7 +161,7 @@ if ($url['method'] == "POST") {
 
 
 		case 'an2':
-			// Modificar animal
+			//* Modificar animal
 			$idAnimalModificar = $_POST['id'];
 			$fechaModificado = date('Y-m-d H:i:s');
 
@@ -196,7 +196,7 @@ if ($url['method'] == "POST") {
 			break;
 
 		case 'an3':
-			// Eliminar animal
+			//* Eliminar animal
 			$idAnimalEliminar = $_POST['id'];
 
 			$animalesController = new Adop_AnimalesController();
@@ -212,7 +212,7 @@ if ($url['method'] == "POST") {
 			break;
 
 		case 'v1':
-			// Cargar vecino
+			//* Cargar vecino
 			$vecinos = Adop_VecinosController::index();
 
 			// Verifico que el vecino a cargar no exista en la bd
@@ -252,7 +252,7 @@ if ($url['method'] == "POST") {
 			break;
 
 		case 'v2':
-			// Modificar vecino
+			//* Modificar vecino
 			$idVecinoModificar = $_POST['id'];
 			$vecinos = Adop_VecinosController::index(['id' => $idVecinoModificar])[0];
 
@@ -282,7 +282,7 @@ if ($url['method'] == "POST") {
 			echo $mensaje;
 			break;
 		case 'v3':
-			// Deshabilitar vecino
+			//* Deshabilitar vecino
 			$idVecinoDeshabilitar = $_POST['id'];
 
 			$data = [
@@ -303,7 +303,7 @@ if ($url['method'] == "POST") {
 			break;
 
 		case 'v4':
-			// Deshabilitar vecino
+			//* Deshabilitar vecino
 			$idVecinoDeshabilitar = $_POST['id'];
 
 			$data = [
@@ -323,8 +323,7 @@ if ($url['method'] == "POST") {
 			echo $mensaje;
 			break;
 		case 'vdel':
-			//! hacer que se deshabilite el vecino, no borrar
-			// Eliminar vecino
+			//* Eliminar vecino
 			$idVecinoEliminar = $_POST['id'];
 
 			$vecinosController = new Adop_VecinosController();
@@ -340,7 +339,7 @@ if ($url['method'] == "POST") {
 			break;
 
 		case 'ad1':
-			// Cargar adopcion
+			//* Cargar adopcion
 			$adopciones = Adop_AdopcionesController::index();
 
 			$dataAnimal = [
@@ -370,7 +369,7 @@ if ($url['method'] == "POST") {
 			break;
 
 		case 'ad2':
-			// Desadopcion
+			//* Desadopcion(?)
 			$adopciones = Adop_AdopcionesController::index();
 
 			$dataAnimal = [
