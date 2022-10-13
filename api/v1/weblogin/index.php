@@ -15,6 +15,12 @@ if ($url['method'] == 'GET') {
 		case 'acarreo':
 			LoginController::getAcarreoData();
 
+		case 'licenciaconducir':
+			LoginController::getLicConducirData();
+
+		case 'libretasanitaria':
+			LoginController::getLibretasanitariaData();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);

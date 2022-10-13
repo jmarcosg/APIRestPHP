@@ -12,10 +12,10 @@ trait SqlQuery
         /** Determina que vamos a llamar desde el front */
         $data = self::sqlViewFetch($referenciaId, $dni);
 
-        $data['legajo'] = $data['legajo'] != null ? true : false;
-        $data['libreta'] = $data['libreta'] != null ? true : false;
-        $data['licencia'] = $data['licencia'] == null || $data['licencia'] == -1 ? false : true;
-        $data['acarreo'] = $data['acarreo'] != null ? true : false;
+        $data['legajo'] = $data['legajo'] != null && FETCH_LEGAJO ? true : false;
+        $data['libreta'] = $data['libreta'] != null && FETCH_LIBRETA ? true : false;
+        $data['licencia'] = ($data['licencia'] == null || $data['licencia'] == -1) && FETCH_LICENCIA ? false : true;
+        $data['acarreo'] = $data['acarreo'] != null && FETCH_ACARREO ? true : false;
 
         return $data;
     }
@@ -77,6 +77,36 @@ trait SqlQuery
                 LEFT JOIN AC_MOTIVO m ON m.ID_MOTIVO = a.ID_MOTIVO
                 LEFT JOIN AC_PLAYA p ON p.ID_PLAYA= a.ID_PLAYA
             WHERE wu.ReferenciaID = $id and a.BORRADO_LOGICO = 'NO'";
+
+        return $sql;
+    }
+
+    public static function datosLicConducir($id)
+    {
+        $sql =
+            "SELECT 
+                Clase as clase,
+                FechaVigencia as venc,
+                Domicilio as direccion,
+                Insumo as insumo
+            FROM dbo.licLicencias 
+                WHERE Licencia = $id";
+
+        return $sql;
+    }
+
+    public static function datosLibretaSanitaria($id)
+    {
+        $sql =
+            "SELECT TOP 1
+                sol.id as id,
+                sol.estado as estado,
+                sol.fecha_vencimiento as venc
+            FROM wapUsuarios wu
+                LEFT JOIN wapPersonas per ON per.ReferenciaID = wu.PersonaID
+                LEFT JOIN libretas_usuarios usu ON usu.id_wappersonas = per.ReferenciaID
+                LEFT JOIN libretas_solicitudes sol ON sol.id_usuario_solicitante = usu.id
+            WHERE wu.ReferenciaID = $id ORDER BY id DESC";
 
         return $sql;
     }
