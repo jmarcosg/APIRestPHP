@@ -4,7 +4,9 @@ use App\Controllers\Adopciones\Adop_AnimalesController;
 use App\Controllers\Adopciones\Adop_VecinosController;
 use App\Controllers\Adopciones\Adop_AdopcionesController;
 
-/* Metodo GET */
+/**
+ * *Metodo GET
+ */
 
 if ($url['method'] == "GET") {
 	if (isset($_GET['action'])) {
@@ -120,7 +122,9 @@ if ($url['method'] == "GET") {
 	echo json_encode($data);
 }
 
-/* Metodo POST */
+/**
+ * *Metodo POST
+ */
 
 if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
