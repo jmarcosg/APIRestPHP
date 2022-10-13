@@ -126,6 +126,10 @@ if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case 'an1':
 			//* Cargar animal
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$currentTime = $date->format('Y-m-d H:i:s');
+
 			$data = [
 				'imagen1_path' => "a",
 				'imagen2_path' => "a",
@@ -136,7 +140,7 @@ if ($url['method'] == "POST") {
 				'castrado' => $_POST['castrado'],
 				'descripcion' => $_POST['descripcion'],
 				'adoptado' => $_POST['adoptado'],
-				'fecha_ingreso' => date('Y-m-d H:i:s'),
+				'fecha_ingreso' => $currentTime,
 				'fecha_modificacion' => null,
 			];
 
@@ -163,7 +167,9 @@ if ($url['method'] == "POST") {
 		case 'an2':
 			//* Modificar animal
 			$idAnimalModificar = $_POST['id'];
-			$fechaModificado = date('Y-m-d H:i:s');
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$fechaModificado = $date->format('Y-m-d H:i:s');
 
 			$data = [
 				'nombre' => $_POST['nombre'],
@@ -284,10 +290,13 @@ if ($url['method'] == "POST") {
 		case 'v3':
 			//* Deshabilitar vecino
 			$idVecinoDeshabilitar = $_POST['id'];
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$fechaModificado = $date->format('Y-m-d H:i:s');
 
 			$data = [
 				'deshabilitado' => 1,
-				'fecha_modificacion' =>	date('Y-m-d H:i:s')
+				'fecha_modificacion' =>	$fechaModificado
 			];
 
 			$vecinosController = new Adop_VecinosController();
@@ -305,10 +314,13 @@ if ($url['method'] == "POST") {
 		case 'v4':
 			//* Deshabilitar vecino
 			$idVecinoDeshabilitar = $_POST['id'];
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$fechaModificado = $date->format('Y-m-d H:i:s');
 
 			$data = [
 				'deshabilitado' => 0,
-				'fecha_modificacion' =>	date('Y-m-d H:i:s')
+				'fecha_modificacion' =>	$fechaModificado
 			];
 
 			$vecinosController = new Adop_VecinosController();
@@ -341,16 +353,19 @@ if ($url['method'] == "POST") {
 		case 'ad1':
 			//* Cargar adopcion
 			$adopciones = Adop_AdopcionesController::index();
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$currentTime = $date->format('Y-m-d H:i:s');
 
 			$dataAnimal = [
 				'adoptado' => 1,
-				'fecha_modificacion' =>	date('Y-m-d H:i:s')
+				'fecha_modificacion' =>	$currentTime
 			];
 
 			$dataAdopcion = [
 				'id_vecino' => $_POST['id_vecino'],
 				'id_animal' => $_POST['id_animal'],
-				'fecha_adopcion' => date('Y-m-d H:i:s')
+				'fecha_adopcion' => $currentTime
 			];
 
 			$animalAdoptado = Adop_AnimalesController::update($dataAnimal, $_POST['id_animal']);
@@ -371,10 +386,13 @@ if ($url['method'] == "POST") {
 		case 'ad2':
 			//* Desadopcion(?)
 			$adopciones = Adop_AdopcionesController::index();
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$fechaModificado = $date->format('Y-m-d H:i:s');
 
 			$dataAnimal = [
 				'adoptado' => 0,
-				'fecha_modificacion' =>	date('Y-m-d H:i:s')
+				'fecha_modificacion' =>	$fechaModificado
 			];
 
 			$animalAdoptado = Adop_AnimalesController::update($dataAnimal, $_POST['id_animal']);
