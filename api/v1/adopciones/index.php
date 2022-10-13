@@ -306,20 +306,15 @@ if ($url['method'] == "POST") {
 			$adopciones = Adop_AdopcionesController::index();
 
 			$data = [
-				'nombre' => deutf8ize($_POST['nombre']),
-				'dni' => $_POST['dni'],
-				'email' => $_POST['email'],
-				'email_alternativo' => $_POST['email_alternativo'],
-				'telefono' => $_POST['telefono'],
-				'telefono_alternativo' => $_POST['telefono_alternativo'],
-				'ciudad' => deutf8ize($_POST['ciudad']),
-				'domicilio' => deutf8ize($_POST['domicilio'])
+				'id_vecino' => $_POST['id_vecino'],
+				'id_animal' => $_POST['id_animal'],
+				'fecha_adopcion' => date('Y-m-d H:i:s')
 			];
 
-			$id = Adop_VecinosController::store($data);
+			$id = Adop_AdopcionesController::store($data);
 
 			if (!$id instanceof ErrorException) {
-				$mensaje = "exito carga vecino";
+				$mensaje = "exito adopcion";
 			} else {
 				$mensaje = $id->getMessage();
 				// $mensaje = "prueba error";
