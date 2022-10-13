@@ -136,10 +136,8 @@ if ($url['method'] == "POST") {
 				'castrado' => $_POST['castrado'],
 				'descripcion' => $_POST['descripcion'],
 				'adoptado' => $_POST['adoptado'],
-				'deshabilitado' => $_POST['deshabilitado'],
 				'fecha_ingreso' => date('Y-m-d H:i:s'),
 				'fecha_modificacion' => null,
-				'fecha_deshabilitado' => null
 			];
 
 			$id = Adop_AnimalesController::store($data);
@@ -165,8 +163,6 @@ if ($url['method'] == "POST") {
 		case 'an2':
 			// Modificar animal
 			$idAnimalModificar = $_POST['id'];
-			$animal = Adop_AnimalesController::index(['id' => $idAnimalModificar])[0];
-			$fechaIngreso = date($animal['fecha_ingreso']);
 			$fechaModificado = date('Y-m-d H:i:s');
 
 			$data = [
@@ -177,10 +173,7 @@ if ($url['method'] == "POST") {
 				'castrado' => $_POST['castrado'],
 				'descripcion' => $_POST['descripcion'],
 				'adoptado' => $_POST['adoptado'],
-				'deshabilitado' => $_POST['deshabilitado'],
-				'fecha_ingreso' => $fechaIngreso,
 				'fecha_modificacion' => $fechaModificado,
-				'fecha_deshabilitado' => null
 			];
 
 			$id = Adop_AnimalesController::update($data, $idAnimalModificar);
@@ -227,14 +220,19 @@ if ($url['method'] == "POST") {
 
 			if (count($vecinoDistinto) == 0) {
 				$data = [
-					'nombre' => deutf8ize($_POST['nombre']),
+					'nombre' => $_POST['nombre'],
+					// 'nombre' => deutf8ize($_POST['nombre']),
 					'dni' => $_POST['dni'],
 					'email' => $_POST['email'],
 					'email_alternativo' => $_POST['email_alternativo'],
 					'telefono' => $_POST['telefono'],
 					'telefono_alternativo' => $_POST['telefono_alternativo'],
-					'ciudad' => deutf8ize($_POST['ciudad']),
-					'domicilio' => deutf8ize($_POST['domicilio'])
+					'ciudad' => $_POST['ciudad'],
+					// 'ciudad' => deutf8ize($_POST['ciudad']),
+					'domicilio' => $_POST['domicilio'],
+					// 'domicilio' => deutf8ize($_POST['domicilio']),
+					'deshabilitado' => 0,
+					'fecha_deshabilitado' => null,
 				];
 
 				$id = Adop_VecinosController::store($data);
@@ -283,8 +281,48 @@ if ($url['method'] == "POST") {
 
 			echo $mensaje;
 			break;
-
 		case 'v3':
+			// Deshabilitar vecino
+			$idVecinoDeshabilitar = $_POST['id'];
+
+			$data = [
+				'deshabilitado' => 1,
+				'fecha_modificacion' =>	date('Y-m-d H:i:s')
+			];
+
+			$vecinosController = new Adop_VecinosController();
+			$vecino = Adop_VecinosController::update($data, $idVecinoDeshabilitar);
+
+			if (!$vecino instanceof ErrorException) {
+				$mensaje = "Vecino deshabilitado correctamente";
+			} else {
+				sendRes(null, $vecino->getMessage(), null);
+			};
+
+			echo $mensaje;
+			break;
+
+		case 'v4':
+			// Deshabilitar vecino
+			$idVecinoDeshabilitar = $_POST['id'];
+
+			$data = [
+				'deshabilitado' => 0,
+				'fecha_modificacion' =>	date('Y-m-d H:i:s')
+			];
+
+			$vecinosController = new Adop_VecinosController();
+			$vecino = Adop_VecinosController::update($data, $idVecinoDeshabilitar);
+
+			if (!$vecino instanceof ErrorException) {
+				$mensaje = "Vecino habilitado correctamente";
+			} else {
+				sendRes(null, $vecino->getMessage(), null);
+			};
+
+			echo $mensaje;
+			break;
+		case 'vdel':
 			//! hacer que se deshabilite el vecino, no borrar
 			// Eliminar vecino
 			$idVecinoEliminar = $_POST['id'];
@@ -305,19 +343,47 @@ if ($url['method'] == "POST") {
 			// Cargar adopcion
 			$adopciones = Adop_AdopcionesController::index();
 
-			$data = [
+			$dataAnimal = [
+				'adoptado' => 1,
+				'fecha_modificacion' =>	date('Y-m-d H:i:s')
+			];
+
+			$dataAdopcion = [
 				'id_vecino' => $_POST['id_vecino'],
 				'id_animal' => $_POST['id_animal'],
 				'fecha_adopcion' => date('Y-m-d H:i:s')
 			];
 
-			$id = Adop_AdopcionesController::store($data);
+			$animalAdoptado = Adop_AnimalesController::update($dataAnimal, $_POST['id_animal']);
 
-			if (!$id instanceof ErrorException) {
-				$mensaje = "exito adopcion";
+			if (!$animalAdoptado instanceof ErrorException) {
+				$adopcionGenerada = Adop_AdopcionesController::store($dataAdopcion);
+				if (!$adopcionGenerada instanceof ErrorException) {
+					$mensaje = "exito adopcion";
+				} else {
+					$mensaje = $id->getMessage();;
+					logFileEE('prueba', $id, null, null);
+				}
+			}
+
+			echo $mensaje;
+			break;
+
+		case 'ad2':
+			// Desadopcion
+			$adopciones = Adop_AdopcionesController::index();
+
+			$dataAnimal = [
+				'adoptado' => 0,
+				'fecha_modificacion' =>	date('Y-m-d H:i:s')
+			];
+
+			$animalAdoptado = Adop_AnimalesController::update($dataAnimal, $_POST['id_animal']);
+
+			if (!$animalAdoptado instanceof ErrorException) {
+				$mensaje = "exito desadopcion";
 			} else {
 				$mensaje = $id->getMessage();
-				// $mensaje = "prueba error";
 				logFileEE('prueba', $id, null, null);
 			}
 
