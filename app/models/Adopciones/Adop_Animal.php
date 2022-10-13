@@ -20,10 +20,8 @@ class Adop_Animal extends BaseModel
         'castrado',
         'descripcion',
         'adoptado',
-        'deshabilitado',
         'fecha_ingreso',
         'fecha_modificacion',
-        'fecha_deshabilitado',
     ];
 
     public $filesUrl = FILE_PATH . 'adopciones\\animales\\';
@@ -57,7 +55,6 @@ class Adop_Animal extends BaseModel
 
             $i++;
         }
-
 
         /* Copiamos el archivo y creamos su directorio */
         $tmpFile = $file['tmp_name'];

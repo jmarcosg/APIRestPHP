@@ -18,6 +18,8 @@ class Adop_Vecino extends BaseModel
         'telefono',
         'telefono_alternativo',
         'ciudad',
-        'domicilio'
+        'domicilio',
+        'deshabilitado',
+        'fecha_deshabilitado'
     ];
 }
