@@ -292,11 +292,11 @@ if ($url['method'] == "POST") {
 			$idVecinoDeshabilitar = $_POST['id'];
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
-			$fechaModificado = $date->format('Y-m-d H:i:s');
+			$fechaDeshabilitado = $date->format('Y-m-d H:i:s');
 
 			$data = [
 				'deshabilitado' => 1,
-				'fecha_modificacion' =>	$fechaModificado
+				'fecha_deshabilitado' => $fechaDeshabilitado
 			];
 
 			$vecinosController = new Adop_VecinosController();
@@ -312,15 +312,15 @@ if ($url['method'] == "POST") {
 			break;
 
 		case 'v4':
-			//* Deshabilitar vecino
+			//* Habilitar vecino
 			$idVecinoDeshabilitar = $_POST['id'];
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
-			$fechaModificado = $date->format('Y-m-d H:i:s');
+			$fechaHabilitado = $date->format('Y-m-d H:i:s');
 
 			$data = [
 				'deshabilitado' => 0,
-				'fecha_modificacion' =>	$fechaModificado
+				'fecha_deshabilitado' => null
 			];
 
 			$vecinosController = new Adop_VecinosController();
