@@ -110,12 +110,12 @@ function isErrorException($object)
 function compararFechas($string, $get, $format = 'd/m/Y')
 {
     $now = new DateTime();
-    $date = DateTime::createFromFormat($format, $string);
+    $date = new DateTime($string);
 
     $array = [
         'now' => $now,
         'date' => $date,
-        'dif' => $date->diff($now)->$get,
+        'dif' => $now->diff($date, true)->$get,
     ];
     return $array;
 }

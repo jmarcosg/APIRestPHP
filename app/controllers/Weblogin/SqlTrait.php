@@ -3,9 +3,8 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\BaseModel;
-use ErrorException;
 
-trait SqlQuery
+trait SqlTrait
 {
     public static function viewFetch($referenciaId, $dni)
     {
@@ -85,9 +84,13 @@ trait SqlQuery
     {
         $sql =
             "SELECT 
-                Clase as clase,
+                SubClaseID as subclase,
+                Categoria as categoria,
                 FechaVigencia as venc,
+                FechaEmision as emision,
                 Domicilio as direccion,
+                GrupoSangre as grupo_sangre,
+                Donante as donante,
                 Insumo as insumo
             FROM dbo.licLicencias 
                 WHERE Licencia = $id";

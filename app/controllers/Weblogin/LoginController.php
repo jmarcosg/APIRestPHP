@@ -7,7 +7,7 @@ use ErrorException;
 
 class LoginController
 {
-    use SqlQuery;
+    use SqlTrait, FormatTrait;
 
     public static function getUserData($user, $pass)
     {
@@ -133,6 +133,8 @@ class LoginController
 
         $sql = self::datosLicConducir($id);
         $data = $model->executeSqlQuery($sql);
+
+        $data = self::formatLicConducir($data);
 
         if ($data && !$data instanceof ErrorException) {
             sendRes($data);
