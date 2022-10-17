@@ -14,8 +14,8 @@ class LoginController
         $userData = self::fetchUserData($user, $pass);
 
         if ($userData instanceof ErrorException) {
-            Weblogin::saveLog($userData->getMessage(), __CLASS__, __FUNCTION__);
-            return $userData;
+            Weblogin::saveLog($userData->getMessage(), __CLASS__, __FUNCTION__);            
+            sendRes(null, $userData->getMessage(), null);
         }
 
         if ($userData && $userData->value && !$userData->error) {
@@ -68,6 +68,8 @@ class LoginController
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
                 CURLOPT_POSTFIELDS => json_encode($postData),
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
                 CURLOPT_HTTPHEADER => ['Content-Type: application/json']
             ));
 
