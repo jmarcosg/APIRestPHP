@@ -14,8 +14,9 @@ class LoginController
         $userData = self::fetchUserData($user, $pass);
 
         if ($userData instanceof ErrorException) {
-            Weblogin::saveLog($userData->getMessage(), __CLASS__, __FUNCTION__);            
+            Weblogin::saveLog($userData->getMessage() . "| Usuario: $user | Contraseña: $pass", __CLASS__, __FUNCTION__);
             sendRes(null, $userData->getMessage(), null);
+            exit;
         }
 
         if ($userData && $userData->value && !$userData->error) {
@@ -75,8 +76,12 @@ class LoginController
 
             $response = curl_exec($curl);
             curl_close($curl);
+            $response = json_decode($response);
             if ($response) {
-                return json_decode($response);
+                if ($response->error != null) {
+                    return new ErrorException($response->error);
+                }
+                return $response;
             } else {
                 return new ErrorException('Problema con el inicio de sesion');
             }
