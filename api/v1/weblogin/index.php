@@ -3,6 +3,11 @@
 use App\Controllers\Weblogin\LoginController;
 use App\Controllers\Weblogin\WapAppsRecientesController;
 
+$dotenv = \Dotenv\Dotenv::createImmutable('./weblogin/');
+$dotenv->load();
+
+include './weblogin/config.php';
+
 if ($url['method'] == 'GET') {
 	$action = $_GET['action'];
 	unset($_GET['action']);

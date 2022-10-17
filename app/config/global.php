@@ -49,8 +49,5 @@ define('BASE_WEBLOGIN_APPS', 'https://weblogin.muninqn.gov.ar/apps/');
 /* Headers */
 include_once 'headers.php';
 
-/* Database */
-include 'db.php';
-
 /* Configuracion de la URL */
 include 'url.php';
