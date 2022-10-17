@@ -41,6 +41,8 @@ if (ENV == 'local') {
     define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_LOCAL']);
 }
 
+define('BASE_WEBLOGIN_APPS', 'https://weblogin.muninqn.gov.ar/apps/');
+
 /* Headers */
 include_once 'headers.php';
 

@@ -294,3 +294,11 @@ function firstUpper($string)
 {
     return ucwords(strtolower($string));
 }
+
+function getQrByUlr($url, $w, $h, $color = '', $margin = '0', $error = 'L')
+{
+    $baseUrl = "https://chart.googleapis.com/chart?cht=qr&chco=$color&chs=$w" . "x$h&chl=$url&chld=$error|$margin";
+    $data = file_get_contents($baseUrl);
+    $base64 = 'data:image/png;base64,' . base64_encode($data);
+    return $base64;
+}

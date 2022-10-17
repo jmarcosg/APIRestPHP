@@ -104,7 +104,9 @@ trait SqlTrait
             "SELECT TOP 1
                 sol.id as id,
                 sol.estado as estado,
-                sol.fecha_vencimiento as venc
+                sol.nro_recibo as recibo,
+                sol.fecha_vencimiento as venc,
+                sol.fecha_alta as fecha_alta
             FROM wapUsuarios wu
                 LEFT JOIN wapPersonas per ON per.ReferenciaID = wu.PersonaID
                 LEFT JOIN libretas_usuarios usu ON usu.id_wappersonas = per.ReferenciaID

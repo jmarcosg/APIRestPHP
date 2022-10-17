@@ -2,6 +2,8 @@
 
 namespace App\Controllers\Weblogin;
 
+use DateTime;
+
 trait FormatTrait
 {
     private static function formatLicConducir(array $result)
@@ -54,6 +56,33 @@ trait FormatTrait
         if ($result['donante'] == 0) {
             $result['donante'] = false;
         }
+
+        return $result;
+    }
+
+    private static function formatLibretaSanitaria(array $result)
+    {
+
+        $date = DateTime::createFromFormat('d/m/Y', $result['venc'])->format('Y-m-d H:i:s');
+        $arrayFechas = compararFechas($date, 'days', 'Y-m-d');
+
+        $result['show_renovar'] = false;
+        if ($arrayFechas['date'] <= $arrayFechas['now']) {
+            $result['estado'] = 'Vencido';
+            $result['show_renovar'] = true;
+        }
+
+        if ($result['estado'] != 'Nuevo') {
+            $urlCarnet = BASE_WEBLOGIN_APPS . 'libretasanitaria/public/views/carnet/index.php?solicitud=' . $result['id'];
+            $result['carnet'] = $urlCarnet;
+            $result['qr_carnet'] = getQrByUlr($urlCarnet, 150, 150, '3a8fda');
+        }
+
+        /* Url para ingresar a la APP */
+        $result['url_init_app'] = BASE_WEBLOGIN_APPS . 'libretasanitaria/public/index.php?SESSIONKEY=';
+        /* Entre el init y el end se debe ingresar la SESSIONKEY */
+        $result['url_end_app'] = '&APP=53&ROLES=3';
+
 
         return $result;
     }

@@ -156,6 +156,8 @@ class LoginController
         $sql = self::datosLibretaSanitaria($id);
         $data = $model->executeSqlQuery($sql);
 
+        $data = self::formatLibretaSanitaria($data);
+
         if ($data && !$data instanceof ErrorException) {
             sendRes($data);
         } else {
