@@ -29,16 +29,19 @@ define('TOKEN_KEY', $_ENV['TOKEN_KEY']);
 if (ENV == 'produccion') {
     define('FILE_PATH', $_ENV['FILE_PATH_PRODUCCION']);
     define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_PRODUCCION']);
+    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_PRODUCCION']);
 }
 
 if (ENV == 'replica') {
     define('FILE_PATH', $_ENV['FILE_PATH_REPLICA']);
     define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_REPLICA']);
+    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_REPLICA']);
 }
 
 if (ENV == 'local') {
     define('FILE_PATH', $_ENV['FILE_PATH_LOCAL']);
     define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_LOCAL']);
+    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_LOCAL']);
 }
 
 define('BASE_WEBLOGIN_APPS', 'https://weblogin.muninqn.gov.ar/apps/');

@@ -26,6 +26,18 @@ define('FETCH_LIBRETA', $_ENV['FETCH_LIBRETA'] == 'true' ? true : false);
 define('FETCH_LICENCIA', $_ENV['FETCH_LICENCIA'] == 'true' ? true : false);
 define('FETCH_ACARREO', $_ENV['FETCH_ACARREO'] == 'true' ? true : false);
 
+if (ENV == 'produccion') {
+    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_PRODUCCION']);
+}
+
+if (ENV == 'replica') {
+    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_REPLICA']);
+}
+
+if (ENV == 'local') {
+    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_LOCAL']);
+}
+
 /* Token */
 define('TOKEN_KEY', $_ENV['TOKEN_KEY']);
 

@@ -31,7 +31,7 @@ class LoginController
             $fetch = self::viewFetch($referenciaId, $dni);
 
             if (!$fetch instanceof ErrorException) {
-                $data['fetch'] = self::viewFetch($referenciaId, $dni);
+                $data['fetch'] = $fetch;
                 sendRes($data);
             } else {
                 Weblogin::saveLog($fetch, __CLASS__, __FUNCTION__);

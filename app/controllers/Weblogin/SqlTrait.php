@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Weblogin;
 
+use App\Controllers\Common\ImponiblesController;
 use App\Models\BaseModel;
 
 trait SqlTrait
@@ -9,14 +10,53 @@ trait SqlTrait
     public static function viewFetch($referenciaId, $dni)
     {
         /** Determina que vamos a llamar desde el front */
+        $rodados = ImponiblesController::getRodados(22089786);
         $data = self::sqlViewFetch($referenciaId, $dni);
+
+        $acarreos = self::getAcarreos($rodados);
+
+        if (FETCH_ACARREO && count($acarreos) > 0) {
+            $data['acarreo'] = $acarreos;
+        } else {
+            $data['acarreo'] = false;
+        }
+
+        /* $data['acarreo'] = $data['acarreo'] != null && FETCH_ACARREO ? true : false; */
 
         $data['legajo'] = $data['legajo'] != null && FETCH_LEGAJO ? true : false;
         $data['libreta'] = $data['libreta'] != null && FETCH_LIBRETA ? true : false;
         $data['licencia'] = ($data['licencia'] == null || $data['licencia'] == -1) && FETCH_LICENCIA ? false : true;
-        $data['acarreo'] = $data['acarreo'] != null && FETCH_ACARREO ? true : false;
 
         return $data;
+    }
+
+    private static function getAcarreos($rodados)
+    {
+        $where = '(';
+        foreach ($rodados as $rodado) {
+            $where .= "patente = '$rodado->identificacion' OR ";
+        }
+        $where = rtrim($where, " OR ");
+
+        $where .= ") AND a.ID_PERSONA IS NULL";
+        $sql =
+            "SELECT
+            a.ID_ACARREO as id_acarreo,
+            a.PATENTE AS patente,
+            a.NUM_RECIBO_PAGO as recibo,
+            m.ID_MOTIVO as id_motivo,
+            m.NOMBRE AS motivo,
+            p.NOMBRE AS playa,
+            p.DESCRIPCION AS direccion,
+            a.FECHA_HORA as fecha
+            FROM dbo.AC_ACARREO a
+            LEFT JOIN AC_MOTIVO m ON m.ID_MOTIVO = a.ID_MOTIVO
+            LEFT JOIN AC_PLAYA p ON p.ID_PLAYA= a.ID_PLAYA
+            WHERE $where";
+
+        $model = new BaseModel();
+        $result = $model->executeSqlQuery($sql, false);
+        return $result;
     }
 
     private static function sqlViewFetch($referenciaId, $doc)
@@ -34,14 +74,7 @@ trait SqlTrait
                     LEFT JOIN libretas_solicitudes sol ON sol.id_usuario_solicitante = usu.id
                 WHERE wu.ReferenciaID = $referenciaId ORDER BY id DESC
             ) AS libreta,
-            (SELECT insumo FROM licLicencias WHERE Licencia = $doc) as licencia,
-            (
-            SELECT 
-                a.PATENTE as patente
-            FROM dbo.wapUsuarios wu
-                LEFT JOIN AC_ACARREO a ON a.ID_PERSONA = wu.PersonaID
-            WHERE wu.ReferenciaID = $referenciaId and a.BORRADO_LOGICO = 'NO'
-            ) as acarreo";
+            (SELECT insumo FROM licLicencias WHERE Licencia = $doc) as licencia";
 
         $model = new BaseModel();
         $result = $model->executeSqlQuery($sql);
