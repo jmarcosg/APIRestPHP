@@ -302,3 +302,11 @@ function getQrByUlr($url, $w, $h, $color = '', $margin = '0', $error = 'L')
     $base64 = 'data:image/png;base64,' . base64_encode($data);
     return $base64;
 }
+
+function sendResError($object, $error = null, $params = null)
+{
+    if ($object instanceof ErrorException) {
+        sendRes(null, $error, $params);
+        exit;
+    }
+}

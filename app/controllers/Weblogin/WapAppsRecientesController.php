@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Controllers\Weblogin;
 
 use App\Models\WebLogin\WapAppsRecientes;
@@ -18,7 +17,10 @@ class WapAppsRecientesController
         if (self::validateIntoAppdata()) {
             $idUsuario = (int) $_POST['id_usuario'];
             $idApp = (int) $_POST['id_app'];
-            $appReciente = $wapAppsRecientes->get(['id_usuario' => $idUsuario, 'id_app' => $idApp])->value;
+            $params = ['id_usuario' => $idUsuario, 'id_app' => $idApp];
+            $appReciente = $wapAppsRecientes->get($params)->value;
+
+            sendResError($appReciente, 'Hubo un error al obtener listado de apps recientes', $params);
 
             $now = date('Y-m-d H:i:s');
             /* Si Nunca ingreso a una App, generamos un registro */
@@ -40,7 +42,8 @@ class WapAppsRecientesController
                 ];
                 $wapAppsRecientes->update($params, $appReciente['id']);
             }
-            $listadoApps = $wapAppsRecientes->list(['id_usuario' => $idUsuario], ['ODER BY' => 'ingresos'])->value;
+
+            $listadoApps = self::getAppsRecientes($idUsuario);
 
             usort($listadoApps, function ($a, $b) {
                 return (int) $a['ingresos'] < (int) $b['ingresos'];
@@ -62,7 +65,10 @@ class WapAppsRecientesController
         if (isset($_POST['id_usuario'])) {
             $wapAppsRecientes = new WapAppsRecientes();
             $idUsuario = (int) $_POST['id_usuario'];
+            $params = ['id_usuario' => $idUsuario];
             $listadoApps = $wapAppsRecientes->list(['id_usuario' => $idUsuario])->value;
+
+            sendResError($listadoApps, 'Hubo un error al obtener listado de apps recientes', $params);
 
             /* Obtenemos las apps que ya pasaron 30 dias desde su ultimo ingreso */
             $oldApps = array_filter($listadoApps, function ($app) {
@@ -94,17 +100,15 @@ class WapAppsRecientesController
                 $wapAppsRecientes->update($params, $app['id']);
             }
         }
-        $listadoApps = $wapAppsRecientes->list(['id_usuario' => $idUsuario])->value;
+
+        $listadoApps = self::getAppsRecientes($idUsuario);
+        sendResError($listadoApps, 'Hubo un error al obtener listado de apps recientes', $params);
 
         usort($listadoApps, function ($a, $b) {
             return (int) $a['ingresos'] < (int) $b['ingresos'];
         });
 
-        if (!$listadoApps instanceof ErrorException) {
-            sendRes(['appsRecientes' => $listadoApps]);
-        } else {
-            sendRes(null, 'Error al guardar el registro');
-        }
+        sendRes(['appsRecientes' => $listadoApps]);
 
         exit;
     }
@@ -121,5 +125,24 @@ class WapAppsRecientesController
         }
 
         return false;
+    }
+
+    private static function getAppsRecientes($id)
+    {
+        $sql =
+            "SELECT
+                apps.REFERENCIA  as id,
+                apps.APLICACION as nombre,
+                apps.TITULO as title,
+                apps.URL as url,
+                re.ingresos as ingresos
+            FROM dbo.wapAppsRecientes re
+            LEFT JOIN dbo.wlAplicaciones apps ON apps.REFERENCIA = re.id_app 
+            WHERE re.id_usuario = $id";
+
+        $model = new WapAppsRecientes();
+        $result = $model->executeSqlQuery($sql, false);
+
+        return $result;
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Controllers\Weblogin\LoginController;
 use App\Controllers\Weblogin\WapAppsRecientesController;
+use App\Controllers\Weblogin\WlAppController;
 
 $dotenv = \Dotenv\Dotenv::createImmutable('./weblogin/');
 $dotenv->load();
@@ -25,6 +26,9 @@ if ($url['method'] == 'GET') {
 
 		case 'libretasanitaria':
 			LoginController::getLibretasanitariaData();
+
+		case 'aplicaciones':
+			WlAppController::getApps();
 
 		default:
 			$error = new ErrorException('El action no es valido');
