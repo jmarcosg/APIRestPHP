@@ -12,7 +12,7 @@ class Adop_Adopcion extends BaseModel
 
     protected $fillable = [
         'id_animal',
-        'id_vecino',
+        'id_adoptante',
         'fecha_adopcion'
     ];
 }

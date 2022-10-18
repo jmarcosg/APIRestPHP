@@ -4,9 +4,9 @@ namespace App\Models\Adopciones;
 
 use App\Models\BaseModel;
 
-class Adop_Vecino extends BaseModel
+class Adop_Adoptante extends BaseModel
 {
-    protected $table = 'ADOP_vecinos';
+    protected $table = 'ADOP_adoptantes';
     protected $logPath = 'v1/adopciones';
     protected $identity = 'id';
 

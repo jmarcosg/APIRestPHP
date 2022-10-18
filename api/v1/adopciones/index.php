@@ -1,8 +1,8 @@
 <?php
 
-use App\Controllers\Adopciones\Adop_AnimalesController;
-use App\Controllers\Adopciones\Adop_VecinosController;
 use App\Controllers\Adopciones\Adop_AdopcionesController;
+use App\Controllers\Adopciones\Adop_AdoptantesController;
+use App\Controllers\Adopciones\Adop_AnimalesController;
 
 /**
  * *Metodo GET
@@ -44,13 +44,13 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'v1':
-				//* Listado de vecinos
-				$data = Adop_VecinosController::index();
+				//* Listado de adoptantes
+				$data = Adop_AdoptantesController::index();
 
 				if (count($data) == 0) {
 					$data = [
-						'vecino' => null,
-						'error' => "No hay registros de vecinos"
+						'adoptante' => null,
+						'error' => "No hay registros de adoptantes"
 					];
 				} else {
 					$data['error'] = null;
@@ -58,14 +58,14 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'v2':
-				//* Obtener vecino por id
-				$vecinosController = new Adop_VecinosController();
-				$data = Adop_VecinosController::index(['id' => $_GET['id']]);
+				//* Obtener adoptante por id
+				$adoptantesController = new Adop_AdoptantesController();
+				$data = Adop_AdoptantesController::index(['id' => $_GET['id']]);
 
 				if (count($data) == 0) {
 					$data = [
-						'vecino' => null,
-						'error' => "Vecino no encontrado"
+						'adoptante' => null,
+						'error' => "Adoptante no encontrado"
 					];
 				} else {
 					$data = $data[0];
@@ -222,13 +222,13 @@ if ($url['method'] == "POST") {
 			break;
 
 		case 'v1':
-			//* Cargar vecino
-			$vecinos = Adop_VecinosController::index();
+			//* Cargar adoptante
+			$adoptatnes = Adop_AdoptantesController::index();
 
-			// Verifico que el vecino a cargar no exista en la bd
-			$vecinoDistinto = Adop_VecinosController::index(['dni' => $_POST['dni']]);
+			// Verifico que el adoptante a cargar no exista en la bd
+			$adoptanteDistinto = Adop_AdoptantesController::index(['dni' => $_POST['dni']]);
 
-			if (count($vecinoDistinto) == 0) {
+			if (count($adoptanteDistinto) == 0) {
 				$data = [
 					'nombre' => $_POST['nombre'],
 					// 'nombre' => deutf8ize($_POST['nombre']),
@@ -245,26 +245,26 @@ if ($url['method'] == "POST") {
 					'fecha_deshabilitado' => null,
 				];
 
-				$id = Adop_VecinosController::store($data);
+				$id = Adop_AdoptantesController::store($data);
 
 				if (!$id instanceof ErrorException) {
-					$mensaje = "exito carga vecino";
+					$mensaje = "exito carga adoptante";
 				} else {
 					$mensaje = $id->getMessage();
 					// $mensaje = "prueba error";
 					logFileEE('prueba', $id, null, null);
 				}
 			} else {
-				$mensaje = "vecino ya cargado";
+				$mensaje = "adoptante ya cargado";
 			}
 
 			echo $mensaje;
 			break;
 
 		case 'v2':
-			//* Modificar vecino
-			$idVecinoModificar = $_POST['id'];
-			$vecinos = Adop_VecinosController::index(['id' => $idVecinoModificar])[0];
+			//* Modificar adoptante
+			$idAdoptanteModificar = $_POST['id'];
+			$adoptantes = Adop_AdoptantesController::index(['id' => $idAdoptanteModificar])[0];
 
 			$data = [
 				// 'nombre' => deutf8ize($_POST['nombre']),
@@ -280,10 +280,10 @@ if ($url['method'] == "POST") {
 				'domicilio' => $_POST['domicilio']
 			];
 
-			$id = Adop_VecinosController::update($data, $idVecinoModificar);
+			$id = Adop_AdoptantesController::update($data, $idAdoptanteModificar);
 
 			if (!$id instanceof ErrorException) {
-				$mensaje = "exito modificacion vecino";
+				$mensaje = "exito modificacion adoptante";
 			} else {
 				$mensaje = $id->getMessage();
 				logFileEE('prueba', $id, null, null);
@@ -292,8 +292,8 @@ if ($url['method'] == "POST") {
 			echo $mensaje;
 			break;
 		case 'v3':
-			//* Deshabilitar vecino
-			$idVecinoDeshabilitar = $_POST['id'];
+			//* Deshabilitar adoptante
+			$idAdoptanteDeshabilitar = $_POST['id'];
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
 			$fechaDeshabilitado = $date->format('Y-m-d H:i:s');
@@ -303,21 +303,21 @@ if ($url['method'] == "POST") {
 				'fecha_deshabilitado' => $fechaDeshabilitado
 			];
 
-			$vecinosController = new Adop_VecinosController();
-			$vecino = Adop_VecinosController::update($data, $idVecinoDeshabilitar);
+			$adoptantesController = new Adop_AdoptantesController();
+			$adoptante = Adop_AdoptantesController::update($data, $idAdoptanteDeshabilitar);
 
-			if (!$vecino instanceof ErrorException) {
-				$mensaje = "Vecino deshabilitado correctamente";
+			if (!$adoptante instanceof ErrorException) {
+				$mensaje = "Adoptante deshabilitado correctamente";
 			} else {
-				sendRes(null, $vecino->getMessage(), null);
+				sendRes(null, $adoptante->getMessage(), null);
 			};
 
 			echo $mensaje;
 			break;
 
 		case 'v4':
-			//* Habilitar vecino
-			$idVecinoDeshabilitar = $_POST['id'];
+			//* Habilitar adoptante
+			$idAdoptanteDeshabilitar = $_POST['id'];
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
 			$fechaHabilitado = $date->format('Y-m-d H:i:s');
@@ -327,28 +327,28 @@ if ($url['method'] == "POST") {
 				'fecha_deshabilitado' => null
 			];
 
-			$vecinosController = new Adop_VecinosController();
-			$vecino = Adop_VecinosController::update($data, $idVecinoDeshabilitar);
+			$adoptantesController = new Adop_AdoptantesController();
+			$adoptante = Adop_AdoptantesController::update($data, $idAdoptanteDeshabilitar);
 
-			if (!$vecino instanceof ErrorException) {
-				$mensaje = "Vecino habilitado correctamente";
+			if (!$adoptante instanceof ErrorException) {
+				$mensaje = "Adoptante habilitado correctamente";
 			} else {
-				sendRes(null, $vecino->getMessage(), null);
+				sendRes(null, $adoptante->getMessage(), null);
 			};
 
 			echo $mensaje;
 			break;
 		case 'vdel':
-			//* Eliminar vecino
-			$idVecinoEliminar = $_POST['id'];
+			//* Eliminar adoptante
+			$idAdoptanteEliminar = $_POST['id'];
 
-			$vecinosController = new Adop_VecinosController();
-			$vecino = $vecinosController->delete($idVecinoEliminar);
+			$adoptantesController = new Adop_AdoptantesController();
+			$adoptante = $adoptantesController->delete($idAdoptanteEliminar);
 
-			if (!$vecino instanceof ErrorException) {
-				$mensaje = "Vecino eliminado correctamente";
+			if (!$adoptante instanceof ErrorException) {
+				$mensaje = "Adoptante eliminado correctamente";
 			} else {
-				sendRes(null, $vecino->getMessage(), null);
+				sendRes(null, $adoptante->getMessage(), null);
 			};
 
 			echo $mensaje;
@@ -367,7 +367,7 @@ if ($url['method'] == "POST") {
 			];
 
 			$dataAdopcion = [
-				'id_vecino' => $_POST['id_vecino'],
+				'id_adoptante' => $_POST['id_adoptante'],
 				'id_animal' => $_POST['id_animal'],
 				'fecha_adopcion' => $currentTime
 			];
