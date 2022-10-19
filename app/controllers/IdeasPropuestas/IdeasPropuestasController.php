@@ -2,40 +2,54 @@
 
 namespace App\Controllers\IdeasPropuestas;
 
-use App\Models\BaseModel;
+use App\Models\IdeasPropuestas\IdeasPropuestas;
 
 class IdeasPropuestasController
 {
+    use SqlTrait;
+
     public static function login()
     {
         $usuario = $_POST['usuario'];
         $password = $_POST['password'];
 
-        $sql =
-            "SELECT 
-                nombre,
-                legajo,
-                dni,
-                usuario,
-                password ,
-                tipo,
-                categoria,
-                secretaria,
-                subsecretaria,
-                info    
-            FROM dbo.ip_usuarios
-            WHERE usuario = '$usuario' AND password = '$password'";
-
-        $model = new BaseModel();
-        $result = $model->executeSqlQuery($sql);
+        $result = self::getUserSql($usuario, $password);
 
         sendResError($result, 'Hubo un error inesperado');
 
         if ($result) {
+            $contents = self::getContentSql($result['id']);
+
+            sendResError($contents, 'Hubo un error inesperado');
+
+            $result['is_admin'] = $result['is_admin'] == "0" ? false : true;
+            $result['contents'] = self::formatContent($contents);
             sendRes($result);
         } else {
             sendRes(null, 'Credenciales invalidas');
         }
         exit;
+    }
+
+    public static function saveContent()
+    {
+        $data = new IdeasPropuestas();
+        $data->set($_POST);
+
+        $id = $data->save();
+
+        sendResError($id, 'Hubo un error al guardar su idea, intente mas tarde');
+
+        sendRes($id);
+        exit;
+    }
+
+    public static function formatContent($contents)
+    {
+        $array = [];
+        foreach ($contents as $content) {
+            $array[] = $content['content'];
+        }
+        return $array;
     }
 }

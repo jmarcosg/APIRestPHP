@@ -32,6 +32,9 @@ if ($url['method'] == 'POST') {
 		case 'login':
 			IdeasPropuestasController::login();
 
+		case 'saveContent':
+			IdeasPropuestasController::saveContent();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
