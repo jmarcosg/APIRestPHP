@@ -12,6 +12,7 @@ use App\Models\LicenciaComercial\Lc_Documento;
 use App\Traits\LicenciaComercial\TemplateEmailSolicitud;
 use App\Traits\LicenciaComercial\QuerysSql;
 use App\Traits\LicenciaComercial\Reportes;
+use DateTime;
 use ErrorException;
 
 class Lc_SolicitudController
@@ -556,6 +557,7 @@ class Lc_SolicitudController
             /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
             if ($estado == 'aprobado') {
                 $req['ver_documentos'] = '1';
+                $req['fecha_finalizado'] = date('Y-m-d H:i:s');
                 $req['estado'] = 'finalizado';
             }
 

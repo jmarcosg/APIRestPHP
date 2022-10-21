@@ -57,7 +57,7 @@ trait Reportes
 
             $pdf->Text($col, $row, "Nombre:");
             $pdf->Text($col, self::getRow($row, $inc), "DNI:");
-            $pdf->Text($col, self::getRow($row, $inc), "CUIL:");
+            $pdf->Text($col, self::getRow($row, $inc), "CUIT:");
             $pdf->Text($col, self::getRow($row, $inc), "Domicilio:");
             $pdf->Text($col, self::getRow($row, $inc), "Teléfono:");
             $pdf->Text($col, self::getRow($row, $inc), "Email:");

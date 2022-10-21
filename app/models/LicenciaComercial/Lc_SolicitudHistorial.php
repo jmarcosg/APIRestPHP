@@ -44,6 +44,7 @@ class Lc_SolicitudHistorial extends BaseModel
         'ver_documentos',
         'notas_catastro',
         'notas_ambiente',
+        'fecha_finalizado',
         'visto'
     ];
 }
