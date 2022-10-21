@@ -23,7 +23,7 @@ class IdeasPropuestasController
             sendResError($contents, 'Hubo un error inesperado');
 
             $result['is_admin'] = $result['is_admin'] == "0" ? false : true;
-            $result['contents'] = self::formatContent($contents);
+            $result['contents'] = $contents;
             sendRes($result);
         } else {
             sendRes(null, 'Credenciales invalidas');
@@ -40,17 +40,50 @@ class IdeasPropuestasController
 
         sendResError($id, 'Hubo un error al guardar su idea, intente mas tarde');
 
-        sendRes($id);
+        $contents = self::getContentSql($_POST['id_usuario']);
+
+        sendResError($contents, 'Hubo un error al obtener las ideas');
+
+        sendRes($contents);
         exit;
     }
 
-    public static function formatContent($contents)
+    public static function saveEditContent()
     {
-        $array = [];
-        foreach ($contents as $content) {
-            $array[] = $content['content'];
+        $data = new IdeasPropuestas();
+
+        $data = $data->update(['content' => $_POST['content']], $_POST['id']);
+        if ($data) {
+            sendResError($data, 'Hubo un error al guardar su idea, intente mas tarde');
+
+            $contents = self::getContentSql($_POST['id_usuario']);
+
+            sendResError($contents, 'Hubo un error al obtener las ideas');
+
+            sendRes($contents);
+        } else {
+            sendRes(null, 'Hubo un error al guardar la idea');
         }
-        return $array;
+        exit;
+    }
+
+    public static function deleteContent()
+    {
+        $data = new IdeasPropuestas();
+
+        $data = $data->delete($_POST['id']);
+
+        
+        if ($data) {
+            $contents = self::getContentSql($_POST['id_usuario']);
+    
+            sendResError($contents, 'Hubo un error al obtener las ideas');
+            sendRes($contents, null);
+        } else {
+            sendRes(null, 'No se pudo eliminar el recurso');
+        }
+
+        exit;
     }
 
     public static function getContents($where = "1=1")

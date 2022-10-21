@@ -35,6 +35,7 @@ trait SqlTrait
     {
         $sql =
             "SELECT 
+                id,
                 content
             FROM dbo.ip_ideas
             WHERE id_usuario = '$idUsuario'";

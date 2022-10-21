@@ -41,6 +41,12 @@ if ($url['method'] == 'POST') {
 		case 'saveContent':
 			IdeasPropuestasController::saveContent();
 
+		case 'editContent':
+			IdeasPropuestasController::saveEditContent();
+
+		case 'deleteContent':
+			IdeasPropuestasController::deleteContent();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
