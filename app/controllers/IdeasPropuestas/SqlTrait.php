@@ -44,4 +44,22 @@ trait SqlTrait
 
         return $result;
     }
+
+    public static function getContentsSql()
+    {
+        $sql =
+            "SELECT 
+                ipi.id as id,
+                ipi.content as content,
+                ipu.nombre as nombre,
+                ipu.dni as dni,
+                ipu.legajo as legajo
+            FROM ip_ideas ipi
+            LEFT JOIN ip_usuarios ipu ON ipu.id = ipi.id_usuario";
+
+        $model = new IdeasPropuestas();
+        $result = $model->executeSqlQuery($sql, false);
+
+        return $result;
+    }
 }

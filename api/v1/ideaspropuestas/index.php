@@ -13,8 +13,8 @@ if ($url['method'] == 'GET') {
 
 	switch ($action) {
 
-		case 'login':
-			/*  */
+		case 'getAllContents':
+			IdeasPropuestasController::getContents();
 
 		default:
 			$error = new ErrorException('El action no es valido');

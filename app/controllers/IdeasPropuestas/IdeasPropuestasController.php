@@ -52,4 +52,15 @@ class IdeasPropuestasController
         }
         return $array;
     }
+
+    public static function getContents()
+    {
+        $result = self::getContentsSql();
+
+        sendResError($result, 'Hubo un error inesperado');
+
+        sendRes($result);
+
+        exit;
+    }
 }
