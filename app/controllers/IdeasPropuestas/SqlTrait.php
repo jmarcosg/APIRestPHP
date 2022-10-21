@@ -45,7 +45,7 @@ trait SqlTrait
         return $result;
     }
 
-    public static function getContentsSql()
+    public static function getContentsSql($where)
     {
         $sql =
             "SELECT 
@@ -55,7 +55,24 @@ trait SqlTrait
                 ipu.dni as dni,
                 ipu.legajo as legajo
             FROM ip_ideas ipi
-            LEFT JOIN ip_usuarios ipu ON ipu.id = ipi.id_usuario";
+            LEFT JOIN ip_usuarios ipu ON ipu.id = ipi.id_usuario WHERE $where";
+
+        $model = new IdeasPropuestas();
+        $result = $model->executeSqlQuery($sql, false);
+
+        return $result;
+    }
+
+    public static function getContentsSqlByUser()
+    {
+        $sql =
+            "SELECT 
+                ipu.dni as dni,
+                ipu.nombre as nombre,
+                count(ipi.id) as cantidad
+            FROM ip_usuarios ipu
+            RIGHT JOIN ip_ideas ipi ON ipi.id_usuario = ipu.id 
+            GROUP BY ipu.nombre, ipu.dni";
 
         $model = new IdeasPropuestas();
         $result = $model->executeSqlQuery($sql, false);

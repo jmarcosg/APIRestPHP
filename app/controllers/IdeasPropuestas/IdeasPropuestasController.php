@@ -53,9 +53,20 @@ class IdeasPropuestasController
         return $array;
     }
 
-    public static function getContents()
+    public static function getContents($where = "1=1")
     {
-        $result = self::getContentsSql();
+        $result = self::getContentsSql($where);
+
+        sendResError($result, 'Hubo un error inesperado');
+
+        sendRes($result);
+
+        exit;
+    }
+
+    public static function getContentsByUser()
+    {
+        $result = self::getContentsSqlByUser();
 
         sendResError($result, 'Hubo un error inesperado');
 
