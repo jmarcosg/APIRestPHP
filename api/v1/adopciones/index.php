@@ -224,7 +224,7 @@ if ($url['method'] == "POST") {
 
 		case 'v1':
 			//* Cargar adoptante
-			$adoptatnes = Adop_AdoptantesController::index();
+			$adoptantes = Adop_AdoptantesController::index();
 
 			// Verifico que el adoptante a cargar no exista en la bd
 			$adoptanteDistinto = Adop_AdoptantesController::index(['dni' => $_POST['dni']]);
@@ -318,7 +318,7 @@ if ($url['method'] == "POST") {
 
 		case 'v4':
 			//* Habilitar adoptante
-			$idAdoptanteDeshabilitar = $_POST['id'];
+			$idAdoptanteHabilitar = $_POST['id'];
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
 			$fechaHabilitado = $date->format('Y-m-d H:i:s');
@@ -329,7 +329,7 @@ if ($url['method'] == "POST") {
 			];
 
 			$adoptantesController = new Adop_AdoptantesController();
-			$adoptante = Adop_AdoptantesController::update($data, $idAdoptanteDeshabilitar);
+			$adoptante = Adop_AdoptantesController::update($data, $idAdoptanteHabilitar);
 
 			if (!$adoptante instanceof ErrorException) {
 				$mensaje = "Adoptante habilitado correctamente";
