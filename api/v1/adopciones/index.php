@@ -104,6 +104,36 @@ if ($url['method'] == "GET") {
 				}
 				break;
 
+			case 'e1':
+				//* Listado de empleados
+				$data = Adop_EmpleadosController::index();
+
+				if (count($data) == 0) {
+					$data = [
+						'empleado' => null,
+						'error' => "No hay registros de empleados"
+					];
+				} else {
+					$data['error'] = null;
+				}
+				break;
+
+			case 'v2':
+				//* Obtener empleado por id
+				$empleadosController = new Adop_EmpleadosController();
+				$data = Adop_EmpleadosController::index(['id' => $_GET['id']]);
+
+				if (count($data) == 0) {
+					$data = [
+						'empleado' => null,
+						'error' => "Empleado no encontrado"
+					];
+				} else {
+					$data = $data[0];
+					$data['error'] = null;
+				}
+				break;
+
 			case 't':
 				echo "hola get";
 				exit;
@@ -507,7 +537,7 @@ if ($url['method'] == "POST") {
 			break;
 
 		case 'v4':
-			//* Habilitar adoptante
+			//* Habilitar empleado
 			$idEmpleadoHabilitar = $_POST['id'];
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
@@ -529,7 +559,21 @@ if ($url['method'] == "POST") {
 
 			echo $mensaje;
 			break;
-		case 'vdel':
+		case 'edel':
+			//* Eliminar empleado
+			$idEmpleadoEliminar = $_POST['id'];
+
+			$empleadosController = new Adop_EmpleadosController();
+			$empleado = $empleadosController->delete($idEmpleadoEliminar);
+
+			if (!$empleado instanceof ErrorException) {
+				$mensaje = "Empleado eliminado correctamente";
+			} else {
+				sendRes(null, $empleado->getMessage(), null);
+			};
+
+			echo $mensaje;
+			break;
 
 		case 't':
 			echo "test post";
