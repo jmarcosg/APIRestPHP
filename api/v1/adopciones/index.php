@@ -3,6 +3,7 @@
 use App\Controllers\Adopciones\Adop_AdopcionesController;
 use App\Controllers\Adopciones\Adop_AdoptantesController;
 use App\Controllers\Adopciones\Adop_AnimalesController;
+use App\Controllers\Adopciones\Adop_EmpleadosController;
 
 /**
  * *Metodo GET
@@ -410,6 +411,125 @@ if ($url['method'] == "POST") {
 
 			echo $mensaje;
 			break;
+
+		case 'e1':
+			//* Cargar empleado
+			$empleados = Adop_EmpleadosController::index();
+
+			// Verifico que el adoptante a cargar no exista en la bd
+			$empleadoDistinto = Adop_EmpleadosController::index(['dni' => $_POST['dni']]);
+
+			if (count($empleadoDistinto) == 0) {
+				$data = [
+					'nombre' => $_POST['nombre'],
+					// 'nombre' => deutf8ize($_POST['nombre']),
+					'dni' => $_POST['dni'],
+					'email' => $_POST['email'],
+					'email_alternativo' => $_POST['email_alternativo'],
+					'telefono' => $_POST['telefono'],
+					'telefono_alternativo' => $_POST['telefono_alternativo'],
+					'ciudad' => $_POST['ciudad'],
+					// 'ciudad' => deutf8ize($_POST['ciudad']),
+					'domicilio' => $_POST['domicilio'],
+					// 'domicilio' => deutf8ize($_POST['domicilio']),
+					'deshabilitado' => 0,
+					'fecha_deshabilitado' => null,
+				];
+
+				$id = Adop_EmpleadosController::store($data);
+
+				if (!$id instanceof ErrorException) {
+					$mensaje = "exito carga empleado";
+				} else {
+					$mensaje = $id->getMessage();
+					// $mensaje = "prueba error";
+					logFileEE('prueba', $id, null, null);
+				}
+			} else {
+				$mensaje = "empleado ya cargado";
+			}
+
+			echo $mensaje;
+			break;
+
+		case 'e2':
+			//* Modificar empleado
+			$idEmpleadoModificar = $_POST['id'];
+			$empleados = Adop_EmpleadosController::index(['id' => $idEmpleadoModificar])[0];
+
+			$data = [
+				// 'nombre' => deutf8ize($_POST['nombre']),
+				'nombre' => $_POST['nombre'],
+				'dni' => $_POST['dni'],
+				'email' => $_POST['email'],
+				'email_alternativo' => $_POST['email_alternativo'],
+				'telefono' => $_POST['telefono'],
+				'telefono_alternativo' => $_POST['telefono_alternativo'],
+				// 'ciudad' => deutf8ize($_POST['ciudad']),
+				'ciudad' => $_POST['ciudad'],
+				// 'domicilio' => deutf8ize($_POST['domicilio'])
+				'domicilio' => $_POST['domicilio']
+			];
+
+			$id = Adop_EmpleadosController::update($data, $idEmpleadoModificar);
+
+			if (!$id instanceof ErrorException) {
+				$mensaje = "exito modificacion adoptante";
+			} else {
+				$mensaje = $id->getMessage();
+				logFileEE('prueba', $id, null, null);
+			}
+
+			echo $mensaje;
+			break;
+		case 'v3':
+			//* Deshabilitar empleado
+			$idEmpleadoDeshabilitar = $_POST['id'];
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$fechaDeshabilitado = $date->format('Y-m-d H:i:s');
+
+			$data = [
+				'deshabilitado' => 1,
+				'fecha_deshabilitado' => $fechaDeshabilitado
+			];
+
+			$empleadosController = new Adop_EmpleadosController();
+			$empleado = Adop_EmpleadosController::update($data, $idEmpleadoDeshabilitar);
+
+			if (!$empleado instanceof ErrorException) {
+				$mensaje = "Empleado deshabilitado correctamente";
+			} else {
+				sendRes(null, $empleado->getMessage(), null);
+			};
+
+			echo $mensaje;
+			break;
+
+		case 'v4':
+			//* Habilitar adoptante
+			$idEmpleadoHabilitar = $_POST['id'];
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$fechaHabilitado = $date->format('Y-m-d H:i:s');
+
+			$data = [
+				'deshabilitado' => 0,
+				'fecha_deshabilitado' => null
+			];
+
+			$empleadosController = new Adop_EmpleadosController();
+			$empleado = Adop_EmpleadosController::update($data, $idEmpleadoHabilitar);
+
+			if (!$empleado instanceof ErrorException) {
+				$mensaje = "Empleado habilitado correctamente";
+			} else {
+				sendRes(null, $empleado->getMessage(), null);
+			};
+
+			echo $mensaje;
+			break;
+		case 'vdel':
 
 		case 't':
 			echo "test post";
