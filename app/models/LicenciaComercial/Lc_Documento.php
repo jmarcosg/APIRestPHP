@@ -34,6 +34,9 @@ class Lc_Documento extends BaseModel
         $this->set($params);
         $this->save();
 
+        $params['id_tipo_documento'] = 6;
+        $this->set($params);
+        $this->save();
 
         if ($solicitud['pertenece'] == 'tercero') {
             $params = ['id_solicitud' => $idSolicitud, 'id_tipo_documento' => 2, 'verificado' => 0];
@@ -47,10 +50,6 @@ class Lc_Documento extends BaseModel
 
         if ($solicitud['tipo_persona'] == 'fisica') {
             $params['id_tipo_documento'] = 5;
-            $this->set($params);
-            $this->save();
-
-            $params['id_tipo_documento'] = 6;
             $this->set($params);
             $this->save();
 

@@ -41,7 +41,7 @@ class LoginController
         } else {
             $error = new ErrorException($userData->error);
             Weblogin::saveLog($error->getMessage(), __CLASS__, __FUNCTION__);
-            return $error;
+            sendRes(null, $error->getMessage(), $_GET);
         }
 
         exit;
@@ -101,7 +101,7 @@ class LoginController
         $sql = self::datosLegajo($sexo, $doc);
         $data = $model->executeSqlQuery($sql);
 
-        if ($data) {
+        if ($data && !$data instanceof ErrorException) {
             sendRes($data);
         } else {
             $error = new ErrorException("Problema al obtener el legajo | genero: $sexo | documento: $doc");
@@ -141,9 +141,8 @@ class LoginController
         $sql = self::datosLicConducir($id);
         $data = $model->executeSqlQuery($sql);
 
-        $data = self::formatLicConducir($data);
-
         if ($data && !$data instanceof ErrorException) {
+            $data = self::formatLicConducir($data);
             sendRes($data);
         } else {
             $error = new ErrorException("Problema al obtener los datos de licencia de conducir | id: $id");
@@ -162,10 +161,9 @@ class LoginController
 
         $sql = self::datosLibretaSanitaria($id);
         $data = $model->executeSqlQuery($sql);
-
-        $data = self::formatLibretaSanitaria($data);
-
+        
         if ($data && !$data instanceof ErrorException) {
+            $data = self::formatLibretaSanitaria($data);
             sendRes($data);
         } else {
             $error = new ErrorException("Problema al obtener los datos de la libreta sanitaria | id: $id");

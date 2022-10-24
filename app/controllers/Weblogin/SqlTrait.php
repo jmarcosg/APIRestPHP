@@ -4,21 +4,23 @@ namespace App\Controllers\Weblogin;
 
 use App\Controllers\Common\ImponiblesController;
 use App\Models\BaseModel;
+use App\Models\Weblogin\Weblogin;
+use ErrorException;
 
 trait SqlTrait
 {
     public static function viewFetch($referenciaId, $dni)
     {
         /** Determina que vamos a llamar desde el front */
-        $rodados = ImponiblesController::getRodados(22089786);
         $data = self::sqlViewFetch($referenciaId, $dni);
 
-        $acarreos = self::getAcarreos($rodados);
-
-        if (FETCH_ACARREO && count($acarreos) > 0) {
-            $data['acarreo'] = $acarreos;
-        } else {
-            $data['acarreo'] = false;
+        $data['acarreo'] = false;
+        if (FETCH_ACARREO) {
+            $rodados = ImponiblesController::getRodados(22089786);
+            $acarreos = self::getAcarreos($rodados);
+            if (!$acarreos instanceof ErrorException && count($acarreos) > 0) {
+                $data['acarreo'] = $acarreos;
+            }
         }
 
         /* $data['acarreo'] = $data['acarreo'] != null && FETCH_ACARREO ? true : false; */
@@ -49,12 +51,12 @@ trait SqlTrait
             p.NOMBRE AS playa,
             p.DESCRIPCION AS direccion,
             a.FECHA_HORA as fecha
-            FROM dbo.AC_ACARREO a
+            FROM dbo.AC_ACARREO as
             LEFT JOIN AC_MOTIVO m ON m.ID_MOTIVO = a.ID_MOTIVO
             LEFT JOIN AC_PLAYA p ON p.ID_PLAYA= a.ID_PLAYA
             WHERE $where";
 
-        $model = new BaseModel();
+        $model = new Weblogin();
         $result = $model->executeSqlQuery($sql, false);
         return $result;
     }
