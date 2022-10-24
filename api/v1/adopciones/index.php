@@ -118,7 +118,7 @@ if ($url['method'] == "GET") {
 				}
 				break;
 
-			case 'v2':
+			case 'e2':
 				//* Obtener empleado por id
 				$empleadosController = new Adop_EmpleadosController();
 				$data = Adop_EmpleadosController::index(['id' => $_GET['id']]);
