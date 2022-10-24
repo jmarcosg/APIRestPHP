@@ -24,7 +24,7 @@ trait Reportes
 
         $nro_expediente = $data['nro_expediente'];
         $nro_licencia = $data['nro_licencia'];
-        $pdf = new TCPDF('A4', 'mm');
+        $pdf = new TCPDF('p', 'mm', array(216, 356));
 
         // set document information
         $pdf->SetCreator('Municipalidad de Neuquén');
@@ -35,25 +35,33 @@ trait Reportes
 
         $pdf->AddPage();
 
-        $initRow = 45;
+        $bannerUrl = ROOT_PATH . 'public/assets/membrete_01.jpg';
+        $pdf->Image($bannerUrl, 25, 15, 160, 16.30, 'JPG');
+
+        $initRow = 40;
         $pdf->SetFont('helvetica', '', 13);
         $pdf->Text(15, $initRow, "SOLICITUD N°: $id");
-        $pdf->Text(69, $initRow, "EXPEDIENTE N°: $nro_expediente");
-        $pdf->Text(138, $initRow, "LICENCIA N°: $nro_licencia");
+        $pdf->Text(130, $initRow, "EXPEDIENTE N°: $nro_expediente");
+
+        $initRow += 7;
+        $pdf->Text(130, $initRow, "LICENCIA N°: $nro_licencia");
+
+        $fechaFinalizado = date("d/m/Y", strtotime($data['fecha_finalizado']));
+        $pdf->Text(15, $initRow, "FECHA: $fechaFinalizado");
 
         $initRow += 13;
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->Text(15, $initRow, "DATOS PERSONALES");
 
-        $inc = 6;
+        $inc = 5.5;
         if ($data['personaTercero']) {
 
             /* Solicitante - Titular de la licencia */
             $row = $initRow + 15;
             $col = 15;
-            $pdf->SetFont('helvetica', '', 11);
+            $pdf->SetFont('helvetica', '', 10);
             $pdf->Text($col, $row - 7, "TITULAR DE LA LICENCIA");
-            $pdf->SetFont('helvetica', 'B', 10);
+            $pdf->SetFont('helvetica', 'B', 9);
 
             $pdf->Text($col, $row, "Nombre:");
             $pdf->Text($col, self::getRow($row, $inc), "DNI:");
@@ -65,8 +73,8 @@ trait Reportes
             /* DEBEMOS CARGAR LOS DATOS DE UN TERCERO */
             $row = $initRow + 15;
             $col = $col + 18;
-            $pdf->SetFont('helvetica', '', 10);
-            $pdf->Text($col, $row, firstUpper($data['personaTercero']['nombre']));
+            $pdf->SetFont('helvetica', '', 9);
+            $pdf->Text($col, $row, $data['personaTercero']['nombre']);
             $pdf->Text($col, self::getRow($row, $inc), $data['personaTercero']['documento']);
             $pdf->Text($col, self::getRow($row, $inc), $data['personaTercero']['cuil']);
             $pdf->Text($col, self::getRow($row, $inc), $data['personaTercero']['domicilio']);
@@ -76,10 +84,10 @@ trait Reportes
             /* Solicitante */
             $row = $initRow + 15;
             $col = 110;
-            $pdf->SetFont('helvetica', '', 11);
+            $pdf->SetFont('helvetica', '', 10);
             $pdf->Text($col, $row - 7, "SOLICITANTE");
 
-            $pdf->SetFont('helvetica', 'B', 10);
+            $pdf->SetFont('helvetica', 'B', 9);
             $pdf->Text($col, $row, "Nombre:");
             $pdf->Text($col, self::getRow($row, $inc), "DNI:");
             $pdf->Text($col, self::getRow($row, $inc), "CUIL:");
@@ -89,8 +97,8 @@ trait Reportes
 
             $row = $initRow + 15;
             $col = $col + 18;
-            $pdf->SetFont('helvetica', '', 11);
-            $pdf->Text($col, $row,  firstUpper($data['personaInicio']['nombre']));
+            $pdf->SetFont('helvetica', '', 10);
+            $pdf->Text($col, $row,  $data['personaInicio']['nombre']);
             $pdf->Text($col, self::getRow($row, $inc), $data['personaInicio']['documento']);
             $pdf->Text($col, self::getRow($row, $inc), $data['personaInicio']['cuil']);
             $pdf->Text($col, self::getRow($row, $inc), $data['personaInicio']['domicilio']);
@@ -100,10 +108,10 @@ trait Reportes
             /* Solicitante */
             $row = $initRow + 15;
             $col = 15;
-            $pdf->SetFont('helvetica', '', 11);
+            $pdf->SetFont('helvetica', '', 10);
             $pdf->Text($col, $row - 7, "TITULAR DE LA LICENCIA");
 
-            $pdf->SetFont('helvetica', 'B', 10);
+            $pdf->SetFont('helvetica', 'B', 9);
             $pdf->Text($col, $row, "Nombre:");
             $pdf->Text($col, self::getRow($row, $inc), "DNI:");
             $pdf->Text($col, self::getRow($row, $inc), "CUIL:");
@@ -113,8 +121,8 @@ trait Reportes
 
             $row = $initRow + 15;
             $col = $col + 18;
-            $pdf->SetFont('helvetica', '', 11);
-            $pdf->Text($col, $row,  firstUpper($data['personaInicio']['nombre']));
+            $pdf->SetFont('helvetica', '', 10);
+            $pdf->Text($col, $row,  $data['personaInicio']['nombre']);
             $pdf->Text($col, self::getRow($row, $inc), $data['personaInicio']['documento']);
             $pdf->Text($col, self::getRow($row, $inc), $data['personaInicio']['cuil']);
             $pdf->Text($col, self::getRow($row, $inc), $data['personaInicio']['domicilio']);
@@ -122,28 +130,33 @@ trait Reportes
             $pdf->Text($col, self::getRow($row, $inc), $data['personaInicio']['email']);
         }
 
-        $initRow = $row  + 13;
+        $initRow = $row  + 11;
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->Text(15, $initRow, "DATOS DE LA ACTIVIDAD");
 
-        $row = $initRow + 10;
+        $row = $initRow + 9;
         $col = 15;
-        $pdf->SetFont('helvetica', 'B', 10);
+        $pdf->SetFont('helvetica', 'B', 9);
         $pdf->Text($col, $row, "DESCRIPCIÓN");
 
         /* $row -= $inc; */
-        $pdf->SetFont('helvetica', '', 10);
+        $pdf->SetFont('helvetica', '', 9);
         foreach ($descripcion as $value) {
             $pdf->Text($col, self::getRow($row, 4), $value);
         }
 
-        $initRow = $row + 10;
+        $initRow = $row + 9;
         $row = $initRow;
         $col = 15;
 
-        $pdf->SetFont('helvetica', 'B', 10);
+        $pdf->SetFont('helvetica', 'B', 9);
         $pdf->Text($col, $row, "Nomenclatura:");
+        $pdf->Text($col + 110, $row, "Tiene local?");
 
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->Text($col + 130, $row, $data['tiene_local'] == '1' ? 'SI' : 'No');
+
+        $pdf->SetFont('helvetica', 'B', 9);
         if ($data['tiene_local'] == 1) {
             $pdf->Text($col, self::getRow($row, $inc), "Direccion comercial:");
         } else {
@@ -151,12 +164,11 @@ trait Reportes
         }
         $pdf->Text($col, self::getRow($row, $inc), "Metros cuadrados:");
         $pdf->Text($col, self::getRow($row, $inc), "Nombre fantasía:");
-        $pdf->Text($col, self::getRow($row, $inc), "Tiene local?");
 
         $row = $initRow;
         $col = $col + 50;
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->Text($col, $row,  firstUpper($data['nomenclatura']));
+        $pdf->SetFont('helvetica', '', 10);
+        $pdf->Text($col, $row,  $data['nomenclatura']);
         if ($data['tiene_local'] == 1) {
             $pdf->Text($col, self::getRow($row, $inc), self::formatDomicilio($data['direccion_comercial']));
         } else {
@@ -164,10 +176,9 @@ trait Reportes
         }
         $pdf->Text($col, self::getRow($row, $inc), $data['m2']);
         $pdf->Text($col, self::getRow($row, $inc), $data['nombre_fantasia']);
-        $pdf->Text($col, self::getRow($row, $inc), $data['tiene_local'] == '1' ? 'SI' : 'No');
         $col = 15;
-        $pdf->SetFont('helvetica', 'B', 11);
-        $pdf->Text($col, self::getRow($row, $inc * 2), "Rubros:");
+        $pdf->SetFont('helvetica', 'B', 10);
+        $pdf->Text($col, self::getRow($row, $inc * 1.5), "Rubros:");
 
         $pdf->SetFont('helvetica', 'B', 9);
         foreach ($data['rubros'] as $key => $value) {
@@ -180,33 +191,33 @@ trait Reportes
         }
 
         /* NUEVA PAGINA */
-        $pdf->AddPage();
-        $row = 20;
-        $inc = 4;
-        $pdf->SetFont('helvetica', 'B', 11);
+        /* $pdf->AddPage();
+        $row = 20; */
+        $row += 28;
+        $pdf->SetFont('helvetica', 'B', 10);
         $pdf->Text($col, $row, "Documentos solicitados:");
-        $row += 6;
+        $row += 3;
+        $inc = 4;
         $pdf->SetFont('helvetica', '', 9);
         foreach ($data['documentos'] as $value) {
             $pdf->Text($col, self::getRow($row, $inc), $value['label']);
         }
 
-        $pdf->SetFont('helvetica', 'B', 11);
-        $descRow = $row;
-        $pdf->Text($col, self::getRow($row, 10), 'Notas de Catastro: ');
-        $pdf->Text($col, self::getRow($row, 6), 'Notas de Ambiental: ');
+        $pdf->SetFont('helvetica', 'B', 10);
 
-        if ($data['notas_catastro']) {
-            $pdf->Text(60, self::getRow($descRow, 10), 'SI');
-        } else {
-            $pdf->Text(60, self::getRow($descRow, 10), 'NO');
-        }
+        $pdf->Text($col, self::getRow($row, 10), 'Notas de Catastro: ' . ($data['notas_catastro'] ? 'SI' : 'NO'));
+        $pdf->Text(65, $row, 'Notas de Ambiental: ' . ($data['notas_ambiente'] ? 'SI' : 'NO'));
 
-        if ($data['notas_ambiente']) {
-            $pdf->Text(60, self::getRow($descRow, 6), 'SI');
-        } else {
-            $pdf->Text(60, self::getRow($descRow, 6), 'NO');
-        }
+        $row += 70;
+
+        $pdf->SetLineStyle(array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
+        $pdf->Text(15, $row, 'Firma y acalaración del contribuyente');
+        $pdf->Line(15, $row, 95, $row);
+        /* $pdf->RoundedRect(45, $row, 75, 30, 6.50, '0000'); */
+
+        $pdf->Text(120, $row, 'Firma del agente municipal');
+        $pdf->Line(120, $row, 200, $row);
+        /* $pdf->RoundedRect(185, $row, 75, 30, 6.50, '0000'); */
 
         /* Preparacion del archivo */
         $base64 = $pdf->Output('Listado_podadores.pdf', 'E');
