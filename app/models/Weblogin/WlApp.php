@@ -2,12 +2,8 @@
 
 namespace App\Models\Weblogin;
 
-use App\Models\BaseModel;
-use ErrorException;
-
-class WlApp extends BaseModel
+class WlApp extends Weblogin
 {
     protected $table = 'wapAppsRecientes';
-    protected $logPath = 'v1/WebLogin';
     protected $identity = 'id';
 }

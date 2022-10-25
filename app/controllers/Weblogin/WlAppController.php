@@ -3,6 +3,7 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\BaseModel;
+use App\Models\Weblogin\Weblogin;
 use ErrorException;
 
 class WlAppController
@@ -11,13 +12,13 @@ class WlAppController
     {
         $apps = self::getSqlApps();
 
-        if (!$apps instanceof ErrorException) {
-            $apps = self::formatApps($apps);
-            sendRes([
-                'aplicaciones' => $apps['aplicaciones'],
-                'categorias' => $apps['categorias']
-            ]);
-        }
+        sendResError($apps, 'Problema para listar las aplicaciones');
+
+        $apps = self::formatApps($apps);
+        sendRes([
+            'aplicaciones' => $apps['aplicaciones'],
+            'categorias' => $apps['categorias']
+        ]);
         exit;
     }
 
@@ -36,6 +37,9 @@ class WlAppController
         ];
 
         $categorias = self::getSqlCategorias();
+
+        sendResError($categorias, 'Problema para listar las categorias');
+
         foreach ($categorias as $key => $cat) {
             $caterogia = $cat['nombre'];
             $aplicaciones['categorias'][$caterogia] = array_filter($apps, function ($app) use ($caterogia) {
@@ -60,7 +64,7 @@ class WlAppController
             LEFT JOIN wlAppsCategorias ac ON ac.id_app = a.REFERENCIA 
             LEFT JOIN wlCategorias c ON c.id = ac.id_categoria";
 
-        $model = new BaseModel();
+        $model = new Weblogin();
         $result = $model->executeSqlQuery($sql, false);
 
         return $result;
@@ -70,7 +74,7 @@ class WlAppController
     {
         $sql = "SELECT nombre as nombre FROM dbo.wlCategorias";
 
-        $model = new BaseModel();
+        $model = new Weblogin();
         $result = $model->executeSqlQuery($sql, false);
 
         return $result;

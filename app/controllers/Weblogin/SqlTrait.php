@@ -23,8 +23,6 @@ trait SqlTrait
             }
         }
 
-        /* $data['acarreo'] = $data['acarreo'] != null && FETCH_ACARREO ? true : false; */
-
         $data['legajo'] = $data['legajo'] != null && FETCH_LEGAJO ? true : false;
         $data['libreta'] = $data['libreta'] != null && FETCH_LIBRETA ? true : false;
         $data['licencia'] = ($data['licencia'] == null || $data['licencia'] == -1) && FETCH_LICENCIA ? false : true;
@@ -51,7 +49,7 @@ trait SqlTrait
             p.NOMBRE AS playa,
             p.DESCRIPCION AS direccion,
             a.FECHA_HORA as fecha
-            FROM dbo.AC_ACARREO as
+            FROM dbo.AC_ACARREO a
             LEFT JOIN AC_MOTIVO m ON m.ID_MOTIVO = a.ID_MOTIVO
             LEFT JOIN AC_PLAYA p ON p.ID_PLAYA= a.ID_PLAYA
             WHERE $where";
