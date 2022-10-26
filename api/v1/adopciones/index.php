@@ -18,6 +18,10 @@ if ($url['method'] == "GET") {
 				$animalesController = new Adop_AnimalesController();
 				$data = $animalesController->index();
 
+				$data = [
+					'data' => $data,
+				];
+
 				if (count($data) == 0) {
 					$data = [
 						'animal' => null,
@@ -33,6 +37,10 @@ if ($url['method'] == "GET") {
 				$animalesController = new Adop_AnimalesController();
 				$data = Adop_AnimalesController::index(['id' => $_GET['id']]);
 
+				// $data = [
+				// 	'data' => $data,
+				// ];
+
 				if (count($data) == 0) {
 					$data = [
 						'animal' => null,
@@ -40,13 +48,17 @@ if ($url['method'] == "GET") {
 					];
 				} else {
 					$data = $data[0];
-					$data['error'] = null;
+					// $data['error'] = null;
 				}
 				break;
 
 			case 'v1':
 				//* Listado de adoptantes
 				$data = Adop_AdoptantesController::index();
+
+				$data = [
+					'data' => $data,
+				];
 
 				if (count($data) == 0) {
 					$data = [
@@ -63,6 +75,10 @@ if ($url['method'] == "GET") {
 				$adoptantesController = new Adop_AdoptantesController();
 				$data = Adop_AdoptantesController::index(['id' => $_GET['id']]);
 
+				$data = [
+					'data' => $data,
+				];
+
 				if (count($data) == 0) {
 					$data = [
 						'adoptante' => null,
@@ -77,6 +93,10 @@ if ($url['method'] == "GET") {
 			case 'ad1':
 				//* Listado de adopciones
 				$data = Adop_AdopcionesController::index();
+
+				$data = [
+					'data' => $data,
+				];
 
 				if (count($data) == 0) {
 					$data = [
@@ -93,6 +113,10 @@ if ($url['method'] == "GET") {
 				$adopcionesController = new Adop_AdopcionesController();
 				$data = Adop_AdopcionesController::index(['id' => $_GET['id']]);
 
+				$data = [
+					'data' => $data,
+				];
+
 				if (count($data) == 0) {
 					$data = [
 						'adopcion' => null,
@@ -107,6 +131,10 @@ if ($url['method'] == "GET") {
 			case 'e1':
 				//* Listado de empleados
 				$data = Adop_EmpleadosController::index();
+
+				$data = [
+					'data' => $data,
+				];
 
 				if (count($data) == 0) {
 					$data = [
@@ -123,6 +151,10 @@ if ($url['method'] == "GET") {
 				$empleadosController = new Adop_EmpleadosController();
 				$data = Adop_EmpleadosController::index(['id' => $_GET['id']]);
 
+				$data = [
+					'data' => $data,
+				];
+
 				if (count($data) == 0) {
 					$data = [
 						'empleado' => null,
@@ -130,6 +162,22 @@ if ($url['method'] == "GET") {
 					];
 				} else {
 					$data = $data[0];
+					$data['error'] = null;
+				}
+				break;
+
+			case 'e3':
+				//* Obtener empleado por email
+				$empleadosController = new Adop_EmpleadosController();
+				$data = Adop_EmpleadosController::index(['email' => $_GET['email']]);
+
+				if (count($data) == 0) {
+					$data = [
+						'empleado' => null,
+						'error' => "Empleado no encontrado"
+					];
+				} else {
+					$data['data'] = $data[0];
 					$data['error'] = null;
 				}
 				break;
@@ -151,6 +199,7 @@ if ($url['method'] == "GET") {
 	}
 
 	echo json_encode($data);
+	exit;
 }
 
 /**
@@ -161,6 +210,8 @@ if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case 'an1':
 			//* Cargar animal
+			// print_r($_POST);
+			// die();
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
 			$currentTime = $date->format('Y-m-d H:i:s');
@@ -196,7 +247,7 @@ if ($url['method'] == "POST") {
 				logFileEE('prueba', $id, null, null);
 			}
 
-			break;
+			exit;
 
 
 		case 'an2':
@@ -234,7 +285,7 @@ if ($url['method'] == "POST") {
 				logFileEE('prueba', $id, null, null);
 			}
 
-			break;
+			exit;
 
 		case 'an3':
 			//* Eliminar animal
@@ -250,7 +301,7 @@ if ($url['method'] == "POST") {
 			};
 
 			echo $mensaje;
-			break;
+			exit;
 
 		case 'v1':
 			//* Cargar adoptante
@@ -290,7 +341,7 @@ if ($url['method'] == "POST") {
 			}
 
 			echo $mensaje;
-			break;
+			exit;
 
 		case 'v2':
 			//* Modificar adoptante
@@ -321,7 +372,7 @@ if ($url['method'] == "POST") {
 			}
 
 			echo $mensaje;
-			break;
+			exit;
 		case 'v3':
 			//* Deshabilitar adoptante
 			$idAdoptanteDeshabilitar = $_POST['id'];
@@ -344,7 +395,7 @@ if ($url['method'] == "POST") {
 			};
 
 			echo $mensaje;
-			break;
+			exit;
 
 		case 'v4':
 			//* Habilitar adoptante
@@ -368,7 +419,7 @@ if ($url['method'] == "POST") {
 			};
 
 			echo $mensaje;
-			break;
+			exit;
 		case 'vdel':
 			//* Eliminar adoptante
 			$idAdoptanteEliminar = $_POST['id'];
@@ -383,7 +434,7 @@ if ($url['method'] == "POST") {
 			};
 
 			echo $mensaje;
-			break;
+			exit;
 
 		case 'ad1':
 			//* Cargar adopcion
@@ -416,7 +467,7 @@ if ($url['method'] == "POST") {
 			}
 
 			echo $mensaje;
-			break;
+			exit;
 
 		case 'ad2':
 			//* Desadopcion(?)
@@ -440,7 +491,7 @@ if ($url['method'] == "POST") {
 			}
 
 			echo $mensaje;
-			break;
+			exit;
 
 		case 'e1':
 			//* Cargar empleado
@@ -480,7 +531,7 @@ if ($url['method'] == "POST") {
 			}
 
 			echo $mensaje;
-			break;
+			exit;
 
 		case 'e2':
 			//* Modificar empleado
@@ -511,7 +562,7 @@ if ($url['method'] == "POST") {
 			}
 
 			echo $mensaje;
-			break;
+			exit;
 		case 'v3':
 			//* Deshabilitar empleado
 			$idEmpleadoDeshabilitar = $_POST['id'];
@@ -534,7 +585,7 @@ if ($url['method'] == "POST") {
 			};
 
 			echo $mensaje;
-			break;
+			exit;
 
 		case 'v4':
 			//* Habilitar empleado
@@ -558,7 +609,7 @@ if ($url['method'] == "POST") {
 			};
 
 			echo $mensaje;
-			break;
+			exit;
 		case 'edel':
 			//* Eliminar empleado
 			$idEmpleadoEliminar = $_POST['id'];
@@ -573,7 +624,7 @@ if ($url['method'] == "POST") {
 			};
 
 			echo $mensaje;
-			break;
+			exit;
 
 		case 't':
 			echo "test post";
