@@ -490,7 +490,7 @@ class Arb_PodadorController
             $bannerUrl = 'https://weblogin.muninqn.gov.ar/apps/estilos_globales/logo-credencial.png';
         }
 
-        $pdf->Image($bannerUrl, 100, 13, 97.3, 14, 'PNG');
+        $pdf->Image($bannerUrl, 13, 13, 97.3, 14, 'PNG');
 
         $pdf->SetFont('helvetica', '', 8);
         $pdf->Text(110, 30, 'SECRETARIA DE MOVILIDAD Y SERVICIOS AL CIUDADANO');

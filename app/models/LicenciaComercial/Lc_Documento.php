@@ -26,42 +26,39 @@ class Lc_Documento extends BaseModel
         $this->set($params);
         $this->save();
 
+        $params['id_tipo_documento'] = 10;
+        $this->set($params);
+        $this->save();
+
+        $params['id_tipo_documento'] = 4;
+        $this->set($params);
+        $this->save();
+
+        $params['id_tipo_documento'] = 6;
+        $this->set($params);
+        $this->save();
+
         if ($solicitud['pertenece'] == 'tercero') {
-            /* Poder */
             $params = ['id_solicitud' => $idSolicitud, 'id_tipo_documento' => 2, 'verificado' => 0];
             $this->set($params);
             $this->save();
 
-            /* DNI por el PODER */
             $params = ['id_solicitud' => $idSolicitud, 'id_tipo_documento' => 3, 'verificado' => 0];
             $this->set($params);
             $this->save();
         }
 
         if ($solicitud['tipo_persona'] == 'fisica') {
-            /* AFIP */
-            $params['id_tipo_documento'] = 4;
-            $this->set($params);
-            $this->save();
-
-            /* AFIP */
             $params['id_tipo_documento'] = 5;
             $this->set($params);
             $this->save();
 
-            /* AFIP */
-            $params['id_tipo_documento'] = 6;
+            $params['id_tipo_documento'] = 7;
             $this->set($params);
             $this->save();
         }
 
         if ($solicitud['tipo_persona'] == 'juridica') {
-            /* AFIP */
-            $params['id_tipo_documento'] = 7;
-            $this->set($params);
-            $this->save();
-
-            /* AFIP */
             $params['id_tipo_documento'] = 8;
             $this->set($params);
             $this->save();
@@ -70,11 +67,15 @@ class Lc_Documento extends BaseModel
             $params['id_tipo_documento'] = 9;
             $this->set($params);
             $this->save();
+        }
+    }
 
-            /* AFIP */
-            $params['id_tipo_documento'] = 10;
-            $this->set($params);
-            $this->save();
+    public function deleteInitDocuments($idSolicitud)
+    {
+        $documentos = $this->list(['id_solicitud' => $idSolicitud])->value;
+
+        foreach ($documentos as $doc) {
+            $this->delete($doc['id']);
         }
     }
 }

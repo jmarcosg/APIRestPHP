@@ -56,6 +56,7 @@ trait QuerysSql
                 sol.notas_catastro as notas_catastro,
                 sol.notas_ambiente as notas_ambiente,
                 sol.fecha_alta as fecha_alta,
+                sol.fecha_finalizado as fecha_finalizado,
                 (select count(id) from dbo.lc_solicitudes_historial where id_solicitud = sol.id and visto = '0') as cant_historial
             FROM dbo.lc_solicitudes sol
                 LEFT JOIN dbo.wapPersonas perini ON sol.id_wappersonas = perini.ReferenciaID 

@@ -204,9 +204,9 @@ class Arb_SolicitudController
         $pdf->Image($bannerUrl, 100, 13, 97.3, 14, 'PNG');
 
         $pdf->SetFont($font, '', 8);
-        $pdf->Text(123, 30, 'SECRETARIA DE MOVILIDAD Y SERVICIOS AL CIUDADANO');
+        $pdf->Text(108, 30, 'SECRETARIA DE MOVILIDAD Y SERVICIOS AL CIUDADANO');
         $pdf->Text(108, 34, 'SUBSECREATARIA DE ESPACIOS VERDES');
-        $pdf->Text(118, 38, 'DIRECCION DE ARBOLADO URBANO');
+        $pdf->Text(108, 38, 'DIRECCION DE ARBOLADO URBANO');
 
         $rowTitle = 60;
         function getrowTitleValTitle(&$rowTitle, $isTitle = false)

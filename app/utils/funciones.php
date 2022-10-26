@@ -125,12 +125,12 @@ function isErrorException($object)
 function compararFechas($string, $get, $format = 'd/m/Y')
 {
     $now = new DateTime();
-    $date = DateTime::createFromFormat($format, $string);
+    $date = new DateTime($string);
 
     $array = [
         'now' => $now,
         'date' => $date,
-        'dif' => $date->diff($now)->$get,
+        'dif' => $now->diff($date, true)->$get,
     ];
     return $array;
 }
@@ -308,4 +308,20 @@ function deleteDir($dirPath)
 function firstUpper($string)
 {
     return ucwords(strtolower($string));
+}
+
+function getQrByUlr($url, $w, $h, $color = '', $margin = '0', $error = 'L')
+{
+    $baseUrl = "https://chart.googleapis.com/chart?cht=qr&chco=$color&chs=$w" . "x$h&chl=$url&chld=$error|$margin";
+    $data = file_get_contents($baseUrl);
+    $base64 = 'data:image/png;base64,' . base64_encode($data);
+    return $base64;
+}
+
+function sendResError($object, $error = null, $params = null)
+{
+    if ($object instanceof ErrorException) {
+        sendRes(null, $error, $params);
+        exit;
+    }
 }

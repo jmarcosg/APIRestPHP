@@ -23,7 +23,7 @@ class BaseDatos
     public function connect()
     {
         $this->conn_string = 'DRIVER={SQL Server};SERVER=' . $this->host . ';DATABASE=' . $this->db . ';charset=' . $this->charset;
-        $this->conn = odbc_connect($this->conn_string, $this->user, $this->pass);
+        $this->conn = odbc_connect($this->conn_string, $this->user, $this->pass, SQL_CUR_USE_ODBC);
     }
 
     /**
