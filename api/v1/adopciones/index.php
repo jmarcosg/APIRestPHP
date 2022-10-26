@@ -5,6 +5,11 @@ use App\Controllers\Adopciones\Adop_AdoptantesController;
 use App\Controllers\Adopciones\Adop_AnimalesController;
 use App\Controllers\Adopciones\Adop_EmpleadosController;
 
+/* $dotenv = \Dotenv\Dotenv::createImmutable('./adopciones/');
+$dotenv->load(); */
+
+// include './adopciones/config.php';
+
 /**
  * *Metodo GET
  */
