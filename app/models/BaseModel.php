@@ -212,7 +212,7 @@ class BaseModel
 
         return $this;
     }
-    
+
     /**
      * Genera relación de uno a uno     
      *  

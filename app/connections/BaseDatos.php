@@ -73,6 +73,9 @@ class BaseDatos
             $strVals = "(?" . str_repeat(",?", $count - 1) . ")";
             $sql = "INSERT INTO $table$strKeys VALUES " . $strVals;
 
+            // print_r($sql);
+            // print_r($params);
+            // die;
             $query = $this->prepare($sql);
             return $this->executeQuery($query, $params, true);
         } catch (\Throwable $th) {

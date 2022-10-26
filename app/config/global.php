@@ -39,6 +39,15 @@ if (ENV == 'replica') {
 }
 
 if (ENV == 'local') {
+    /** LOCAL */
+    define('FILE_PATH', 'C:\xampp\htdocs\apirestphp\files\\');
+    define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
+}
+
+if (ENV == 'mac') {
+    /** LOCAL */
+    define('FILE_PATH', '');
+    define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
     define('FILE_PATH', $_ENV['FILE_PATH_LOCAL']);
     define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_LOCAL']);
     define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_LOCAL']);
