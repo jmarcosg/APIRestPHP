@@ -24,7 +24,7 @@
         "modal": {
             "datosPersonalesBtn": "Datos Personales",
             "cambioPassBtn": "Cambio contraseña",
-            "cambioEmail": "Cambio Email",
+            "cambioEmailBtn": "Cambio Email",
 
             "datosPersonales": {
                 "nombre": "Nombre",
@@ -55,6 +55,7 @@
             },
 
             "email": {
+                "invalidEmail": "El correo electrónico debe ser válido",
                 "descripcionUno": "Enviar enlace de verificación a la siguiente dirección de correo electrónico:",
                 "descripcionDos": "Se enviará un enlace con caducidad a las 24hs, si no lo recibe en el transcurso de 1 minuto, revise la carpeta de correo no deseado ó si la dirección subscripta es correcta.",
                 "descripcionTres": "El cambio de dirección/nombre de usuario tendrá efecto inmediato luego de confirmar el enlace enviado.",
