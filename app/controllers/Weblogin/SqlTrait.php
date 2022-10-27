@@ -25,6 +25,7 @@ trait SqlTrait
 
         $data['legajo'] = $data['legajo'] != null && FETCH_LEGAJO ? true : false;
         $data['libreta'] = $data['libreta'] != null && FETCH_LIBRETA ? true : false;
+        $data['libretaDos'] = FETCH_LIBRETA ? true : false;
         $data['licencia'] = ($data['licencia'] == null || $data['licencia'] == -1) && FETCH_LICENCIA ? false : true;
 
         return $data;
@@ -76,7 +77,7 @@ trait SqlTrait
             ) AS libreta,
             (SELECT insumo FROM licLicencias WHERE Licencia = $doc) as licencia";
 
-        $model = new BaseModel();
+        $model = new Weblogin();
         $result = $model->executeSqlQuery($sql);
         return $result;
     }
@@ -139,7 +140,8 @@ trait SqlTrait
                 sol.estado as estado,
                 sol.nro_recibo as recibo,
                 sol.fecha_vencimiento as venc,
-                sol.fecha_alta as fecha_alta
+                sol.fecha_alta as fecha_alta,
+                sol.fecha_evaluacion as fecha_evaluacion
             FROM wapUsuarios wu
                 LEFT JOIN wapPersonas per ON per.ReferenciaID = wu.PersonaID
                 LEFT JOIN libretas_usuarios usu ON usu.id_wappersonas = per.ReferenciaID

@@ -92,6 +92,7 @@ class BaseModel
 
     public function save()
     {
+        /* Ver el motivo de usar esto, supongo que es pos si entra la instancia de un modelo */
         $array = json_decode(json_encode($this->req), true);
         $conn = new BaseDatos();
         $result = $conn->store($this->table, $array);

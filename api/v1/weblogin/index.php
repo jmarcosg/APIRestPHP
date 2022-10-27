@@ -27,6 +27,9 @@ if ($url['method'] == 'GET') {
 		case 'libretasanitaria':
 			LoginController::getLibretasanitariaData();
 
+		case 'libretasanitariaDos':
+			LoginController::getLibretasanitariaDataDos();
+
 		case 'aplicaciones':
 			WlAppController::getApps();
 

@@ -17,13 +17,13 @@ class BaseDatos
         $this->user = DB_USER;
         $this->pass = DB_PASS;
         $this->db = DB_NAME;
-        $this->charset = DB_CHARSET;
+        $this->charset = 'UTF-8';
     }
 
     public function connect()
     {
         $this->conn_string = 'DRIVER={SQL Server};SERVER=' . $this->host . ';DATABASE=' . $this->db . ';charset=' . $this->charset;
-        $this->conn = odbc_connect($this->conn_string, $this->user, $this->pass, SQL_CUR_USE_ODBC);
+        $this->conn = odbc_connect($this->conn_string, $this->user, $this->pass);
     }
 
     /**
@@ -72,10 +72,7 @@ class BaseDatos
             $strKeys = "(" . implode(" ,", array_keys($params)) . ")";
             $strVals = "(?" . str_repeat(",?", $count - 1) . ")";
             $sql = "INSERT INTO $table$strKeys VALUES " . $strVals;
-
-            // print_r($sql);
-            // print_r($params);
-            // die;
+            
             $query = $this->prepare($sql);
             return $this->executeQuery($query, $params, true);
         } catch (\Throwable $th) {
@@ -152,6 +149,7 @@ class BaseDatos
      */
     function executeQuery($stmt, $parameters, $alta = false)
     {
+        $parameters = deutf8ize($parameters);
         odbc_exec($this->conn, "SET NOCOUNT ON");
         $ret = odbc_execute($stmt, $parameters);
         if ($alta) {

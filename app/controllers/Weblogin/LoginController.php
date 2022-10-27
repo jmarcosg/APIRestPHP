@@ -161,7 +161,26 @@ class LoginController
 
         $sql = self::datosLibretaSanitaria($id);
         $data = $model->executeSqlQuery($sql);
-        
+
+        if ($data && !$data instanceof ErrorException) {
+            $data = self::formatLibretaSanitaria($data);
+            sendRes($data);
+        } else {
+            $error = new ErrorException("Problema al obtener los datos de la libreta sanitaria | id: $id");
+            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
+            sendRes(null, $error->getMessage(), $_GET);
+        };
+        exit;
+    }
+    public static function getLibretasanitariaDataDos()
+    {
+        $id = $_GET['id'];
+
+        $model = new Weblogin();
+
+        $sql = self::datosLibretaSanitaria(37216);
+        $data = $model->executeSqlQuery($sql);
+
         if ($data && !$data instanceof ErrorException) {
             $data = self::formatLibretaSanitaria($data);
             sendRes($data);
