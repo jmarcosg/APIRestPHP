@@ -6,6 +6,11 @@ use App\Controllers\QRIdentificacion\QRI_UsuarioController;
 use App\Traits\QRIdentificacion\RequestGenerarQR;
 use App\Traits\QRIdentificacion\RequestGenerarVCard;
 
+$dotenv = \Dotenv\Dotenv::createImmutable('./qridentificacion/');
+$dotenv->load();
+
+include './qridentificacion/config.php';
+
 if ($url['method'] == "GET") {
     if (isset($_GET['action'])) {
         $action = $_GET['action'];
