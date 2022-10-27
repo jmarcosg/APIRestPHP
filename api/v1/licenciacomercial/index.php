@@ -6,8 +6,12 @@ use App\Controllers\LicenciaComercial\Lc_DocumentoController;
 use App\Controllers\LicenciaComercial\Lc_RubroController;
 use App\Controllers\Common\TipoDocumentoController;
 
-/* Metodo GET */
+$dotenv = \Dotenv\Dotenv::createImmutable('./licenciacomercial/');
+$dotenv->load();
 
+include './licenciacomercial/config.php';
+
+/* Metodo GET */
 if ($url['method'] == 'GET') {
 	$action = $_GET['action'];
 	unset($_GET['action']);

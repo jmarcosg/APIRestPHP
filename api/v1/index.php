@@ -1,13 +1,15 @@
 <?php
 
-
 require_once '../../app/config/global.php';
 
 use App\Controllers\Common\LoginController;
 
 $token = getBearerToken();
 
-if (LoginController::isLogin($token)) {
+$loginController = new LoginController();
+$public = $loginController->publicAccess($token, $url['path']);
+
+if (LoginController::isLogin($token, $public)) {
 	$file = "./" . $url['path'] . "/index.php";
 	if (file_exists($file)) {
 		include "./" . $url['path'] . "/index.php";

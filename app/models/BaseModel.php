@@ -167,6 +167,7 @@ class BaseModel
             }
             return $result;
         } catch (\Throwable $th) {
+            logFileEE($this->logPath, $th, get_class($this), __FUNCTION__);
             return $th;
         }
     }

@@ -1,7 +1,13 @@
 <?php
 
 use App\Controllers\Weblogin\LoginController;
+use App\Controllers\Weblogin\WapAppsRecientesController;
+use App\Controllers\Weblogin\WlAppController;
 
+$dotenv = \Dotenv\Dotenv::createImmutable('./weblogin/');
+$dotenv->load();
+
+include './weblogin/config.php';
 
 if ($url['method'] == 'GET') {
 	$action = $_GET['action'];
@@ -14,6 +20,37 @@ if ($url['method'] == 'GET') {
 
 		case 'acarreo':
 			LoginController::getAcarreoData();
+
+		case 'licenciaconducir':
+			LoginController::getLicConducirData();
+
+		case 'libretasanitaria':
+			LoginController::getLibretasanitariaData();
+
+		case 'aplicaciones':
+			WlAppController::getApps();
+
+		default:
+			$error = new ErrorException('El action no es valido');
+			sendRes(null, $error->getMessage(), $_GET);
+			exit;
+			break;
+	}
+}
+
+
+
+if ($url['method'] == 'POST') {
+	$action = $_POST['action'];
+	unset($_POST['action']);
+
+	switch ($action) {
+
+		case 'getIntoApp':
+			WapAppsRecientesController::getIntoApp();
+
+		case 'checkIncomingApps':
+			WapAppsRecientesController::checkIncomingApps();
 
 		default:
 			$error = new ErrorException('El action no es valido');

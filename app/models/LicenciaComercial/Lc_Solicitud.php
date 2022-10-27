@@ -42,6 +42,7 @@ class Lc_Solicitud extends BaseModel
         'ver_documentos',
         'notas_catastro',
         'notas_ambiente',
+        'fecha_finalizado'
     ];
 
     protected $filesUrl = FILE_PATH . 'Licencia_comercial/solicitud/';

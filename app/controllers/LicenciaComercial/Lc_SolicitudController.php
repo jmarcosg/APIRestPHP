@@ -12,6 +12,7 @@ use App\Models\LicenciaComercial\Lc_Documento;
 use App\Traits\LicenciaComercial\TemplateEmailSolicitud;
 use App\Traits\LicenciaComercial\QuerysSql;
 use App\Traits\LicenciaComercial\Reportes;
+use DateTime;
 use ErrorException;
 
 class Lc_SolicitudController
@@ -196,57 +197,28 @@ class Lc_SolicitudController
     public static function datosPersonales($req, $id)
     {
         $data = new Lc_Solicitud();
+        $savedSolicitud = $data->get(['id' => $id])->value;
 
         /* buscamos el tipo de documento que corresponde a un Poder */
         $doc = new Lc_Documento();
-        $poder = $doc->get(['id_solicitud' => $id, 'id_tipo_documento' => 2])->value;
-        $dni = $doc->get(['id_solicitud' => $id, 'id_tipo_documento' => 3])->value;
 
-        if ($req["pertenece"] == 'propia') {
-            $req['id_wappersonas_tercero'] = null;
-            $req['dni_tercero'] = null;
-            $req['tramite_tercero'] = null;
-            $req['genero_tercero'] = null;
-
-            if ($poder) {
-                /* Si actualizo a propio y existe el documento lo borramos */
-                $idDocumento = $poder['id'];
-                $doc->delete($idDocumento);
-            }
-
-            if ($dni) {
-                /* Si actualizo a propio y existe el documento lo borramos */
-                $idDocumento = $dni['id'];
-                $doc->delete($idDocumento);
-            }
+        if ($savedSolicitud['tipo_persona'] != $req['tipo_persona'] || $savedSolicitud['pertenece'] != $req['pertenece']) {
+            $doc->deleteInitDocuments($id);
+            $doc->saveInitDocuments($id, $req);
         }
 
-        if ($req['pertenece'] == 'tercero' && !$poder) {
-            /* Si actualizo a tercero pero no existe el documento */
-            $params = ['id_solicitud' => $id, 'id_tipo_documento' => 2, 'verificado' => 0];
-            $doc->set($params);
-            $doc->save();
-        }
-
-        if ($req['pertenece'] == 'tercero' && !$dni) {
-            /* Si actualizo a tercero pero no existe el documento */
-            $params = ['id_solicitud' => $id, 'id_tipo_documento' => 3, 'verificado' => 0];
-            $doc->set($params);
-            $doc->save();
-        }
-
-        $lc =  $data->update($req, $id);
+        $solicitud =  $data->update($req, $id);
 
         /* Obtenemos los documentos  */
         $documentos = self::getDocumentsData($id);
 
-        if (!$lc instanceof ErrorException) {
+        if (!$solicitud instanceof ErrorException) {
             sendRes([
                 'id' => $id,
                 'documentos' => $documentos
             ]);
         } else {
-            sendRes(null, $lc->getMessage(), ['id' => $id]);
+            sendRes(null, $solicitud->getMessage(), ['id' => $id]);
         };
         exit;
     }
@@ -332,16 +304,19 @@ class Lc_SolicitudController
             if ($estado == 'aprobado') {
                 $req['estado'] = 'cat';
                 $req['ver_inicio'] = '1';
+                self::sendEmail($id, 'inicio_aprobado', $solicitud);
             }
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
             if ($estado == 'retornado') {
                 $req['estado'] = 'act_retornado_inicio';
+                self::sendEmail($id, 'inicio_retornado', $solicitud);
             }
 
             /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
             if ($estado == 'rechazado') {
                 $req['estado'] = 'inicio_rechazado';
+                self::sendEmail($id, 'inicio_rechazado', $solicitud);
             }
 
             $data = $data->update($req, $id);
@@ -384,16 +359,19 @@ class Lc_SolicitudController
             if ($estado == 'aprobado') {
                 $req['estado'] = 'ver_amb';
                 $req['ver_catastro'] = '1';
+                self::sendEmail($id, 'catastro_aprobado', $solicitud);
             }
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
             if ($estado == 'retornado') {
                 $req['estado'] = 'act_retornado_cat';
+                self::sendEmail($id, 'catastro_retornado', $solicitud);
             }
 
             /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
             if ($estado == 'rechazado') {
                 $req['estado'] = 'cat_rechazado';
+                self::sendEmail($id, 'catastro_rechazado', $solicitud);
             }
 
             $data = $data->update($req, $id);
@@ -405,16 +383,6 @@ class Lc_SolicitudController
         }
 
         if (!$data instanceof ErrorException) {
-
-            /*  $solicitud =  self::getSolicitudByQuery("id = $id");
-
-            if ($solicitud['ver_ambiental'] == 1) {
-                if ($estado === 'aprobado') self::sendEmail($id, 'catastro_aprobado', $solicitud);
-            }
-
-            if ($estado === 'rechazado') self::sendEmail($id, 'catastro_rechazado', $solicitud);
-            if ($estado === 'retornado') self::sendEmail($id, 'catastro_retornado', $solicitud); */
-
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
             sendRes($_PUT);
@@ -447,6 +415,7 @@ class Lc_SolicitudController
                 $req['ver_ambiental'] = '1';
 
                 self::documentosUpdate($req, $id);
+                self::sendEmail($id, 'ambiental_aprobado', $solicitud);
             }
 
             /* Cuando llega retornado, actualizamos la obs, generamos un registro clon de la solicitud */
@@ -458,6 +427,7 @@ class Lc_SolicitudController
             /* Cuando llega rechazado, actualizamos la obs, hacemos que el usuario genere una nueva solicitud */
             if ($estado == 'rechazado') {
                 $req['estado'] = 'ambiental_rechazado';
+                self::sendEmail($id, 'ambiental_rechazado', $solicitud);
             }
 
             unset($req['documentos']);
@@ -470,16 +440,6 @@ class Lc_SolicitudController
         }
 
         if (!$data instanceof ErrorException) {
-
-            /* $solicitud =  self::getSolicitudByQuery("id = $id");
-
-            if ($solicitud['ver_catastro'] == 1) {
-                if ($estado === 'aprobado') self::sendEmail($id, 'catastro_aprobado', $solicitud);
-            }
-
-            if ($estado === 'rechazado') self::sendEmail($id, 'ambiental_rechazado', $solicitud);
-            if ($estado === 'retornado') self::sendEmail($id, 'ambiental_retornado', $solicitud); */
-
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
             sendRes($_PUT);
@@ -513,7 +473,11 @@ class Lc_SolicitudController
 
             /* Si se aprueba y no tiene local lo mandamos a pedir los archivos */
             if ($estado == 'aprobado') {
-                $req['estado'] = 'doc';
+                if ($req["documentos"] == "") {
+                    $req['estado'] = 'ver_doc';
+                } else {
+                    $req['estado'] = 'doc';
+                }
                 $req['ver_rubros'] = '1';
             }
 
@@ -544,7 +508,6 @@ class Lc_SolicitudController
 
             if ($estado == 'aprobado') self::sendEmail($id, 'rubros_aprobado', $solicitud);
             if ($estado == 'rechazado') self::sendEmail($id, 'rubros_rechazado', $solicitud);
-            if ($estado == 'retornado') self::sendEmail($id, 'rubros_retornado', $solicitud);
 
             $_PUT['id'] = $id;
             $_PUT['estado'] = $estado;
@@ -594,6 +557,7 @@ class Lc_SolicitudController
             /* Cuando llega aprobado, actualizamos la obs, y lo enviamos a docs */
             if ($estado == 'aprobado') {
                 $req['ver_documentos'] = '1';
+                $req['fecha_finalizado'] = date('Y-m-d H:i:s');
                 $req['estado'] = 'finalizado';
             }
 

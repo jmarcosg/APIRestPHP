@@ -6,6 +6,10 @@ use Exception;
 
 class LoginController
 {
+    private $publics = [
+        'ideaspropuestas'
+    ];
+
     public static function getUserByToken($token)
     {
         try {
@@ -35,8 +39,11 @@ class LoginController
         }
     }
 
-    public static function isLogin($token)
+    public static function isLogin($token, $bool)
     {
+        if ($bool) {
+            return $bool;
+        }
         $user = self::getUserByToken($token);
         return $user->securityToken != null;
     }
@@ -45,5 +52,13 @@ class LoginController
     {
         $sessionKey = explode('%', $token)[1];
         return $sessionKey;
+    }
+
+    public function publicAccess($token, $path)
+    {
+        if (in_array($path, $this->publics) && $token === TOKEN_KEY) {
+            return true;
+        }
+        return false;
     }
 }
