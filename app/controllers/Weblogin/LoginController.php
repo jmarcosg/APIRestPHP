@@ -172,6 +172,7 @@ class LoginController
         };
         exit;
     }
+
     public static function getLibretasanitariaDataDos()
     {
         $id = $_GET['id'];
