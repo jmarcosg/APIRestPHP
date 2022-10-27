@@ -71,7 +71,7 @@ class BaseDatos
             $count = count($params);
             $strKeys = "(" . implode(" ,", array_keys($params)) . ")";
             $strVals = "(?" . str_repeat(",?", $count - 1) . ")";
-            $sql = "INSERT INTO $table$strKeys VALUES " . $strVals;
+            $sql = "INSERT INTO $table$strKeys VALUES " . deutf8ize($strVals);
 
             $query = $this->prepare($sql);
             return $this->executeQuery($query, $params, true);

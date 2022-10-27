@@ -8,8 +8,10 @@ use App\Traits\QRIdentificacion\RequestGenerarVCard;
 
 if ($url['method'] == "GET") {
     if (isset($_GET['action'])) {
+        $action = $_GET['action'];
+        unset($_GET['action']);
 
-        switch ($_GET['action']) {
+        switch ($action) {
             case '1':
                 $qrController = new QRI_CodigoQRController();
                 $data = $qrController->index(['qr_token' => $_GET['token']]);
@@ -22,11 +24,9 @@ if ($url['method'] == "GET") {
                 } else {
                     $data['error'] = null;
                 }
-                break;
+                exit;
             case '2':
                 $data = QRI_UsuarioController::index(['email' => $_GET['email']]);
-
-                echo var_dump($data);
 
                 if (count($data) == 0) {
                     $data = [
@@ -34,12 +34,31 @@ if ($url['method'] == "GET") {
                         'error' => "Usuario no encontrado"
                     ];
                 } else {
+                    $data = $data[0];
                     $data['error'] = null;
                 }
                 break;
 
             case '3':
                 $data = QRI_PersonaController::index(['id' => $_GET['id']]);
+                break;
+
+            case '4':
+                $data = QRI_CodigoQRController::index(['qr_token' => $_GET['token']]);
+                break;
+
+            case '5':
+                $data = QRI_PersonaController::index();
+                break;
+
+            case '6':
+                $data = QRI_CodigoQRController::index(['id_persona_identificada' => $_GET['id']]);
+                if (count($data) > 0) {
+                    $data = $data[0];
+                    $data['error'] = null;
+                } else {
+                    $data = ['error' => "Persona no encontrada", 'persona' => null];
+                }
                 break;
         }
     } else {
@@ -49,46 +68,37 @@ if ($url['method'] == "GET") {
         ];
     }
 
-    echo json_encode($data);
+    if (!$data instanceof ErrorException) {
+        sendRes($data);
+    } else {
+        sendRes(null, "No se encuentra el registro buscado");
+    }
+    exit;
 }
 
-if ($url['method'] == "POST") {
-    switch ($_POST['action']) {
+if ($url['method'] == "PUT") {
+    $_PUT = json_decode(file_get_contents('php://input'), true);
+    // parse_str(file_get_contents('php://input'), $_PUT);
+    $action = $_PUT['action'];
+    unset($_PUT['action']);
+
+    switch ($action) {
         case '1':
-            QRI_PersonaController::store($_POST);
-            $data = [
-                'nombre' => $_POST['nombre'],
-                'apellido' => $_POST['apellido'],
-                'telefono' => $_POST['telefono'],
-                'email' => $_POST['email'],
-                'cargo' => $_POST['cargo']
-            ];
-            $persona = QRI_PersonaController::index($data)[0];
-            $usuario = QRI_UsuarioController::index(['email' => $_POST['mailUsuario']])[0];
-            $qrs = QRI_CodigoQRController::index();
-
-            $dataQR = [
-                'id_usuario' => $usuario['id'],
-                'id_persona_identificada' => $persona['id'],
-                'qr_path' => 'E:/Dataserver/Replica/projects_files/qr-identificacion/' . (count($qrs) + 1) . "/",
-                'qr_token' => md5($persona['email'] . $usuario['email'] . (count($qrs) + 1))
-            ];
-
-            if (QRI_CodigoQRController::store($dataQR)) {
-                $dataQR['sessionkey'] = $_POST['sessionkey'];
-                $dataQR['id_solicitud'] = count($qrs) + 1;
-                $resp = RequestGenerarQR::sendRequest($dataQR);
-
-                echo json_encode($resp);
-            }
+            $resp = QRI_PersonaController::store($_PUT);
             break;
 
         case '2':
-            QRI_UsuarioController::store($_POST);
-            break;
+            $resp = QRI_UsuarioController::store($_PUT);
+            exit;
 
         case '3':
-            echo json_encode(RequestGenerarVCard::generateVcard($_POST));
-            break;
+            $resp = RequestGenerarVCard::generateVcard($_PUT);
+            exit;
+    }
+
+    if (!$resp instanceof ErrorException) {
+        sendRes($resp);
+    } else {
+        sendRes(null, $resp);
     }
 }

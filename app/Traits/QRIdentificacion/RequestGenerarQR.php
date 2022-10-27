@@ -6,10 +6,16 @@ trait RequestGenerarQR
 {
     public static function sendRequest($param)
     {
+        if (ENV == "local") {
+            $urlQR = "http://localhost/APIRestPHP/public/views/QRIdentificacion/index.php?token=$param[qr_token]";
+        } else {
+            $urlQR = (PROD == "true") ? "https://weblogin.muninqn.gov.ar/apps/APIRest/public/views/QRIdentificacion/index.php?token=$param[qr_token]" : "http://200.85.183.194:90/apps/APIRest/public/views/QRIdentificacion/index.php?token=$param[qr_token]";
+        }
+
         $postParams = [
             "SESSIONKEY" => $param["sessionkey"],
             "idSolicitud" => $param["id_solicitud"],
-            'urlQR' => "http://localhost:5173/?token=" . $param['qr_token'],
+            'urlQR' => $urlQR,
             'path' => $param['qr_path']
         ];
 

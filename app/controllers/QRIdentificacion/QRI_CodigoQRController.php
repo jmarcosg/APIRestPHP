@@ -22,6 +22,7 @@ class QRI_CodigoQRController
 
     public static function store($res)
     {
+        // print_r($res);
         $data = new QRI_Codigo_QR();
         $data->set($res);
         return ($data->save());

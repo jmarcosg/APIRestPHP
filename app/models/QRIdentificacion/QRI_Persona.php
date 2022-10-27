@@ -11,10 +11,13 @@ class QRI_Persona extends BaseModel
     protected $identity = 'id';
 
     protected $fillable = [
+        'dni',
         'nombre',
         'apellido',
         'telefono',
         'email',
-        'cargo'
+        'cargo',
+        'telefono_alternativo',
+        'lugar_trabajo'
     ];
 }
