@@ -2,7 +2,8 @@
   "require": {
     "vlucas/phpdotenv": "^5.3",
     "sentry/sdk": "^3.1",
-    "tecnickcom/tcpdf": "^6.4"
+    "tecnickcom/tcpdf": "^6.4",
+    "jeroendesloovere/vcard": "dev-2.0.0-dev"
   },
   "autoload": {
     "psr-4": {

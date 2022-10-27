@@ -88,6 +88,21 @@ function utf8ize($d)
     return $d;
 }
 
+function deutf8ize($param)
+{
+    if (is_array($param)) {
+        foreach ($param as $unaKey => $unValor) {
+            $param[$unaKey] = deutf8ize($unValor);
+        }
+    } else if (is_string($param)) {
+        if (mb_detect_encoding($param, "UTF-8", true)) {
+            $param = utf8_decode($param);
+        }
+        return $param;
+    }
+    return $param;
+}
+
 function logFileEE($subPath, ErrorException $e, $class, $function)
 {
     $path = LOG_PATH . $subPath . "/";
