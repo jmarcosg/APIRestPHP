@@ -7,6 +7,8 @@ use ErrorException;
 
 class Weblogin extends BaseModel
 {
+    protected $logPath = 'v1/weblogin';
+
     public static function saveLog($error, $class, $function)
     {
         if (!$error instanceof ErrorException) {

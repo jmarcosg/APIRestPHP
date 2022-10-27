@@ -147,7 +147,8 @@ class Lc_DocumentoController
                 ld.verificado as verificado,
                 doc.nombre as nombre,
                 doc.codigo as codigo,
-                doc.formato as formato
+                doc.formato as formato,
+                doc.descripcion as descripcion
             FROM dbo.lc_documentos ld
                 LEFT JOIN dbo.tipos_documentos doc ON ld.id_tipo_documento = doc.id
             WHERE $where";
