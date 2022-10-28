@@ -1,0 +1,66 @@
+{
+    "login": {
+        "userLabel": "USUARIO O DNI" ,
+        "passwordLabel": "CLAVE",
+        "submitBtn": "ACCEDER",
+        "regintroBtn": "QUIERO REGISTRARME",
+        "recuperarBtn": "NO RECUERDO MI CLAVE"
+    },
+
+    "perfil": {
+        "perfilBadge": "Datos perfil",
+        "cerrarSesion": "Cerrar sesión",
+        "dni": "DNI:",
+        "telefono": "Tel.:",
+        "email": "Email:",
+
+        "legajo": {
+            "numero": "Legajo Nº:",
+            "cargo": "Cargo/categoría:",
+            "licencia": "Dias licencia a vencer:",
+            "recibos": "Recibos"
+        },
+
+        "modal": {
+            "datosPersonalesBtn": "Datos Personales",
+            "cambioPassBtn": "Cambio contraseña",
+            "cambioEmailBtn": "Cambio Email",
+
+            "datosPersonales": {
+                "nombre": "Nombre",
+                "dni": "DNI",
+                "genero": "Género",
+                "fechaNac": "Fecha Nac.",
+                "domReal": "Domicilio Real",
+                "provincia": "Provincia",
+                "pais": "Pais",
+
+                "domLegalLabel": "Domicilio Legal",
+                "celularLabel": "Celular",
+
+                "submitBtn": "Guardar"
+            },
+
+            "password": {
+                "passLabel": "Nueva contraseña",
+                "confirmPassLabel": "Confirmar nueva contraseña",
+                "submitBtn": "Guardar",
+
+                "longValidate": "Más de siete caracteres de longitud",
+                "upperValidate": "Al menos una letra mayúscula",
+                "lowerValidate": "Al menos una letra minúscula",
+                "numValidate": "Al menos un caracter numérico",
+                "simbolValidate": "Al menos uno de estos símbolos",
+                "equalsValidate": "La nueva contraseña y la de verificación deben ser iguales"
+            },
+
+            "email": {
+                "invalidEmail": "El correo electrónico debe ser válido",
+                "descripcionUno": "Enviar enlace de verificación a la siguiente dirección de correo electrónico:",
+                "descripcionDos": "Se enviará un enlace con caducidad a las 24hs, si no lo recibe en el transcurso de 1 minuto, revise la carpeta de correo no deseado ó si la dirección subscripta es correcta.",
+                "descripcionTres": "El cambio de dirección/nombre de usuario tendrá efecto inmediato luego de confirmar el enlace enviado.",
+                "submitBtn": "Guardar"
+            }
+        }
+    }
+}
