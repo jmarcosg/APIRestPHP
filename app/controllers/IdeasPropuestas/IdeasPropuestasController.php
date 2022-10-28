@@ -73,10 +73,10 @@ class IdeasPropuestasController
 
         $data = $data->delete($_POST['id']);
 
-        
+
         if ($data) {
             $contents = self::getContentSql($_POST['id_usuario']);
-    
+
             sendResError($contents, 'Hubo un error al obtener las ideas');
             sendRes($contents, null);
         } else {
