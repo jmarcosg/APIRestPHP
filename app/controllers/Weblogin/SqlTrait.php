@@ -23,7 +23,7 @@ trait SqlTrait
             }
         }
 
-        $data['muniEventos'] = FETCH_LEGAJO && self::getMuniEventos($dni) ? true : false;
+        $data['muniEventos'] = FETCH_LEGAJO && self::getMuniEventosFetch($dni) ? true : false;
 
         $data['legajo'] = $data['legajo'] != null && FETCH_LEGAJO ? true : false;
         $data['libreta'] = $data['libreta'] != null && FETCH_LIBRETA ? true : false;
@@ -153,7 +153,7 @@ trait SqlTrait
         return $sql;
     }
 
-    public static function getMuniEventos($dni)
+    public static function getMuniEventosFetch($dni)
     {
         $curl = curl_init();
 
