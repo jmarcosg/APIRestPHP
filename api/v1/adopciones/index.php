@@ -5,6 +5,11 @@ use App\Controllers\Adopciones\Adop_AdoptantesController;
 use App\Controllers\Adopciones\Adop_AnimalesController;
 use App\Controllers\Adopciones\Adop_EmpleadosController;
 
+$dotenv = \Dotenv\Dotenv::createImmutable('./adopciones/');
+$dotenv->load();
+
+include './adopciones/config.php';
+
 /**
  * *Metodo GET
  */
@@ -313,16 +318,13 @@ if ($url['method'] == "POST") {
 			if (count($adoptanteDistinto) == 0) {
 				$data = [
 					'nombre' => $_POST['nombre'],
-					// 'nombre' => deutf8ize($_POST['nombre']),
 					'dni' => $_POST['dni'],
 					'email' => $_POST['email'],
 					'email_alternativo' => $_POST['email_alternativo'],
 					'telefono' => $_POST['telefono'],
 					'telefono_alternativo' => $_POST['telefono_alternativo'],
 					'ciudad' => $_POST['ciudad'],
-					// 'ciudad' => deutf8ize($_POST['ciudad']),
 					'domicilio' => $_POST['domicilio'],
-					// 'domicilio' => deutf8ize($_POST['domicilio']),
 					'deshabilitado' => 0,
 					'fecha_deshabilitado' => null,
 				];
@@ -349,16 +351,13 @@ if ($url['method'] == "POST") {
 			$adoptantes = Adop_AdoptantesController::index(['id' => $idAdoptanteModificar])[0];
 
 			$data = [
-				// 'nombre' => deutf8ize($_POST['nombre']),
 				'nombre' => $_POST['nombre'],
 				'dni' => $_POST['dni'],
 				'email' => $_POST['email'],
 				'email_alternativo' => $_POST['email_alternativo'],
 				'telefono' => $_POST['telefono'],
 				'telefono_alternativo' => $_POST['telefono_alternativo'],
-				// 'ciudad' => deutf8ize($_POST['ciudad']),
 				'ciudad' => $_POST['ciudad'],
-				// 'domicilio' => deutf8ize($_POST['domicilio'])
 				'domicilio' => $_POST['domicilio']
 			];
 
@@ -503,14 +502,11 @@ if ($url['method'] == "POST") {
 			if (count($empleadoDistinto) == 0) {
 				$data = [
 					'nombre' => $_POST['nombre'],
-					// 'nombre' => deutf8ize($_POST['nombre']),
 					'dni' => $_POST['dni'],
 					'email' => $_POST['email'],
 					'telefono' => $_POST['telefono'],
 					'ciudad' => $_POST['ciudad'],
-					// 'ciudad' => deutf8ize($_POST['ciudad']),
 					'domicilio' => $_POST['domicilio'],
-					// 'domicilio' => deutf8ize($_POST['domicilio']),
 					'deshabilitado' => 0,
 					'fecha_deshabilitado' => null,
 				];
@@ -537,16 +533,13 @@ if ($url['method'] == "POST") {
 			$empleados = Adop_EmpleadosController::index(['id' => $idEmpleadoModificar])[0];
 
 			$data = [
-				// 'nombre' => deutf8ize($_POST['nombre']),
 				'nombre' => $_POST['nombre'],
 				'dni' => $_POST['dni'],
 				'email' => $_POST['email'],
 				'email_alternativo' => $_POST['email_alternativo'],
 				'telefono' => $_POST['telefono'],
 				'telefono_alternativo' => $_POST['telefono_alternativo'],
-				// 'ciudad' => deutf8ize($_POST['ciudad']),
 				'ciudad' => $_POST['ciudad'],
-				// 'domicilio' => deutf8ize($_POST['domicilio'])
 				'domicilio' => $_POST['domicilio']
 			];
 
