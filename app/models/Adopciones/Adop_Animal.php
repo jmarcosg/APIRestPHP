@@ -59,8 +59,9 @@ class Adop_Animal extends BaseModel
         /* Copiamos el archivo y creamos su directorio */
         $tmpFile = $file['tmp_name'];
 
-        $fileUrl = $this->filesUrl . "$id\\$fileName" . $fileExt;
+        $fileUrl = $fileName . $fileExt;
         $fileFolder = $this->filesUrl . "$id\\";
+        $fileFolderWithFile = $this->filesUrl . "$id\\" . $fileName . $fileExt;
 
         $folderExists = file_exists($fileFolder);
 
@@ -68,7 +69,7 @@ class Adop_Animal extends BaseModel
             mkdir("$fileFolder");
         }
 
-        if (copy($tmpFile, $fileUrl)) {
+        if (copy($tmpFile, $fileFolderWithFile)) {
             $animal = new Adop_Animal();
             $animal->update([$imagenPath => $fileUrl], $id);
             $fileCopied = $fileUrl;

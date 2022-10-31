@@ -1,6 +1,6 @@
 <?php
 $noUrl = true;
-include '../../../app/config/global.php';
+include './config.php';
 
 use App\Controllers\QRIdentificacion\QRI_CodigoQRController;
 use App\Controllers\QRIdentificacion\QRI_PersonaController;
@@ -32,7 +32,7 @@ use App\Controllers\QRIdentificacion\QRI_PersonaController;
         <?php
         if (!isset($_GET['token'])) {
         ?>
-            <h1 class="text-center">QR INVALIDO</h1>
+            <h1 class="text-center">NO SE ENCONTR&Oacute; UN QR</h1>
     </div>
 </body>
 

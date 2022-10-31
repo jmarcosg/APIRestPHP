@@ -67,7 +67,7 @@ class QRI_PersonaController
                 'qr_token' => md5($persona['email'] . $usuario['email'] . $cantQRs)
             ];
 
-            $dataQR['qr_local_path'] = null;
+            $dataQR['qr_local_path'] = "";
 
             if (ENV == "local") {
                 $dataQR['qr_local_path'] = "C:/laragon/www/APIRestPHP/files/qr-identificacion/";
