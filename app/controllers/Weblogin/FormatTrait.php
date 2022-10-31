@@ -62,9 +62,11 @@ trait FormatTrait
 
     private static function formatLibretaSanitaria(array $result)
     {
-
         $date = DateTime::createFromFormat('d/m/Y', $result['venc'])->format('Y-m-d H:i:s');
         $arrayFechas = compararFechas($date, 'days', 'Y-m-d');
+
+        /* Para generar el orden en el Front */
+        $result['fecha_ref'] = DateTime::createFromFormat('d/m/Y', $result['fecha_evaluacion'])->format('Ymd');
 
         $result['show_renovar'] = false;
         if ($arrayFechas['date'] <= $arrayFechas['now']) {

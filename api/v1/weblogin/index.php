@@ -24,6 +24,9 @@ if ($url['method'] == 'GET') {
 		case 'licenciaconducir':
 			LoginController::getLicConducirData();
 
+		case 'muniEventos':
+			LoginController::getMuniEventos();
+
 		case 'libretasanitaria':
 			LoginController::getLibretasanitariaData();
 

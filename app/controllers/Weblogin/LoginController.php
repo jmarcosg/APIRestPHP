@@ -77,14 +77,10 @@ class LoginController
             $response = curl_exec($curl);
             curl_close($curl);
             $response = json_decode($response);
-            if ($response) {
-                if ($response->error != null) {
-                    return new ErrorException($response->error);
-                }
-                return $response;
-            } else {
+            if ($response == null || $response->error != null) {
                 return new ErrorException('Problema con el inicio de sesion');
             }
+            return $response;
         } catch (\Throwable $th) {
             return $th;
         }
@@ -153,6 +149,23 @@ class LoginController
     }
 
     /** Obtenemos los datos de licencia de conducir */
+    public static function getMuniEventos()
+    {
+        $id = $_GET['dni'];
+
+        $data = self::getMuniEventosFetch($id);
+
+        if ($data && !$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            $error = new ErrorException("Problema al obtener los datos de muni eventos | dni: $id");
+            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
+            sendRes(null, $error->getMessage(), $_GET);
+        };
+        exit;
+    }
+
+    /** Obtenemos los datos de licencia de conducir */
     public static function getLibretasanitariaData()
     {
         $id = $_GET['id'];
@@ -172,6 +185,7 @@ class LoginController
         };
         exit;
     }
+
     public static function getLibretasanitariaDataDos()
     {
         $id = $_GET['id'];
