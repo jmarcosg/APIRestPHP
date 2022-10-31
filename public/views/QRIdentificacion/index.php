@@ -38,7 +38,7 @@ use App\Controllers\QRIdentificacion\QRI_PersonaController;
 
 </html>
 <?php
-            die();
+            exit;
         }
 
         $token = $_GET['token'];
@@ -87,8 +87,10 @@ if (ENV == "local") {
 
 <?php
 } else {
+    $tarjetaPath = getBase64String(FILE_PATH . "$infoQR[id]/tarjeta-de-contacto.vcf", "tarjeta-de-contacto.vcf");
 ?>
-    <a href="<?= base64_encode(FILE_PATH . "qr-identificacion/$infoQR[id]/$infoQR[qr_path]") ?>" download class="btn btn-primary offset-10 col-2">Agregar contacto</a>
+    <a href="<?= $tarjetaPath ?>" download="tarjeta-de-contacto.vcf" class="btn btn-primary offset-10 col-2">Agregar contacto</a>
+    <img src="<?= getBase64String(FILE_PATH . "$infoQR[id]/QR-$infoQR[id].png", "QR-$infoQR[id].png") ?>" alt="QR">
 <?php
 }
 ?>
