@@ -46,12 +46,8 @@ class QRI_PersonaController
 
         if (count($persona) == 0) {
             $personaCargada = new QRI_Persona();
-            $personaCargada->set(deutf8ize($_PUT));
+            $personaCargada->set($_PUT);
             $idPersona = $personaCargada->save();
-
-
-            // echo $idPersona;
-            // die();
 
             $persona = QRI_PersonaController::index(['id' => $idPersona])[0];
 
