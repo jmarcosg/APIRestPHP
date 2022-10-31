@@ -203,7 +203,12 @@ if ($url['method'] == "GET") {
 		];
 	}
 
-	echo json_encode($data);
+	// echo json_encode($data);
+	if (!$data instanceof ErrorException) {
+		sendRes($data);
+	} else {
+		sendRes(null, "No se encuentra el registro buscado");
+	}
 	exit;
 }
 
