@@ -46,12 +46,8 @@ class QRI_PersonaController
 
         if (count($persona) == 0) {
             $personaCargada = new QRI_Persona();
-            $personaCargada->set(deutf8ize($_PUT));
+            $personaCargada->set($_PUT);
             $idPersona = $personaCargada->save();
-
-
-            // echo $idPersona;
-            // die();
 
             $persona = QRI_PersonaController::index(['id' => $idPersona])[0];
 
@@ -67,7 +63,7 @@ class QRI_PersonaController
                 'qr_token' => md5($persona['email'] . $usuario['email'] . $cantQRs)
             ];
 
-            $dataQR['qr_local_path'] = null;
+            $dataQR['qr_local_path'] = "";
 
             if (ENV == "local") {
                 $dataQR['qr_local_path'] = "C:/laragon/www/APIRestPHP/files/qr-identificacion/";

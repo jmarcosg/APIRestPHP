@@ -3,8 +3,12 @@
 use App\Controllers\QRIdentificacion\QRI_CodigoQRController;
 use App\Controllers\QRIdentificacion\QRI_PersonaController;
 use App\Controllers\QRIdentificacion\QRI_UsuarioController;
-use App\Traits\QRIdentificacion\RequestGenerarQR;
 use App\Traits\QRIdentificacion\RequestGenerarVCard;
+
+$dotenv = \Dotenv\Dotenv::createImmutable('./qridentificacion/');
+$dotenv->load();
+
+include './qridentificacion/config.php';
 
 if ($url['method'] == "GET") {
     if (isset($_GET['action'])) {
@@ -60,6 +64,15 @@ if ($url['method'] == "GET") {
                     $data = ['error' => "Persona no encontrada", 'persona' => null];
                 }
                 break;
+            case '7':
+                $data = QRI_CodigoQRController::index(['id_persona_identificada' => $_GET['id']]);
+                if (count($data) > 0) {
+                    $data = $data[0];
+                    $data = getBase64String(FILE_PATH . "$data[id]/QR-$data[id].png", "QR-$data[id].png");
+                    $data['error'] = null;
+                } else {
+                    $data = ['error' => "QR no encontrado", 'data' => null];
+                }
         }
     } else {
         $data = [
