@@ -65,7 +65,7 @@ function getAuthorizationHeader()
 function sendRes($res, string $error = null, array $params = null)
 {
 
-    $res = utf8ize($res);    
+    $res = utf8ize($res);
     if ($error) {
         echo json_encode(['data' => null, 'error' => $error, 'params' => $params]);
     } else {
