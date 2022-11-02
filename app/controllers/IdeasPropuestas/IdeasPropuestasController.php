@@ -3,6 +3,7 @@
 namespace App\Controllers\IdeasPropuestas;
 
 use App\Models\IdeasPropuestas\IdeasPropuestas;
+use App\Models\IdeasPropuestas\Usuarios;
 
 class IdeasPropuestasController
 {
@@ -105,6 +106,23 @@ class IdeasPropuestasController
 
         sendRes($result);
 
+        exit;
+    }
+
+    public static function saveUser()
+    {
+        $data = new Usuarios();
+        $data->set($_POST);
+
+        $id = $data->save();
+
+        sendResError($id, 'Hubo un error al guardar el usuario');
+
+        $usuarios = $data->list();
+
+        sendResError($usuarios, 'Hubo un error al obtener los usuarios');
+
+        sendRes($usuarios);
         exit;
     }
 }

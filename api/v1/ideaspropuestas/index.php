@@ -44,6 +44,9 @@ if ($url['method'] == 'POST') {
 		case 'editContent':
 			IdeasPropuestasController::saveEditContent();
 
+		case 'saveUser':
+			IdeasPropuestasController::saveUser();
+
 		case 'deleteContent':
 			IdeasPropuestasController::deleteContent();
 
