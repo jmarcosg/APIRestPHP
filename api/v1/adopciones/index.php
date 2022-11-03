@@ -246,14 +246,9 @@ if ($url['method'] == "POST") {
 			$id = Adop_AnimalesController::store($data);
 
 			if (!$id instanceof ErrorException) {
-				$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen1'], $id, "imagen1_path");
-				$imagen1 = $imagenCargada;
+				$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen1_path'], $id, "imagen1_path");
 				if ($imagenCargada) {
-					$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen2'], $id, "imagen2_path");
-					$imagen2 = $imagenCargada;
-
-					if ($imagenCargada) {
-					}
+					$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen2_path'], $id, "imagen2_path");
 				}
 			} else {
 				$mensaje = $id->getMessage();
