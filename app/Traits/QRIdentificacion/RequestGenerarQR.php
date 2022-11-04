@@ -9,7 +9,7 @@ trait RequestGenerarQR
         if (ENV == "local") {
             $urlQR = "http://localhost/APIRestPHP/public/views/QRIdentificacion/index.php?token=$param[qr_token]";
         } else {
-            $urlQR = (PROD == "true") ? "https://weblogin.muninqn.gov.ar/apps/APIRest/public/views/QRIdentificacion/index.php?token=$param[qr_token]" : "http://200.85.183.194:90/apps/APIRest/public/views/QRIdentificacion/index.php?token=$param[qr_token]";
+            $urlQR = (PROD == "true") ? "https://weblogin.muninqn.gov.ar/apps/tarjetas_digitales/index.html#/tarjeta-de-contacto/?token=$param[qr_token]" : "http://200.85.183.194:90/apps/tarjetas_digitales/index.html#/tarjeta-de-contacto/?token=$param[qr_token]";
         }
 
         $postParams = [
@@ -44,9 +44,5 @@ trait RequestGenerarQR
         $serverOutput["data"]["urlQR"] = $postParams["urlQR"];
 
         return $serverOutput;
-    }
-
-    public static function operacionesQR()
-    {
     }
 }
