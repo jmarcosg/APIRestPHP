@@ -22,12 +22,12 @@ set_error_handler(
     }
 );
 
-function verEstructura($e, $die = false)
+function verEstructura($e, $exit = false)
 {
     echo "<pre>";
     print_r($e);
     echo "</pre>";
-    if ($die) die();
+    if ($exit) exit;
 }
 
 function getBearerToken()
