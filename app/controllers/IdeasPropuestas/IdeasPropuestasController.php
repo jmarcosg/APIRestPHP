@@ -109,6 +109,18 @@ class IdeasPropuestasController
         exit;
     }
 
+    public static function getUsuarios()
+    {
+        $data = new Usuarios();
+
+        $usuarios = $data->list();
+
+        sendResError($usuarios, 'Hubo un error al obtener los usuarios');
+
+        sendRes($usuarios->value);
+        exit;
+    }
+
     public static function saveUser()
     {
         $data = new Usuarios();
@@ -122,7 +134,7 @@ class IdeasPropuestasController
 
         sendResError($usuarios, 'Hubo un error al obtener los usuarios');
 
-        sendRes($usuarios);
+        sendRes($usuarios->value);
         exit;
     }
 }

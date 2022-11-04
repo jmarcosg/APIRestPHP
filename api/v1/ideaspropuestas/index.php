@@ -22,6 +22,9 @@ if ($url['method'] == 'GET') {
 		case 'getAllContentsByDni':
 			IdeasPropuestasController::getContents('dni = ' . $_GET['dni']);
 
+		case 'getUsuarios':
+			IdeasPropuestasController::getUsuarios();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
