@@ -3,6 +3,7 @@
 namespace App\Models\IdeasPropuestas;
 
 use App\Models\BaseModel;
+use ErrorException;
 
 class Usuarios extends BaseModel
 {
@@ -22,4 +23,10 @@ class Usuarios extends BaseModel
         "subsecretaria",
         "info",
     ];
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setUniquesIndex();
+    }
 }

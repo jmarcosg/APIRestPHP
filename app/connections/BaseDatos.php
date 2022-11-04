@@ -17,7 +17,7 @@ class BaseDatos
         $this->user = DB_USER;
         $this->pass = DB_PASS;
         $this->db = DB_NAME;
-        $this->charset = 'UTF-8';
+        $this->charset = DB_CHARSET;
     }
 
     public function connect()
@@ -72,7 +72,7 @@ class BaseDatos
             $strKeys = "(" . implode(" ,", array_keys($params)) . ")";
             $strVals = "(?" . str_repeat(",?", $count - 1) . ")";
             $sql = "INSERT INTO $table$strKeys VALUES " . $strVals;
-            
+
             $query = $this->prepare($sql);
             return $this->executeQuery($query, $params, true);
         } catch (\Throwable $th) {

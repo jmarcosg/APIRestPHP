@@ -75,10 +75,8 @@ class IdeasPropuestasController
 
         $data = $data->delete($_POST['id']);
 
-
         if ($data) {
             $contents = self::getContentSql($_POST['id_usuario']);
-
             sendResError($contents, 'Hubo un error al obtener las ideas');
             sendRes($contents, null);
         } else {
@@ -129,14 +127,9 @@ class IdeasPropuestasController
 
         $id = $data->save();
 
-        if ($id instanceof ErrorException) {
-            if (str_contains($id->getMessage(), "UNIQUE KEY 'IP_USR_DNI'")) {
-                sendResError($id, 'El documento se encuentra registrado');
-            }
-            if (str_contains($id->getMessage(), "UNIQUE KEY 'IP_USR_USR'")) {
-                sendResError($id, 'El usuario se encuentra registrado');
-            }
-        }
+        $data->sendRepeatError($id);
+
+        sendResError($id, 'Hubo un error al guardar el usuario');
 
         $usuarios = $data->list();
 

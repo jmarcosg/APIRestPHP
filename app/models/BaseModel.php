@@ -32,6 +32,9 @@ class BaseModel
     /** Metodos que no se deben ejecutar, en los en las relaciones */
     protected $filterMethod = [];
 
+    /** Arreglo de indices, se utiliza para indicar si se inserta valor repetido */
+    public $uniques = [];
+
     public function __construct()
     {
         $this->filterMethod = get_class_methods(get_parent_class($this));
@@ -285,6 +288,39 @@ class BaseModel
     {
         foreach ($methods as $method) {
             $this->filterMethod[] = $method;
+        }
+    }
+
+    /** Genera el arreglo de los indices para determinar los valores unicos en la tabla  */
+    public function setUniquesIndex()
+    {
+        $indexs = $this->executeSqlQuery('EXEC sp_helpindex ' . $this->table, false);
+
+        if ($indexs instanceof ErrorException) {
+            logFileEE($this->logPath, $indexs, get_class($this), __FUNCTION__);
+        } else {
+            $indexs = array_filter($indexs, function ($index) {
+                return str_contains($index['index_description'], 'unique');
+            });
+
+            $this->uniques = array_map(
+                function ($index) {
+                    return $index['index_name'];
+                },
+                $indexs
+            );
+        }
+    }
+
+    /** Envia una respuesta si el motor SQL reponde un error de un valor existente */
+    public function sendRepeatError($data)
+    {
+        if ($data instanceof ErrorException) {
+            foreach ($this->uniques as $unique) {
+                if (str_contains($data->getMessage(), "UNIQUE KEY '$unique'")) {
+                    sendResError($data, "UNIQUE_KEY_$unique");
+                }
+            }
         }
     }
 }
