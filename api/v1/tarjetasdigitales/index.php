@@ -4,11 +4,12 @@ use App\Controllers\QRIdentificacion\QRI_CodigoQRController;
 use App\Controllers\QRIdentificacion\QRI_PersonaController;
 use App\Controllers\QRIdentificacion\QRI_UsuarioController;
 use App\Traits\QRIdentificacion\RequestGenerarVCard;
+use App\Traits\QRIdentificacion\PersonasConBase64;
 
-$dotenv = \Dotenv\Dotenv::createImmutable('./qridentificacion/');
+$dotenv = \Dotenv\Dotenv::createImmutable('./tarjetasdigitales/');
 $dotenv->load();
 
-include './qridentificacion/config.php';
+include './tarjetasdigitales/config.php';
 
 if ($url['method'] == "GET") {
     if (isset($_GET['action'])) {
@@ -45,6 +46,11 @@ if ($url['method'] == "GET") {
 
             case '3':
                 $data = QRI_PersonaController::index(['id' => $_GET['id']]);
+                if (count($data) > 0) {
+                    $qr = QRI_CodigoQRController::index(['id_persona_identificada' => $_GET['id']])[0];
+                    $path = FILE_PATH . "qr-identificacion/$qr[id]/QR-$qr[id].png";
+                    $data['img'] = $path;
+                }
                 break;
 
             case '4':
@@ -52,7 +58,8 @@ if ($url['method'] == "GET") {
                 break;
 
             case '5':
-                $data = QRI_PersonaController::index();
+                $data = QRI_PersonaController::index(['deshabilitado' => 0]);
+                $data = PersonasConBase64::devolverArrayConBase64($data);
                 break;
 
             case '6':
@@ -68,8 +75,7 @@ if ($url['method'] == "GET") {
                 $data = QRI_CodigoQRController::index(['id_persona_identificada' => $_GET['id']]);
                 if (count($data) > 0) {
                     $data = $data[0];
-                    $data = getBase64String(FILE_PATH . "$data[id]/QR-$data[id].png", "QR-$data[id].png");
-                    $data['error'] = null;
+                    $data = getBase64String(FILE_PATH . "qr-identificacion/$data[id]/QR-$data[id].png", "QR-$data[id].png");
                 } else {
                     $data = ['error' => "QR no encontrado", 'data' => null];
                 }
@@ -106,6 +112,10 @@ if ($url['method'] == "PUT") {
 
         case '3':
             $resp = RequestGenerarVCard::generateVcard($_PUT);
+            exit;
+
+        case '4':
+            $resp = QRI_PersonaController::update(['deshabilitado' => 1], $_PUT['id']);
             exit;
     }
 

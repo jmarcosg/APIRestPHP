@@ -18,6 +18,8 @@ class QRI_Persona extends BaseModel
         'email',
         'cargo',
         'telefono_alternativo',
-        'lugar_trabajo'
+        'lugar_trabajo',
+        'titulo',
+        'deshabilitado'
     ];
 }
