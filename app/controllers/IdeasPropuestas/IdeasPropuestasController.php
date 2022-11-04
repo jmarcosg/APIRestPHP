@@ -4,6 +4,7 @@ namespace App\Controllers\IdeasPropuestas;
 
 use App\Models\IdeasPropuestas\IdeasPropuestas;
 use App\Models\IdeasPropuestas\Usuarios;
+use ErrorException;
 
 class IdeasPropuestasController
 {
@@ -128,7 +129,14 @@ class IdeasPropuestasController
 
         $id = $data->save();
 
-        sendResError($id, 'Hubo un error al guardar el usuario');
+        if ($id instanceof ErrorException) {
+            if (str_contains($id->getMessage(), "UNIQUE KEY 'IP_USR_DNI'")) {
+                sendResError($id, 'El documento se encuentra registrado');
+            }
+            if (str_contains($id->getMessage(), "UNIQUE KEY 'IP_USR_USR'")) {
+                sendResError($id, 'El usuario se encuentra registrado');
+            }
+        }
 
         $usuarios = $data->list();
 
