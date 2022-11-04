@@ -101,7 +101,7 @@ trait Reportes
                 $pdf->Text($col, $row - 7, "TITULAR DE LA LICENCIA");
                 $pdf->SetFont('helvetica', 'B', 9);
 
-                $pdf->Text($col, $row, "CUIL:");
+                $pdf->Text($col, $row, "CUIT:");
                 $pdf->SetFont('helvetica', '', 10);
                 $pdf->Text($col + 18, $row, $data['cuit']);
                 $col = 110;
@@ -190,11 +190,11 @@ trait Reportes
         $row += 70;
 
         $pdf->SetLineStyle(array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
-        $pdf->Text(15, $row, 'Firma y acalaración del contribuyente');
+        $pdf->Text(120, $row, 'Firma del agente municipal');
         $pdf->Line(15, $row, 95, $row);
         /* $pdf->RoundedRect(45, $row, 75, 30, 6.50, '0000'); */
-
-        $pdf->Text(120, $row, 'Firma del agente municipal');
+        
+        $pdf->Text(15, $row, 'Firma y acalaración del contribuyente');
         $pdf->Line(120, $row, 200, $row);
         /* $pdf->RoundedRect(185, $row, 75, 30, 6.50, '0000'); */
 
@@ -267,7 +267,7 @@ trait Reportes
         $pdf->SetFont('helvetica', 'B', 9);
         $pdf->Text($col, $row, "Nombre:");
         $pdf->Text($col, self::getRow($row, $inc), "DNI:");
-        $pdf->Text($col, self::getRow($row, $inc), "CUIL:");
+        $pdf->Text($col, self::getRow($row, $inc), "CUIT:");
         $pdf->Text($col, self::getRow($row, $inc), "Domicilio:");
         $pdf->Text($col, self::getRow($row, $inc), "Teléfono:");
         $pdf->Text($col, self::getRow($row, $inc), "Email:");
