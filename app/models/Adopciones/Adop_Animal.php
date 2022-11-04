@@ -15,6 +15,9 @@ class Adop_Animal extends BaseModel
         'imagen2_path',
         'nombre',
         'edad',
+        'tipo_edad',
+        'es_de_raza',
+        'tipo_raza',
         'raza',
         'tamanio',
         'castrado',
@@ -66,7 +69,7 @@ class Adop_Animal extends BaseModel
         $folderExists = file_exists($fileFolder);
 
         if (!$folderExists) {
-            mkdir("$fileFolder");
+            mkdir($fileFolder, 0777, true);
         }
 
         if (copy($tmpFile, $fileFolderWithFile)) {

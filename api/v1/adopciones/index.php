@@ -231,6 +231,9 @@ if ($url['method'] == "POST") {
 				'imagen2_path' => "a",
 				'nombre' => $_POST['nombre'],
 				'edad' => $_POST['edad'],
+				'tipo_edad' => $_POST['tipo_edad'],
+				'es_de_raza' => $_POST['es_de_raza'],
+				'tipo_raza' => $_POST['tipo_raza'],
 				'raza' => $_POST['raza'],
 				'tamanio' => $_POST['tamanio'],
 				'castrado' => $_POST['castrado'],
@@ -243,14 +246,9 @@ if ($url['method'] == "POST") {
 			$id = Adop_AnimalesController::store($data);
 
 			if (!$id instanceof ErrorException) {
-				$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen1'], $id, "imagen1_path");
-				$imagen1 = $imagenCargada;
+				$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen1_path'], $id, "imagen1_path");
 				if ($imagenCargada) {
-					$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen2'], $id, "imagen2_path");
-					$imagen2 = $imagenCargada;
-
-					if ($imagenCargada) {
-					}
+					$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen2_path'], $id, "imagen2_path");
 				}
 			} else {
 				$mensaje = $id->getMessage();
@@ -270,6 +268,9 @@ if ($url['method'] == "POST") {
 			$data = [
 				'nombre' => $_POST['nombre'],
 				'edad' => $_POST['edad'],
+				'tipo_edad' => $_POST['tipo_edad'],
+				'es_de_raza' => $_POST['es_de_raza'],
+				'tipo_raza' => $_POST['tipo_raza'],
 				'raza' => $_POST['raza'],
 				'tamanio' => $_POST['tamanio'],
 				'castrado' => $_POST['castrado'],

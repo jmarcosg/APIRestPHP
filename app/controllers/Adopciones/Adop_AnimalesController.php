@@ -15,9 +15,15 @@ class Adop_AnimalesController
 
     public static function index($param = [], $ops = [])
     {
+        $encodedData = [];
         $data = new Adop_Animal();
         $data = $data->list($param, $ops)->value;
-        return $data;
+        foreach ($data as $animal) {
+            $animal['imagen1_path'] = getBase64String(FILE_PATH . "adopciones/animales/$animal[id]/$animal[imagen1_path]", $animal['imagen1_path']);
+            $animal['imagen2_path'] = getBase64String(FILE_PATH . "adopciones/animales/$animal[id]/$animal[imagen2_path]", $animal['imagen2_path']);
+            array_push($encodedData, $animal);
+        }
+        return $encodedData;
     }
 
     public static function store($res)
