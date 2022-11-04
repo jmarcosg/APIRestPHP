@@ -15,4 +15,5 @@ define('UTIL_PATH', ROOT_PATH . 'app/utils');
 define('LOG_PATH', ROOT_PATH . 'logs/');
 define('TEM_PATH', ROOT_PATH . 'temp/');
 
+/* Path donde se guardan los archivos para poder hacer envio de email adjuntando dichos archivos */
 define('ADJUNTOS_PATH', "E:\Dataserver\Produccion\Adjuntos\\");
