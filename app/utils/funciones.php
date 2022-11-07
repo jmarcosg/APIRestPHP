@@ -103,7 +103,7 @@ function deutf8ize($param)
     return $param;
 }
 
-function logFileEE($subPath, ErrorException $e, $class, $function)
+function logFileEE($subPath, ErrorException $e, $class, $function, $data = [])
 {
     $path = LOG_PATH . $subPath . "/";
 
@@ -115,6 +115,48 @@ function logFileEE($subPath, ErrorException $e, $class, $function)
     $logFile = fopen($path . date("Ymd") . ".log", 'a') or die("Error creando archivo");
     fwrite($logFile, "\n" . "$msg") or die("Error escribiendo en el archivo");
     fclose($logFile);
+}
+
+/**
+ * It takes an error, and creates a json file with the error message, line number, class, function,
+ * data, and all the global variables.
+ * 
+ * @param subPath The sub-directory to store the log file in.
+ * @param ErrorException e The error object
+ * @param class The class that the error occurred in.
+ * @param function createJsonError
+ * @param data The data that was being processed when the error occurred.
+ * @param obj the object that threw the error
+ */
+function createJsonError($subPath, ErrorException $e, $class = null, $function = null, $data = null, $obj = null)
+{
+    $path = LOG_PATH . $subPath . "/";
+
+    if (!file_exists($path)) mkdir($path, 0755, true);
+
+    $regArray = [
+        'datetime' => date("d/m/Y H:i:s"),
+        'error' => $e->getMessage(),
+        'line' =>  $e->getLine(),
+        'class' => $class,
+        'object' => $obj,
+        'function' => $function,
+        'data' => $data, 
+        'globals' => [
+            '$_COOKIE'=>$_COOKIE,
+            '$_ENV' => $_ENV,
+            '$_FILES' => $_FILES,
+            '$_GET' => $_GET,
+            '$_POST' => $_POST,            
+            '$_REQUEST' =>$_REQUEST,
+            '$_SERVER' => $_SERVER,
+        ],
+    ];;
+
+    $json_string = json_encode($regArray);
+    $file = $path . date('Ymd_His') . '_' . uniqid() . '.json';
+
+    file_put_contents($file, $json_string);
 }
 
 function isErrorException($object)

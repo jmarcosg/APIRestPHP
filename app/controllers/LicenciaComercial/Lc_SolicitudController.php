@@ -12,7 +12,6 @@ use App\Models\LicenciaComercial\Lc_Documento;
 use App\Traits\LicenciaComercial\TemplateEmailSolicitud;
 use App\Traits\LicenciaComercial\QuerysSql;
 use App\Traits\LicenciaComercial\Reportes;
-use DateTime;
 use ErrorException;
 
 class Lc_SolicitudController

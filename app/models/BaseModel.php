@@ -67,7 +67,8 @@ class BaseModel
             /* $methods = $this->filterMethods(get_class_methods($this));
             foreach ($methods as $method) $this->$method(); */
         } else {
-            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            /* logFileEE($this->logPath, $result, get_class($this), __FUNCTION__); */
+            createJsonError($this->logPath, $result, get_class($this), __FUNCTION__, $param, $this);
             $this->value = $result;
         }
         return $this;
@@ -87,7 +88,8 @@ class BaseModel
                 foreach ($methods as $method) $this->$method();
             } */
         } else {
-            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            /* logFileEE($this->logPath, $result, get_class($this), __FUNCTION__); */
+            createJsonError($this->logPath, $result, get_class($this), __FUNCTION__, $params, $this);
             $this->value = $result;
         }
         return $this;
@@ -101,7 +103,8 @@ class BaseModel
         $result = $conn->store($this->table, $array);
 
         if ($result instanceof ErrorException) {
-            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            /* logFileEE($this->logPath, $result, get_class($this), __FUNCTION__, $array); */
+            createJsonError($this->logPath, $result, get_class($this), __FUNCTION__, $array, $this);
         }
         return $result;
     }
@@ -117,7 +120,8 @@ class BaseModel
             $result = $conn->update($this->table, $req, $id, $this->identity);
 
             if ($result instanceof ErrorException) {
-                logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+                /* logFileEE($this->logPath, $result, get_class($this), __FUNCTION__); */
+                createJsonError($this->logPath, $result, get_class($this), __FUNCTION__, $req, $this);
             }
         } else {
             $result = new ErrorException('No se encuentra el recurso');
@@ -146,7 +150,8 @@ class BaseModel
             }
 
             if ($result instanceof ErrorException) {
-                logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+                /* logFileEE($this->logPath, $result, get_class($this), __FUNCTION__); */
+                createJsonError($this->logPath, $result, get_class($this), __FUNCTION__, ['id' => $id], $this);
             }
         } else {
             $result = new ErrorException('No se encuentra el recurso');
@@ -171,7 +176,8 @@ class BaseModel
             }
             return $result;
         } catch (\Throwable $th) {
-            logFileEE($this->logPath, $th, get_class($this), __FUNCTION__);
+            /* logFileEE($this->logPath, $th, get_class($this), __FUNCTION__); */
+            createJsonError($this->logPath, $th, get_class($this), __FUNCTION__, null, $this);
             return $th;
         }
     }
@@ -297,7 +303,8 @@ class BaseModel
         $indexs = $this->executeSqlQuery('EXEC sp_helpindex ' . $this->table, false);
 
         if ($indexs instanceof ErrorException) {
-            logFileEE($this->logPath, $indexs, get_class($this), __FUNCTION__);
+            /* logFileEE($this->logPath, $indexs, get_class($this), __FUNCTION__); */
+            createJsonError($this->logPath, $indexs, get_class($this), __FUNCTION__, null, $this);
         } else {
             $indexs = array_filter($indexs, function ($index) {
                 return str_contains($index['index_description'], 'unique');
