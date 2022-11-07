@@ -250,6 +250,10 @@ if ($url['method'] == "POST") {
 				if ($imagenCargada) {
 					$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen2_path'], $id, "imagen2_path");
 				}
+
+				$animal = Adop_AnimalesController::index(['id' => $id])[0];
+
+				sendRes($animal);
 			} else {
 				$mensaje = $id->getMessage();
 				logFileEE('prueba', $id, null, null);
