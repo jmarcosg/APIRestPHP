@@ -172,7 +172,7 @@ trait Reportes
         /* NUEVA PAGINA */
         /* $pdf->AddPage();
         $row = 20; */
-        $row += 28;
+        $row += 15;
         $pdf->SetFont('helvetica', 'B', 10);
         $pdf->Text($col, $row, "Documentos solicitados:");
         $row += 3;
@@ -187,7 +187,7 @@ trait Reportes
         $pdf->Text($col, self::getRow($row, 10), 'Notas de Catastro: ' . ($data['notas_catastro'] ? 'SI' : 'NO'));
         $pdf->Text(65, $row, 'Notas de Ambiental: ' . ($data['notas_ambiente'] ? 'SI' : 'NO'));
 
-        $row += 70;
+        $row = 330;
 
         $pdf->SetLineStyle(array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => 0, 'color' => array(0, 0, 0)));
         $pdf->Text(120, $row, 'Firma del agente municipal');
