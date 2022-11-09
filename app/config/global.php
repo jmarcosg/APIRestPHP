@@ -40,7 +40,7 @@ if (ENV == 'replica') {
 
 if (ENV == 'local') {
     /** LOCAL */
-    define('FILE_PATH', 'C:\xampp\htdocs\apirestphp\files\\');
+    define('FILE_PATH', 'C:\xampp\htdocs\APIRest\files\\');
     define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_REPLICA']);
 }
 
