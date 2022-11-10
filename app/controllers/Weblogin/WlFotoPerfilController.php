@@ -21,6 +21,21 @@ class WlFotoPerfilController
         exit;
     }
 
+    public static function getLastFotosPost()
+    {
+        $data = new WlFotoPerfil();
+
+        $registro = $data->get($_POST, ['order' => ' ORDER BY id DESC'])->value;
+
+        if ($registro) {
+            sendRes($registro);
+        } else {
+            sendRes(null, 'No se encontraron registros');
+        }
+
+        exit;
+    }
+
     public static function getFotoById()
     {
         $data = new WlFotoPerfil();

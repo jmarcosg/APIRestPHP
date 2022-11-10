@@ -36,6 +36,9 @@ if ($url['method'] == 'POST') {
 		case 'addFoto':
 			WlFotoPerfilController::saveFoto();
 
+		case 'getLastFotos':
+			WlFotoPerfilController::getLastFotosPost();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
