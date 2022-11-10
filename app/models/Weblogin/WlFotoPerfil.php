@@ -27,10 +27,14 @@ class WlFotoPerfil extends BaseModel
 
     public function saveFotos()
     {
-        if (isset($_FILES['foto_perfil']) && isset($_FILES['foto_dni'])) {
+        if (isset($_FILES['foto_perfil']) && isset($_FILES['foto_dni']) && isset($_POST['nombre_archivo'])) {
+            $nameFile = $_POST['nombre_archivo'];
+            unset($_POST['nombre_archivo']);
+            $uniqid = uniqid();
 
+            /* Foto de perfil */
             $foto_perfil = $_FILES['foto_perfil'];
-            $nameFilePerfil = 'M31960202_PERFIL_' . uniqid() . getExtFile($foto_perfil);
+            $nameFilePerfil = $nameFile . '_PERFIL_' . $uniqid . getExtFile($foto_perfil);
             $path_perfil = getPathFile($foto_perfil, $this->filesUrl, $nameFilePerfil);
 
             if (copy($foto_perfil['tmp_name'], $path_perfil)) {
@@ -39,8 +43,9 @@ class WlFotoPerfil extends BaseModel
                 sendRes(null, 'No se guardo la foto de perfil');
             }
 
+            /* Foto del documento */
             $foto_dni = $_FILES['foto_dni'];
-            $nameFileDni = 'M31960202_DNI_' . uniqid() . getExtFile($foto_dni);
+            $nameFileDni = $nameFile . '_DNI_' . $uniqid . getExtFile($foto_dni);
             $path_dni = getPathFile($foto_dni, $this->filesUrl, $nameFileDni);
 
             if (copy($foto_dni['tmp_name'], $path_dni)) {
