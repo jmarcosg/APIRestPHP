@@ -25,6 +25,7 @@ class WlFotoPerfil extends BaseModel
 
     public $filesUrl = FILE_PATH . 'wlFotosUsuarios/';
 
+    /** Guarda los arhivos fisicamente */
     public function saveFotos()
     {
         if (isset($_FILES['foto_perfil']) && isset($_FILES['foto_dni']) && isset($_POST['nombre_archivo'])) {
@@ -41,6 +42,7 @@ class WlFotoPerfil extends BaseModel
                 $_POST['foto_perfil'] = $nameFilePerfil;
             } else {
                 sendRes(null, 'No se guardo la foto de perfil');
+                exit;
             }
 
             /* Foto del documento */
@@ -52,11 +54,23 @@ class WlFotoPerfil extends BaseModel
                 $_POST['foto_dni'] = $nameFileDni;
             } else {
                 sendRes(null, 'No se guardo la foto del DNI');
+                exit;
             }
 
             $_POST['estado'] = 0;
         } else {
             sendRes(null, 'Los parametros son incorrectos', $_POST);
+            exit;
         }
+    }
+
+    public function setBase64($data)
+    {
+        $url = $this->filesUrl . $data['foto_perfil'];
+        $data['foto_perfil'] = getBase64String($url, $data['foto_perfil']);
+
+        $url = $this->filesUrl . $data['foto_dni'];
+        $data['foto_dni'] = getBase64String($url, $data['foto_dni']);
+        return $data;
     }
 }

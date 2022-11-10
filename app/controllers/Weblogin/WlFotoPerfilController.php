@@ -6,29 +6,16 @@ use App\Models\Weblogin\WlFotoPerfil;
 
 class WlFotoPerfilController
 {
+
     public static function getLastFotos()
     {
-        $data = new WlFotoPerfil();
+        $wlFotoPerfil = new WlFotoPerfil();
 
-        $registro = $data->get($_GET, ['order' => ' ORDER BY id DESC'])->value;
+        $data = $wlFotoPerfil->get($_POST, ['order' => ' ORDER BY id DESC'])->value;
 
-        if ($registro) {
-            sendRes($registro);
-        } else {
-            sendRes(null, 'No se encontraron registros');
-        }
-
-        exit;
-    }
-
-    public static function getLastFotosPost()
-    {
-        $data = new WlFotoPerfil();
-
-        $registro = $data->get($_POST, ['order' => ' ORDER BY id DESC'])->value;
-
-        if ($registro) {
-            sendRes($registro);
+        if ($data) {
+            $data = $wlFotoPerfil->setBase64($data);
+            sendRes($data);
         } else {
             sendRes(null, 'No se encontraron registros');
         }
@@ -43,6 +30,14 @@ class WlFotoPerfilController
         $id = $_GET['id'];
         $registro = $data->get(['id' => $id])->value;
 
+        /* if ($doc['documento']) {
+            $codigo = $doc['codigo'];
+            $url = $filesUrl . $id_solicitud . "/" . $codigo . '/' .  $doc['documento'];
+            $data[$key]['url'] = getBase64String($url, $doc['documento']);
+            $data[$key]['loading'] = false;
+            $data[$key]['error'] = false;
+        } */
+
         sendRes($registro);
 
         exit;
@@ -50,17 +45,24 @@ class WlFotoPerfilController
 
     public static function saveFoto()
     {
-        $data = new WlFotoPerfil();
+        $wlFotoPerfil = new WlFotoPerfil();
 
-        $data->saveFotos();
+        $wlFotoPerfil->saveFotos();
 
-        $data->set($_POST);
+        $wlFotoPerfil->set($_POST);
 
-        $id = $data->save();
+        $id = $wlFotoPerfil->save();
 
         sendResError($id, 'Hubo un error al guardar la foto');
 
-        sendRes($id);
+        $data = $wlFotoPerfil->get(['id' => $id])->value;
+
+        if ($data) {
+            $data = $wlFotoPerfil->setBase64($data);
+            sendRes($data);
+        } else {
+            sendRes(null, 'No se encontraron registros');
+        }
 
         exit;
     }

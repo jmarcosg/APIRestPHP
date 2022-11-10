@@ -12,10 +12,6 @@ if ($url['method'] == 'GET') {
 	unset($_GET['action']);
 
 	switch ($action) {
-
-		case 'getLastFotos':
-			WlFotoPerfilController::getLastFotos();
-
 		case 'fotoId':
 			WlFotoPerfilController::getFotoById();
 
@@ -32,12 +28,11 @@ if ($url['method'] == 'POST') {
 	unset($_POST['action']);
 
 	switch ($action) {
-
 		case 'addFoto':
 			WlFotoPerfilController::saveFoto();
 
 		case 'getLastFotos':
-			WlFotoPerfilController::getLastFotosPost();
+			WlFotoPerfilController::getLastFotos();
 
 		default:
 			$error = new ErrorException('El action no es valido');
