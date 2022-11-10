@@ -220,8 +220,6 @@ if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case 'an1':
 			//* Cargar animal
-			// print_r($_POST);
-			// die();
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
 			$currentTime = $date->format('Y-m-d H:i:s');
@@ -234,7 +232,6 @@ if ($url['method'] == "POST") {
 				'tipo_edad' => $_POST['tipo_edad'],
 				'es_de_raza' => $_POST['es_de_raza'],
 				'tipo_raza' => $_POST['tipo_raza'],
-				'raza' => $_POST['raza'],
 				'tamanio' => $_POST['tamanio'],
 				'castrado' => $_POST['castrado'],
 				'descripcion' => $_POST['descripcion'],
@@ -242,6 +239,14 @@ if ($url['method'] == "POST") {
 				'fecha_ingreso' => $currentTime,
 				'fecha_modificacion' => null,
 			];
+
+			if ($_POST['tipo_raza'] != "otro" && $_POST['raza'] == "") {
+				$data['raza'] = $_POST['tipo_raza'];
+			} else if ($_POST['es_de_raza'] == "1") {
+				$data['raza'] = $_POST['raza'];
+			} else {
+				$data['raza'] = $_POST['raza'];
+			}
 
 			$id = Adop_AnimalesController::store($data);
 
@@ -270,18 +275,28 @@ if ($url['method'] == "POST") {
 			$fechaModificado = $date->format('Y-m-d H:i:s');
 
 			$data = [
+				'imagen1_path' => "a",
+				'imagen2_path' => "a",
 				'nombre' => $_POST['nombre'],
 				'edad' => $_POST['edad'],
 				'tipo_edad' => $_POST['tipo_edad'],
 				'es_de_raza' => $_POST['es_de_raza'],
 				'tipo_raza' => $_POST['tipo_raza'],
-				'raza' => $_POST['raza'],
 				'tamanio' => $_POST['tamanio'],
 				'castrado' => $_POST['castrado'],
 				'descripcion' => $_POST['descripcion'],
 				'adoptado' => $_POST['adoptado'],
-				'fecha_modificacion' => $fechaModificado,
+				'fecha_ingreso' => $currentTime,
+				'fecha_modificacion' => null,
 			];
+
+			if ($_POST['tipo_raza'] != "otro" && $_POST['raza'] == "") {
+				$data['raza'] = $_POST['tipo_raza'];
+			} else if ($_POST['es_de_raza'] == "1") {
+				$data['raza'] = $_POST['raza'];
+			} else {
+				$data['raza'] = $_POST['raza'];
+			}
 
 			$id = Adop_AnimalesController::update($data, $idAnimalModificar);
 

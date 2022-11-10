@@ -16,9 +16,9 @@ define('DB_PORT', $_ENV['DB_PORT']);
 define('DB_CHARSET', $_ENV['DB_CHARSET']);
 
 if ($_ENV['ENV'] == 'replica') {
-    define('FILE_PATH', "E:\Dataserver\Replica\projects_files\qr-identificacion\\");
+    define('FILE_PATH', "E:\Dataserver\Replica\projects_files\\");
 } else if ($_ENV['ENV'] == 'produccion') {
-    define('FILE_PATH', "E:\Dataserver\Produccion\projects_files\qr-identificacion\\");
+    define('FILE_PATH', "E:\Dataserver\Produccion\projects_files\\");
 } else if ($_ENV['ENV'] == 'local') {
     define('FILE_PATH', "C:\\xampp\\htdocs\\apirestphp\\files\\");
 }
