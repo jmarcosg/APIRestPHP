@@ -36,7 +36,7 @@ class WlFotoPerfil extends BaseModel
             if (copy($foto_perfil['tmp_name'], $path_perfil)) {
                 $_POST['foto_perfil'] = $nameFilePerfil;
             } else {
-                /* Retornamos un error copiado foto_perfil*/
+                sendRes(null, 'No se guardo la foto de perfil');
             }
 
             $foto_dni = $_FILES['foto_dni'];
@@ -46,12 +46,12 @@ class WlFotoPerfil extends BaseModel
             if (copy($foto_dni['tmp_name'], $path_dni)) {
                 $_POST['foto_dni'] = $nameFileDni;
             } else {
-                /* Retornamos un error de copiado foto_dni */
+                sendRes(null, 'No se guardo la foto del DNI');
             }
 
             $_POST['estado'] = 0;
         } else {
-            /* Retornamos un error por falta de archivos*/
+            sendRes(null, 'Los parametros son incorrectos', $_POST);
         }
     }
 }
