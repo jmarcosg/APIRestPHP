@@ -12,7 +12,11 @@ class WlFotoPerfilController
 
         $registro = $data->get($_GET, ['order' => ' ORDER BY id DESC'])->value;
 
-        sendRes($registro);
+        if ($registro) {
+            sendRes($registro);
+        } else {
+            sendRes(null, 'No se encontraron registros');
+        }
 
         exit;
     }
