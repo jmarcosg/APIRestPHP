@@ -13,6 +13,12 @@ if ($url['method'] == 'GET') {
 
 	switch ($action) {
 
+		case 'getLastFotos':
+			WlFotoPerfilController::getLastFotos();
+
+		case 'fotoId':
+			WlFotoPerfilController::getFotoById();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);

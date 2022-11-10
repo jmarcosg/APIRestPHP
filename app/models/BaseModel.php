@@ -74,10 +74,10 @@ class BaseModel
         return $this;
     }
 
-    public function get($params)
+    public function get($params, $ops = [])
     {
         $conn = new BaseDatos();
-        $result = $conn->search($this->table, $params);
+        $result = $conn->search($this->table, $params, $ops);
 
         if (!$result instanceof ErrorException) {
             $this->value = $conn->fetch_assoc($result);

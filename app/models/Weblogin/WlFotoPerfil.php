@@ -12,12 +12,15 @@ class WlFotoPerfil extends BaseModel
 
     protected $fillable = [
         'id_usuario',
+        'id_persona',
         'foto_perfil',
         'foto_dni',
         'id_app',
+        'id_usuario_admin_app',
+        'estado_app',
         'id_usuario_admin',
-        'id_persona',
         'estado',
+        'observacion',
     ];
 
     public $filesUrl = FILE_PATH . 'wlFotosUsuarios/';
@@ -33,7 +36,7 @@ class WlFotoPerfil extends BaseModel
             if (copy($foto_perfil['tmp_name'], $path_perfil)) {
                 $_POST['foto_perfil'] = $nameFilePerfil;
             } else {
-                /* Retornamos un error */
+                /* Retornamos un error copiado foto_perfil*/
             }
 
             $foto_dni = $_FILES['foto_dni'];
@@ -43,10 +46,12 @@ class WlFotoPerfil extends BaseModel
             if (copy($foto_dni['tmp_name'], $path_dni)) {
                 $_POST['foto_dni'] = $nameFileDni;
             } else {
-                /* Retornamos un error */
+                /* Retornamos un error de copiado foto_dni */
             }
+
+            $_POST['estado'] = 0;
         } else {
-            /* Retornamos un error */
+            /* Retornamos un error por falta de archivos*/
         }
     }
 }
