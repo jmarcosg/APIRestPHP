@@ -47,7 +47,10 @@ class WlFotoPerfilController
     {
         $wlFotoPerfil = new WlFotoPerfil();
 
-        $wlFotoPerfil->saveFotos();
+        $wlFotoPerfil->saveFotos(uniqid());
+
+        $_POST['estado'] = 0;
+        $_POST['estado_app'] = 0;
 
         $wlFotoPerfil->set($_POST);
 
@@ -73,40 +76,47 @@ class WlFotoPerfilController
 
         $id = $_POST['id'];
 
-        $data = $wlFotoPerfil->get(['id' => $id])->value;
+        $registro = $wlFotoPerfil->get(['id' => $id])->value;
 
-        $perfil = $data['foto_perfil'];
-        $dni = $data['foto_dni'];
 
-        if ($data) {
-            $data = $wlFotoPerfil->setBase64($data);
+        if ($registro) {
+            $wlFotoPerfil->verifyEstados($registro);
 
-            /* Si fuera evaluada por alguna entidad */
-            $wlFotoPerfil->verifyEstados($data);
+            $uniqid = uniqid();
+            $data = true;
 
-            /* Si no fue evaluada la puede editar */
-            $_POST['nombre_archivo'] = explode('_', $perfil)[0];
-            $wlFotoPerfil->saveFotos();
+            if (isset($_FILES['foto_perfil'])) {
+                $perfil = $registro['foto_perfil'];
 
-            $params = [
-                'foto_perfil' => $_POST['foto_perfil'],
-                'foto_dni' => $_POST['foto_dni']
-            ];
-
-            $data = $wlFotoPerfil->update($params, $id);
-
-            if ($data) {
-                $data = $wlFotoPerfil->get(['id' => $id])->value;
-                $wlFotoPerfil->deleteFotos($perfil, $dni);
+                $wlFotoPerfil->saveFotoPerfil($uniqid);
+                $data = $wlFotoPerfil->update(['foto_perfil' => $_POST['foto_perfil']], $id);
 
                 if ($data) {
-                    $data = $wlFotoPerfil->setBase64($data);
-                    sendRes($data);
+                    $wlFotoPerfil->deleteFoto($perfil);
                 } else {
-                    sendRes(null, 'No se encontraron registros');
+                    sendRes(null, 'Hubo un problema al modificar la foto de perfil');
                 }
+            }
+
+            if (isset($_FILES['foto_dni'])) {
+                $dni = $data['foto_dni'];
+
+                $wlFotoPerfil->saveFotoPerfil($uniqid);
+                $data = $wlFotoPerfil->update(['foto_dni' => $_POST['foto_dni']], $id);
+
+                if ($data) {
+                    $wlFotoPerfil->deleteFoto($dni);
+                } else {
+                    sendRes(null, 'Hubo un problema al modificar la foto del DNI');
+                }
+            }
+
+            if ($data) {
+                $registro = $wlFotoPerfil->get(['id' => $id])->value;
+                $data = $wlFotoPerfil->setBase64($registro);
+                sendRes($data);
             } else {
-                sendRes(null, 'Hubo un problema al modificar las fotos');
+                sendRes(null, 'El registro se modifico, pero no se pudieron obtener los datos');
             }
         } else {
             sendRes(null, 'No se encontraron registros');

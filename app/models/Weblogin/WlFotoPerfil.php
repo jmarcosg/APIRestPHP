@@ -26,14 +26,18 @@ class WlFotoPerfil extends BaseModel
     public $filesUrl = FILE_PATH . 'wlFotosUsuarios/';
 
     /** Guarda los arhivos fisicamente */
-    public function saveFotos()
+    public function saveFotos($uniqid)
     {
-        if (isset($_FILES['foto_perfil']) && isset($_FILES['foto_dni']) && isset($_POST['nombre_archivo'])) {
-            $nameFile = $_POST['nombre_archivo'];
-            unset($_POST['nombre_archivo']);
-            $uniqid = uniqid();
+        $this->saveFotoPerfil($uniqid);
+        $this->saveFotoDni($uniqid);
+        unset($_POST['nombre_archivo']);
+    }
 
-            /* Foto de perfil */
+    public function saveFotoPerfil($uniqid)
+    {
+        if (isset($_FILES['foto_perfil']) && isset($_POST['nombre_archivo'])) {
+            $nameFile = $_POST['nombre_archivo'];
+
             $foto_perfil = $_FILES['foto_perfil'];
             $nameFilePerfil = $nameFile . '_PERFIL_' . $uniqid . getExtFile($foto_perfil);
             $path_perfil = getPathFile($foto_perfil, $this->filesUrl, $nameFilePerfil);
@@ -44,8 +48,17 @@ class WlFotoPerfil extends BaseModel
                 sendRes(null, 'No se guardo la foto de perfil');
                 exit;
             }
+        } else {
+            sendRes(null, 'Los parametros son incorrectos', $_POST);
+            exit;
+        }
+    }
 
-            /* Foto del documento */
+    public function saveFotoDni($uniqid)
+    {
+        if (isset($_FILES['foto_dni']) && isset($_POST['nombre_archivo'])) {
+            $nameFile = $_POST['nombre_archivo'];
+
             $foto_dni = $_FILES['foto_dni'];
             $nameFileDni = $nameFile . '_DNI_' . $uniqid . getExtFile($foto_dni);
             $path_dni = getPathFile($foto_dni, $this->filesUrl, $nameFileDni);
@@ -56,9 +69,6 @@ class WlFotoPerfil extends BaseModel
                 sendRes(null, 'No se guardo la foto del DNI');
                 exit;
             }
-
-            $_POST['estado'] = 0;
-            $_POST['estado_app'] = 0;
         } else {
             sendRes(null, 'Los parametros son incorrectos', $_POST);
             exit;
@@ -79,12 +89,9 @@ class WlFotoPerfil extends BaseModel
         }
     }
 
-    public function deleteFotos($perfil, $dni)
+    public function deleteFoto($foto)
     {
-        $url = $this->filesUrl . $perfil;
-        unlink($url);
-
-        $url = $this->filesUrl . $dni;
+        $url = $this->filesUrl . $foto;
         unlink($url);
     }
 
