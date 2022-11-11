@@ -124,4 +124,37 @@ class WlFotoPerfilController
 
         exit;
     }
+
+    public static function changeEstado()
+    {
+        $wlFotoPerfil = new WlFotoPerfil();
+
+        $id = $_POST['id'];
+
+        $registro = $wlFotoPerfil->get(['id' => $id])->value;
+
+        if ($registro) {
+            $wlFotoPerfil->verifyEstados($registro);
+
+            $data = false;
+
+            if (isset($_POST['estado'])) {
+                $data = $wlFotoPerfil->update(['estado' => $_POST['estado']], $id);
+            }
+
+            if (isset($_POST['estado_app'])) {
+                $data = $wlFotoPerfil->update(['estado_app' => $_POST['estado_app']], $id);
+            }
+
+            if ($data) {
+                $registro = $wlFotoPerfil->get(['id' => $id])->value;
+                $data = $wlFotoPerfil->setBase64($registro);
+                sendRes($data);
+            } else {
+                sendRes(null, 'Hubo un error al modificar el estado');
+            }
+        } else {
+            sendRes(null, 'No se encontraron registros');
+        }
+    }
 }

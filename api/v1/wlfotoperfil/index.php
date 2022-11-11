@@ -37,6 +37,9 @@ if ($url['method'] == 'POST') {
 		case 'editFotoByUser':
 			WlFotoPerfilController::editFotoByUser();
 
+		case 'changeEstado':
+			WlFotoPerfilController::changeEstado();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
