@@ -58,10 +58,34 @@ class WlFotoPerfil extends BaseModel
             }
 
             $_POST['estado'] = 0;
+            $_POST['estado_app'] = 0;
         } else {
             sendRes(null, 'Los parametros son incorrectos', $_POST);
             exit;
         }
+    }
+
+    public function verifyEstados($data)
+    {
+        /* Si fuera evaluada por alguna entidad */
+        if ($data['estado'] === 1) {
+            sendRes(null, 'Ya fue evaluada por soporte modernización', $data);
+            exit;
+        }
+
+        if ($data['estado_app'] === 1) {
+            sendRes(null, 'Ya fue evaluada por la aplicación', $data);
+            exit;
+        }
+    }
+
+    public function deleteFotos($perfil, $dni)
+    {
+        $url = $this->filesUrl . $perfil;
+        unlink($url);
+
+        $url = $this->filesUrl . $dni;
+        unlink($url);
     }
 
     public function setBase64($data)
