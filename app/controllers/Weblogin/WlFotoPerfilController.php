@@ -157,11 +157,11 @@ class WlFotoPerfilController
             $data = false;
 
             if (isset($_POST['estado'])) {
-                $data = $wlFotoPerfil->update(['estado' => $_POST['estado']], $id);
+                $data = $wlFotoPerfil->update($_POST, $id);
             }
 
             if (isset($_POST['estado_app'])) {
-                $data = $wlFotoPerfil->update(['estado_app' => $_POST['estado_app']], $id);
+                $data = $wlFotoPerfil->update($_POST, $id);
             }
 
             if ($data) {
