@@ -3,9 +3,27 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\Weblogin\WlFotoPerfil;
+use ErrorException;
 
 class WlFotoPerfilController
 {
+    use SqlTrait;
+
+    public static function getPersonasSinVerificar()
+    {
+        $wlFotoPerfil = new WlFotoPerfil();
+
+        $sql = self::getPersonsSql('estado = 0');
+        $data = $wlFotoPerfil->executeSqlQuery($sql, false);
+
+        sendResError($data, 'Hubo un error en la obtención de las personas');
+
+        $data = $wlFotoPerfil->setBase64($data);
+
+        sendRes($data);
+
+        exit;
+    }
 
     public static function getLastFotos()
     {
@@ -83,7 +101,7 @@ class WlFotoPerfilController
             $wlFotoPerfil->verifyEstados($registro);
 
             $uniqid = uniqid();
-            $data = true;
+            $data = false;
 
             if (isset($_FILES['foto_perfil'])) {
                 $perfil = $registro['foto_perfil'];
@@ -99,9 +117,9 @@ class WlFotoPerfilController
             }
 
             if (isset($_FILES['foto_dni'])) {
-                $dni = $data['foto_dni'];
+                $dni = $registro['foto_dni'];
 
-                $wlFotoPerfil->saveFotoPerfil($uniqid);
+                $wlFotoPerfil->saveFotoDni($uniqid);
                 $data = $wlFotoPerfil->update(['foto_dni' => $_POST['foto_dni']], $id);
 
                 if ($data) {

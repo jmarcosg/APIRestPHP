@@ -97,11 +97,21 @@ class WlFotoPerfil extends BaseModel
 
     public function setBase64($data)
     {
-        $url = $this->filesUrl . $data['foto_perfil'];
-        $data['foto_perfil'] = getBase64String($url, $data['foto_perfil']);
+        if (is_multi_array($data)) {
+            foreach ($data as $key => $reg) {
+                $url = $this->filesUrl . $reg['foto_perfil'];
+                $data[$key]['foto_perfil'] = getBase64String($url, $reg['foto_perfil']);
 
-        $url = $this->filesUrl . $data['foto_dni'];
-        $data['foto_dni'] = getBase64String($url, $data['foto_dni']);
+                $url = $this->filesUrl . $reg['foto_dni'];
+                $data[$key]['foto_dni'] = getBase64String($url, $reg['foto_dni']);
+            }
+        } else {
+            $url = $this->filesUrl . $data['foto_perfil'];
+            $data['foto_perfil'] = getBase64String($url, $data['foto_perfil']);
+
+            $url = $this->filesUrl . $data['foto_dni'];
+            $data['foto_dni'] = getBase64String($url, $data['foto_dni']);
+        }
         return $data;
     }
 }

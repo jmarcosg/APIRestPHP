@@ -176,4 +176,30 @@ trait SqlTrait
 
         return $response->data;
     }
+
+    /* wlFotosPerfil */
+
+    public static function getPersonsSql($where)
+    {
+        $sql =
+            "SELECT
+                fUsr.id as id,
+                fUsr.foto_perfil as foto_perfil,
+                fUsr.foto_dni as foto_dni,
+                fUsr.estado_app as estado_app,
+                wapPerUsr.Nombre as nombre,
+                wapPerUsr.Documento as dni,
+                wapPerUsr.DomicilioLegal as dom_legal,
+                wapPerUsr.DomicilioReal as dom_real,
+                fUsr.estado as estado,
+                apps.APLICACION as aplicacion,
+                fUsr.observacion as observacion
+            FROM dbo.wlFotosUsuarios fUsr
+                LEFT JOIN dbo.wapPersonas wapPerUsr ON fUsr.id_persona = wapPerUsr.ReferenciaID
+                LEFT JOIN dbo.wlAplicaciones apps ON fUsr.id_app = apps.REFERENCIA 
+            WHERE $where
+            ORDER BY fUsr.fecha_alta DESC";
+
+        return $sql;
+    }
 }

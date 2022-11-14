@@ -15,6 +15,9 @@ if ($url['method'] == 'GET') {
 		case 'fotoId':
 			WlFotoPerfilController::getFotoById();
 
+		case 'getPersonasSinVerificar':
+			WlFotoPerfilController::getPersonasSinVerificar();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
