@@ -174,5 +174,6 @@ class WlFotoPerfilController
         } else {
             sendRes(null, 'No se encontraron registros');
         }
+        exit;
     }
 }
