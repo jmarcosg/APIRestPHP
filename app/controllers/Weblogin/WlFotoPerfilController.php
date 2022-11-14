@@ -164,12 +164,17 @@ class WlFotoPerfilController
                 $data = $wlFotoPerfil->update($_POST, $id);
             }
 
+            $msg = null;
+            if (!isset($_POST['estado_app']) && !isset($_POST['estado'])) {
+                $msg = 'Requiere estado_app o estado';
+            }
+
             if ($data) {
                 $registro = $wlFotoPerfil->get(['id' => $id])->value;
                 $data = $wlFotoPerfil->setBase64($registro);
                 sendRes($data);
             } else {
-                sendRes(null, 'Hubo un error al modificar el estado');
+                sendRes(null,  $msg ?  $msg : 'Hubo un problema para actulizar el registro');
             }
         } else {
             sendRes(null, 'No se encontraron registros');
