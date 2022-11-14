@@ -96,7 +96,6 @@ class WlFotoPerfilController
 
         $registro = $wlFotoPerfil->get(['id' => $id])->value;
 
-
         if ($registro) {
             $wlFotoPerfil->verifyEstados($registro);
 
@@ -107,7 +106,7 @@ class WlFotoPerfilController
                 $perfil = $registro['foto_perfil'];
 
                 $wlFotoPerfil->saveFotoPerfil($uniqid);
-                $data = $wlFotoPerfil->update(['foto_perfil' => $_POST['foto_perfil']], $id);
+                $data = $wlFotoPerfil->update(['foto_perfil' => $_POST['foto_perfil'], 'estado_app' => 0], $id);
 
                 if ($data) {
                     $wlFotoPerfil->deleteFoto($perfil);
@@ -120,7 +119,7 @@ class WlFotoPerfilController
                 $dni = $registro['foto_dni'];
 
                 $wlFotoPerfil->saveFotoDni($uniqid);
-                $data = $wlFotoPerfil->update(['foto_dni' => $_POST['foto_dni']], $id);
+                $data = $wlFotoPerfil->update(['foto_dni' => $_POST['foto_dni'], 'estado_app' => 0], $id);
 
                 if ($data) {
                     $wlFotoPerfil->deleteFoto($dni);
