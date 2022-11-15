@@ -12,7 +12,7 @@ if ($url['method'] == 'GET') {
 	unset($_GET['action']);
 
 	switch ($action) {
-		case 'fotoId':
+		case 'getFotoById':
 			WlFotoPerfilController::getFotoById();
 
 		case 'getPersonasSinVerificar':

@@ -3,7 +3,6 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\Weblogin\WlFotoPerfil;
-use ErrorException;
 
 class WlFotoPerfilController
 {
@@ -37,27 +36,23 @@ class WlFotoPerfilController
         } else {
             sendRes(null, 'No se encontraron registros');
         }
-
         exit;
     }
 
     public static function getFotoById()
     {
-        $data = new WlFotoPerfil();
+        $wlFotoPerfil = new WlFotoPerfil();
 
         $id = $_GET['id'];
-        $registro = $data->get(['id' => $id])->value;
+        $data = $wlFotoPerfil->get(['id' => $id])->value;
 
-        /* if ($doc['documento']) {
-            $codigo = $doc['codigo'];
-            $url = $filesUrl . $id_solicitud . "/" . $codigo . '/' .  $doc['documento'];
-            $data[$key]['url'] = getBase64String($url, $doc['documento']);
-            $data[$key]['loading'] = false;
-            $data[$key]['error'] = false;
-        } */
-
-        sendRes($registro);
-
+        if ($data) {
+            sendResError($data, 'Hubo un error en la obtención de la foto', ['id' => $id]);
+            $data = $wlFotoPerfil->setBase64($data);
+            sendRes($data);
+        } else {
+            sendRes($data, 'No se encuentra la foto', ['id' => $id]);
+        }
         exit;
     }
 
@@ -68,13 +63,12 @@ class WlFotoPerfilController
         $wlFotoPerfil->saveFotos(uniqid());
 
         $_POST['estado'] = 0;
-        $_POST['estado_app'] = 0;
 
         $wlFotoPerfil->set($_POST);
 
         $id = $wlFotoPerfil->save();
 
-        sendResError($id, 'Hubo un error al guardar la foto');
+        sendResError($id, 'Hubo un error al guardar la foto', $_POST);
 
         $data = $wlFotoPerfil->get(['id' => $id])->value;
 
@@ -104,27 +98,24 @@ class WlFotoPerfilController
 
             if (isset($_FILES['foto_perfil'])) {
                 $perfil = $registro['foto_perfil'];
-
                 $wlFotoPerfil->saveFotoPerfil($uniqid);
-                $data = $wlFotoPerfil->update(['foto_perfil' => $_POST['foto_perfil'], 'estado_app' => 0], $id);
+                $params = ['foto_perfil' => $_POST['foto_perfil']];
+                $data = self::updateFoto($perfil, $uniqid, $params, $id);
 
-                if ($data) {
-                    $wlFotoPerfil->deleteFoto($perfil);
-                } else {
-                    sendRes(null, 'Hubo un problema al modificar la foto de perfil');
+                if (!$data) {
+                    sendResError($data, 'Hubo un error al actualizar la foto de perfil', $params);
                 }
             }
 
             if (isset($_FILES['foto_dni'])) {
+
                 $dni = $registro['foto_dni'];
-
                 $wlFotoPerfil->saveFotoDni($uniqid);
-                $data = $wlFotoPerfil->update(['foto_dni' => $_POST['foto_dni'], 'estado_app' => 0], $id);
+                $params = ['foto_dni' => $_POST['foto_dni']];
+                $data = self::updateFoto($dni, $uniqid, $params, $id);
 
-                if ($data) {
-                    $wlFotoPerfil->deleteFoto($dni);
-                } else {
-                    sendRes(null, 'Hubo un problema al modificar la foto del DNI');
+                if (!$data) {
+                    sendResError($data, 'Hubo un error al actualizar la foto del dni', $params);
                 }
             }
 
@@ -142,6 +133,21 @@ class WlFotoPerfilController
         exit;
     }
 
+    private static function updateFoto($foto, $uniqid, $params, $id)
+    {
+        $wlFotoPerfil = new WlFotoPerfil();
+
+        $wlFotoPerfil->saveFotoPerfil($uniqid);
+        $data = $wlFotoPerfil->update($params, $id);
+
+        if ($data) {
+            $wlFotoPerfil->deleteFoto($foto);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static function changeEstado()
     {
         $wlFotoPerfil = new WlFotoPerfil();
@@ -155,17 +161,11 @@ class WlFotoPerfilController
 
             $data = false;
 
+            $msg = null;
             if (isset($_POST['estado'])) {
                 $data = $wlFotoPerfil->update($_POST, $id);
-            }
-
-            if (isset($_POST['estado_app'])) {
-                $data = $wlFotoPerfil->update($_POST, $id);
-            }
-
-            $msg = null;
-            if (!isset($_POST['estado_app']) && !isset($_POST['estado'])) {
-                $msg = 'Requiere estado_app o estado';
+            } else {
+                $msg = 'Requiere estado';
             }
 
             if ($data) {

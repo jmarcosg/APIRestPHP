@@ -16,8 +16,6 @@ class WlFotoPerfil extends BaseModel
         'foto_perfil',
         'foto_dni',
         'id_app',
-        'id_usuario_admin_app',
-        'estado_app',
         'id_usuario_admin',
         'estado',
         'observacion',
@@ -75,16 +73,11 @@ class WlFotoPerfil extends BaseModel
         }
     }
 
+    /* Si fue evaluada por alguna entidad */
     public function verifyEstados($data)
     {
-        /* Si fuera evaluada por alguna entidad */
-        if ($data['estado'] === 1) {
+        if ($data['estado'] !== "0") {
             sendRes(null, 'Ya fue evaluada por soporte modernización', $data);
-            exit;
-        }
-
-        if ($data['estado_app'] === 1) {
-            sendRes(null, 'Ya fue evaluada por la aplicación', $data);
             exit;
         }
     }
