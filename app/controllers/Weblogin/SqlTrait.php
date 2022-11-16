@@ -183,19 +183,42 @@ trait SqlTrait
     {
         $sql =
             "SELECT
-                fUsr.id as id,
-                fUsr.foto_perfil as foto_perfil,
-                fUsr.foto_dni as foto_dni,
-                fUsr.estado_app as estado_app,
-                wapPerUsr.Nombre as nombre,
-                wapPerUsr.Documento as dni,
-                wapPerUsr.DomicilioLegal as dom_legal,
-                wapPerUsr.DomicilioReal as dom_real,
-                fUsr.estado as estado,
-                apps.APLICACION as aplicacion,
-                fUsr.observacion as observacion
-            FROM dbo.wlFotosUsuarios fUsr
-                LEFT JOIN dbo.wapPersonas wapPerUsr ON fUsr.id_persona = wapPerUsr.ReferenciaID
+            fUsr.id as id,
+            fUsr.foto_perfil as foto_perfil,
+            fUsr.foto_dni as foto_dni,    
+            
+            CASE
+                WHEN fUsr.id_usuario IS NOT NULL      
+                THEN wapPerUsr.Nombre       
+                ELSE wapPer.Nombre       
+            END as nombre,
+            
+            CASE
+                WHEN fUsr.id_usuario IS NOT NULL      
+                THEN wapPerUsr.Documento       
+                ELSE wapPer.Documento       
+            END as dni,   
+            
+            CASE
+                WHEN fUsr.id_usuario IS NOT NULL      
+                THEN wapPerUsr.DomicilioLegal       
+                ELSE wapPer.DomicilioLegal       
+            END as dom_legal, 
+            
+            CASE
+                WHEN fUsr.id_usuario IS NOT NULL      
+                THEN wapPerUsr.DomicilioReal       
+                ELSE wapPer.DomicilioReal       
+            END as dom_real,
+            
+            fUsr.estado as estado,
+            apps.APLICACION as aplicacion,
+            fUsr.observacion as observacion    
+            
+            FROM dbo.wlFotosUsuarios fUsr    
+                LEFT JOIN dbo.wapUsuarios wapUsr ON fUsr.id_usuario = wapUsr.ReferenciaID    
+                LEFT JOIN dbo.wapPersonas wapPer ON fUsr.id_persona = wapPer.ReferenciaID    
+                LEFT JOIN dbo.wapPersonas wapPerUsr ON wapUsr.PersonaID = wapPerUsr.ReferenciaID 
                 LEFT JOIN dbo.wlAplicaciones apps ON fUsr.id_app = apps.REFERENCIA 
             WHERE $where
             ORDER BY fUsr.fecha_alta DESC";

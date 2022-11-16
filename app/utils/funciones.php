@@ -71,6 +71,7 @@ function sendRes($res, string $error = null, array $params = null)
     } else {
         echo json_encode(['data' => $res, 'error' => $error], JSON_UNESCAPED_UNICODE);
     }
+    exit;
 }
 
 function utf8ize($d)

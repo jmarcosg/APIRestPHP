@@ -156,28 +156,24 @@ class WlFotoPerfilController
 
         $registro = $wlFotoPerfil->get(['id' => $id])->value;
 
-        if ($registro) {
-            $wlFotoPerfil->verifyEstados($registro);
+        /* Verifica si encuenta el registro sin evaluar */
+        $wlFotoPerfil->verifyEstados($registro);
 
-            $data = false;
-
-            $msg = null;
-            if (isset($_POST['estado'])) {
-                $data = $wlFotoPerfil->update($_POST, $id);
-            } else {
-                $msg = 'Requiere estado';
-            }
+        if (isset($_POST['estado'])) {
+            $wlFotoPerfil->setFotoRenaper();
+            $data = $wlFotoPerfil->update($_POST, $id);
 
             if ($data) {
                 $registro = $wlFotoPerfil->get(['id' => $id])->value;
                 $data = $wlFotoPerfil->setBase64($registro);
                 sendRes($data);
             } else {
-                sendRes(null,  $msg ?  $msg : 'Hubo un problema para actulizar el registro');
+                sendRes(null, 'Hubo un problema para actulizar el registro');
             }
         } else {
-            sendRes(null, 'No se encontraron registros');
+            sendRes(null,  'Requiere estado');
         }
+
         exit;
     }
 }

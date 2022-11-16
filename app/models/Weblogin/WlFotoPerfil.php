@@ -73,12 +73,15 @@ class WlFotoPerfil extends BaseModel
         }
     }
 
-    /* Si fue evaluada por alguna entidad */
+    /** Si existe un registro sin ser evaluada */
     public function verifyEstados($data)
     {
+        if (!$data) {
+            sendRes(null, 'No se encontraron registros');
+        }
+
         if ($data['estado'] !== "0") {
-            sendRes(null, 'Ya fue evaluada por soporte modernización', $data);
-            exit;
+            sendRes(null, 'Ya fue evaluada', $data);
         }
     }
 
@@ -106,5 +109,28 @@ class WlFotoPerfil extends BaseModel
             $data['foto_dni'] = getBase64String($url, $data['foto_dni']);
         }
         return $data;
+    }
+
+    public function setFotoRenaper()
+    {
+        $dni = $_POST['dni'];
+        unset($_POST['dni']);
+
+        $sql = "SELECT Genero FROM wapPersonas WHERE Documento = $dni";
+        $data = $this->executeSqlQuery($sql);
+
+        sendResError($data, 'Hubo un error al generar la foto');
+
+        $nameFile = $data['Genero'] . $dni . '.png';
+
+        $path = getPathFile($_FILES['img'], PATH_RENAPER, $nameFile);
+
+        if (file_exists($path)) {
+            sendRes(null, 'Ya existe un archivo en la carpeta de renaper');
+        }
+
+        if (!copy($_FILES['img']['tmp_name'], $path)) {
+            sendRes(null, 'No se copia correctamente el archivo');
+        }
     }
 }
