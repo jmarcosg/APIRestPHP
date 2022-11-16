@@ -76,9 +76,9 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'v2':
-				//* Obtener adoptante por id
+				//* Obtener adoptante por dni
 				$adoptantesController = new Adop_AdoptantesController();
-				$data = Adop_AdoptantesController::index(['id' => $_GET['id']]);
+				$data = Adop_AdoptantesController::index(['dni' => $_GET['dni']]);
 
 				$data = [
 					'data' => $data,
@@ -90,8 +90,8 @@ if ($url['method'] == "GET") {
 						'error' => "Adoptante no encontrado"
 					];
 				} else {
-					$data = $data[0];
-					$data['error'] = null;
+					$data = $data['data'][0];
+					// $data['data'] = null;
 				}
 				break;
 
@@ -275,8 +275,6 @@ if ($url['method'] == "POST") {
 			$fechaModificado = $date->format('Y-m-d H:i:s');
 
 			$data = [
-				'imagen1_path' => "a",
-				'imagen2_path' => "a",
 				'nombre' => $_POST['nombre'],
 				'edad' => $_POST['edad'],
 				'tipo_edad' => $_POST['tipo_edad'],
@@ -285,9 +283,7 @@ if ($url['method'] == "POST") {
 				'tamanio' => $_POST['tamanio'],
 				'castrado' => $_POST['castrado'],
 				'descripcion' => $_POST['descripcion'],
-				'adoptado' => $_POST['adoptado'],
-				'fecha_ingreso' => $currentTime,
-				'fecha_modificacion' => null,
+				'fecha_modificacion' => $fechaModificado,
 			];
 
 			if ($_POST['tipo_raza'] != "otro" && $_POST['raza'] == "") {
@@ -301,14 +297,12 @@ if ($url['method'] == "POST") {
 			$id = Adop_AnimalesController::update($data, $idAnimalModificar);
 
 			if (!$id instanceof ErrorException) {
-				$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen1'], $idAnimalModificar, "imagen1_path");
-				$imagen1 = $imagenCargada;
-				if ($imagenCargada) {
-					$imagenCargada = Adop_AnimalesController::storeImage($_FILES['imagen2'], $idAnimalModificar, "imagen2_path");
-					$imagen2 = $imagenCargada;
+				if (isset($_FILES['imagen1_path'])) {
+					$imagen1Modificada = Adop_AnimalesController::storeImage($_FILES['imagen1_path'], $idAnimalModificar, "imagen1_path");
+				}
 
-					if ($imagenCargada) {
-					}
+				if (isset($_FILES['imagen2_path'])) {
+					$imagen2Modificada = Adop_AnimalesController::storeImage($_FILES['imagen2_path'], $idAnimalModificar, "imagen1_path");
 				}
 			} else {
 				$mensaje = $id->getMessage();
@@ -358,16 +352,18 @@ if ($url['method'] == "POST") {
 
 				if (!$id instanceof ErrorException) {
 					$mensaje = "exito carga adoptante";
+					sendRes($mensaje);
 				} else {
 					$mensaje = $id->getMessage();
 					// $mensaje = "prueba error";
 					logFileEE('prueba', $id, null, null);
+					sendRes($mensaje);
 				}
 			} else {
-				$mensaje = "adoptante ya cargado";
+				$mensaje = $id->getMessage();
+				logFileEE('prueba', $id, null, null);
 			}
 
-			echo $mensaje;
 			exit;
 
 		case 'v2':
@@ -473,6 +469,7 @@ if ($url['method'] == "POST") {
 			];
 
 			$dataAdopcion = [
+				'id_empleado' => $_POST['id_empleado'],
 				'id_adoptante' => $_POST['id_adoptante'],
 				'id_animal' => $_POST['id_animal'],
 				'fecha_adopcion' => $currentTime
@@ -484,13 +481,13 @@ if ($url['method'] == "POST") {
 				$adopcionGenerada = Adop_AdopcionesController::store($dataAdopcion);
 				if (!$adopcionGenerada instanceof ErrorException) {
 					$mensaje = "exito adopcion";
+					sendRes($mensaje);
 				} else {
-					$mensaje = $id->getMessage();;
+					$mensaje = $id->getMessage();
 					logFileEE('prueba', $id, null, null);
 				}
 			}
 
-			echo $mensaje;
 			exit;
 
 		case 'ad2':
