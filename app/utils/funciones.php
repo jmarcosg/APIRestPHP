@@ -301,6 +301,8 @@ function getExtFile($file)
 
             case ('image/png'):
                 return '.png';
+            case ('png'):
+                return '.png';
 
             case 'application/pdf':
                 return '.pdf';

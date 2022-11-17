@@ -114,16 +114,31 @@ class WlFotoPerfil extends BaseModel
     public function setFotoRenaper()
     {
         $dni = $_POST['dni'];
-        unset($_POST['dni']);
 
         $sql = "SELECT Genero FROM wapPersonas WHERE Documento = $dni";
         $data = $this->executeSqlQuery($sql);
 
+        if (!$data) {
+            sendRes(null, "No existe persona con documento: $dni");
+        }
+
         sendResError($data, 'Hubo un error al generar la foto');
+
+        if ($data['Genero'] == 'M') {
+            $newPath = PATH_RENAPER . 'MASCULINO\\';
+        }
+
+        if ($data['Genero'] == 'F') {
+            $newPath = PATH_RENAPER . 'FEMENINO\\';
+        }
+
+        if ($data['Genero'] == 'X') {
+            $newPath = PATH_RENAPER . 'NO BINARIO\\';
+        }
 
         $nameFile = $data['Genero'] . $dni . '.png';
 
-        $path = getPathFile($_FILES['img'], PATH_RENAPER, $nameFile);
+        $path = getPathFile($_FILES['img'], $newPath, $nameFile);
 
         if (file_exists($path)) {
             sendRes(null, 'Ya existe un archivo en la carpeta de renaper');

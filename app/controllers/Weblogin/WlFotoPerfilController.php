@@ -15,13 +15,14 @@ class WlFotoPerfilController
         $sql = self::getPersonsSql('estado = 0');
         $data = $wlFotoPerfil->executeSqlQuery($sql, false);
 
+        if (count($data) == 0) {
+            sendRes($data, 'N hay informacion');
+        }
         sendResError($data, 'Hubo un error en la obtención de las personas');
 
         $data = $wlFotoPerfil->setBase64($data);
 
         sendRes($data);
-
-        exit;
     }
 
     public static function getLastFotos()
@@ -36,7 +37,6 @@ class WlFotoPerfilController
         } else {
             sendRes(null, 'No se encontraron registros');
         }
-        exit;
     }
 
     public static function getFotoById()
@@ -44,7 +44,11 @@ class WlFotoPerfilController
         $wlFotoPerfil = new WlFotoPerfil();
 
         $id = $_GET['id'];
-        $data = $wlFotoPerfil->get(['id' => $id])->value;
+
+        $sql = self::getPersonsSql("id = $id");
+        $data = $wlFotoPerfil->executeSqlQuery($sql);
+
+        sendResError($data, 'Hubo un error en la obtención de la foto', ['id' => $id]);
 
         if ($data) {
             sendResError($data, 'Hubo un error en la obtención de la foto', ['id' => $id]);
@@ -53,7 +57,6 @@ class WlFotoPerfilController
         } else {
             sendRes($data, 'No se encuentra la foto', ['id' => $id]);
         }
-        exit;
     }
 
     public static function saveFoto()
@@ -78,8 +81,6 @@ class WlFotoPerfilController
         } else {
             sendRes(null, 'No se encontraron registros');
         }
-
-        exit;
     }
 
     public static function editFotoByUser()
@@ -160,7 +161,14 @@ class WlFotoPerfilController
         $wlFotoPerfil->verifyEstados($registro);
 
         if (isset($_POST['estado'])) {
-            $wlFotoPerfil->setFotoRenaper();
+
+            /* Si es aprobado guardamos la foto */
+            if ($_POST['estado'] == '1') $wlFotoPerfil->setFotoRenaper();
+
+            if (isset($_POST['img'])) unset($_POST['img']);
+            if (isset($_POST['dni'])) unset($_POST['dni']);
+
+            /* Actualizamos los registros en la base de datos */
             $data = $wlFotoPerfil->update($_POST, $id);
 
             if ($data) {
@@ -173,7 +181,5 @@ class WlFotoPerfilController
         } else {
             sendRes(null,  'Requiere estado');
         }
-
-        exit;
     }
 }
