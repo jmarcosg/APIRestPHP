@@ -84,7 +84,7 @@ if ($url['method'] == "GET") {
 					'data' => $data,
 				];
 
-				if (count($data) == 0) {
+				if (count($data['data']) == 0) {
 					$data = [
 						'adoptante' => null,
 						'error' => "Adoptante no encontrado"
@@ -116,20 +116,21 @@ if ($url['method'] == "GET") {
 			case 'ad2':
 				//* Obtener adopcion por id
 				$adopcionesController = new Adop_AdopcionesController();
-				$data = Adop_AdopcionesController::index(['id' => $_GET['id']]);
+				$data = Adop_AdopcionesController::index(['id_adoptante' => $_GET['id_adoptante']]);
 
-				$data = [
-					'data' => $data,
-				];
+				// recorro el arreglo de animales para obtener las adopciones de las personas segun su id
+				$adopciones = [];
+				foreach ($data as $adoptante) {
+					$adopciones[] = Adop_AnimalesController::index(['id' => $adoptante['id_animal']])[0];
+				}
+
+				$data = $adopciones;
 
 				if (count($data) == 0) {
 					$data = [
-						'adopcion' => null,
-						'error' => "Adopcion no encontrada"
+						'adopciones' => null,
+						'error' => "Ésta persona no tiene adopciones generadas y asignadas"
 					];
-				} else {
-					$data = $data[0];
-					$data['error'] = null;
 				}
 				break;
 
@@ -368,27 +369,26 @@ if ($url['method'] == "POST") {
 
 		case 'v2':
 			//* Modificar adoptante
-			$idAdoptanteModificar = $_POST['id'];
-			$adoptantes = Adop_AdoptantesController::index(['id' => $idAdoptanteModificar])[0];
+			$dniAdoptanteModificar = $_POST['dni'];
+			$adoptante = Adop_AdoptantesController::index(['dni' => $dniAdoptanteModificar])[0];
 
 			$data = [
-				'nombre' => $_POST['nombre'],
-				'dni' => $_POST['dni'],
 				'email' => $_POST['email'],
 				'email_alternativo' => $_POST['email_alternativo'],
 				'telefono' => $_POST['telefono'],
 				'telefono_alternativo' => $_POST['telefono_alternativo'],
-				'ciudad' => $_POST['ciudad'],
 				'domicilio' => $_POST['domicilio']
 			];
 
-			$id = Adop_AdoptantesController::update($data, $idAdoptanteModificar);
+			$id = Adop_AdoptantesController::update($data, $adoptante['id']);
 
 			if (!$id instanceof ErrorException) {
 				$mensaje = "exito modificacion adoptante";
+				sendRes($mensaje);
 			} else {
 				$mensaje = $id->getMessage();
 				logFileEE('prueba', $id, null, null);
+				sendRes($mensaje);
 			}
 
 			echo $mensaje;
