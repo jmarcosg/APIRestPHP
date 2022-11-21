@@ -69,7 +69,7 @@ function sendRes($res, string $error = null, array $params = null)
     if ($error) {
         echo json_encode(['data' => null, 'error' => $error, 'params' => $params]);
     } else {
-        echo json_encode(['data' => $res, 'error' => $error], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['data' => $res, 'error' => $error, 'params' => $params], JSON_UNESCAPED_UNICODE);
     }
     exit;
 }
@@ -368,6 +368,5 @@ function sendResError($object, $error = null, $params = null)
 {
     if ($object instanceof ErrorException) {
         sendRes(null, $error, $params);
-        exit;
     }
 }

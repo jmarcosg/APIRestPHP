@@ -16,7 +16,7 @@ class WlFotoPerfilController
         $data = $wlFotoPerfil->executeSqlQuery($sql, false);
 
         if (count($data) == 0) {
-            sendRes($data, 'N hay informacion');
+            sendRes($data, 'No hay informacion');
         }
         sendResError($data, 'Hubo un error en la obtención de las personas');
 

@@ -44,11 +44,9 @@ class WlFotoPerfil extends BaseModel
                 $_POST['foto_perfil'] = $nameFilePerfil;
             } else {
                 sendRes(null, 'No se guardo la foto de perfil');
-                exit;
             }
         } else {
             sendRes(null, 'Los parametros son incorrectos', $_POST);
-            exit;
         }
     }
 
@@ -65,11 +63,9 @@ class WlFotoPerfil extends BaseModel
                 $_POST['foto_dni'] = $nameFileDni;
             } else {
                 sendRes(null, 'No se guardo la foto del DNI');
-                exit;
             }
         } else {
             sendRes(null, 'Los parametros son incorrectos', $_POST);
-            exit;
         }
     }
 
