@@ -119,7 +119,7 @@ class WlFotoPerfilController
                 $data = self::updateFoto($perfil, $uniqid, $params, $id);
 
                 if (!$data) {
-                    sendResError($data, 'Hubo un error al actualizar la foto de perfil', $params);
+                    sendResError($data, 'Hubo un error al actualizar la foto de perfil', $_POST);
                 }
             }
 
@@ -131,7 +131,7 @@ class WlFotoPerfilController
                 $data = self::updateFoto($dni, $uniqid, $params, $id);
 
                 if (!$data) {
-                    sendResError($data, 'Hubo un error al actualizar la foto del dni', $params);
+                    sendResError($data, 'Hubo un error al actualizar la foto del dni', $_POST);
                 }
             }
 

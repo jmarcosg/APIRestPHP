@@ -52,6 +52,15 @@ trait Validaciones
 
     private static function validateSaveFoto()
     {
+
+        $fillable = [
+            'id',
+            'id_app',
+            'id_persona',
+            'id_usuario',
+            'nombre_archivo'
+        ];
+
         $errors = [];
 
         /* foto_perfil */
@@ -97,6 +106,8 @@ trait Validaciones
             $errors[] = 'nombre_archivo es requerido';
         }
 
+        self::formatPost($fillable);
+
         return $errors;
     }
 
@@ -123,11 +134,20 @@ trait Validaciones
             $errors[] = 'foto_perfil o foto_dni es requerido';
         }
 
+        self::formatPost(['id', 'nombre_archivo']);
+
         return $errors;
     }
 
     private static function validateChangeEstado()
     {
+        $fillable = [
+            'id',
+            'estado',
+            'observacion',
+            'id_usuario_admin'
+        ];
+
         $errors = [];
 
         /* id */
@@ -168,6 +188,8 @@ trait Validaciones
             }
         }
 
+        self::formatPost($fillable);
+
         return $errors;
     }
 
@@ -185,5 +207,14 @@ trait Validaciones
         }
 
         return $errors;
+    }
+
+    private static function formatPost($fillable)
+    {
+        foreach ($_POST as $key => $p) {
+            if (!in_array($key, $fillable)) {
+                unset($_POST[$key]);
+            }
+        }
     }
 }
