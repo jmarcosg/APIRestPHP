@@ -28,6 +28,8 @@ class WlFotoPerfilController
 
     public static function getLastFotos()
     {
+        self::checkParams(__FUNCTION__);
+
         $wlFotoPerfil = new WlFotoPerfil();
 
         $dni = $_POST['dni'];

@@ -186,7 +186,7 @@ trait SqlTrait
             fUsr.id as id,
             fUsr.foto_perfil as foto_perfil,
             fUsr.foto_dni as foto_dni,    
-            
+            fUsr.id_app as id_app,            
             CASE
                 WHEN fUsr.id_usuario IS NOT NULL      
                 THEN wapPerUsr.Nombre       
