@@ -3,9 +3,12 @@
 namespace App\Models\Weblogin;
 
 use App\Models\BaseModel;
+use App\Traits\WebLogin\Validaciones;
 
 class WlFotoPerfil extends BaseModel
 {
+    use Validaciones;
+
     protected $table = 'wlFotosUsuarios';
     protected $identity = 'id';
     protected $logPath = 'v1/wlFotosUsuarios';

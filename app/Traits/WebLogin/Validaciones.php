@@ -6,7 +6,6 @@ trait Validaciones
 {
     public static function checkParams($scope)
     {
-
         $errors = [];
 
         switch ($scope) {
@@ -105,7 +104,7 @@ trait Validaciones
             $errors[] = 'nombre_archivo es requerido';
         }
 
-        self::formatPost($fillable);
+        self::format($fillable);
 
         return $errors;
     }
@@ -133,7 +132,7 @@ trait Validaciones
             $errors[] = 'foto_perfil o foto_dni es requerido';
         }
 
-        self::formatPost(['id', 'nombre_archivo']);
+        self::format(['id', 'nombre_archivo']);
 
         return $errors;
     }
@@ -187,7 +186,7 @@ trait Validaciones
             'id_usuario_admin'
         ];
 
-        self::formatPost($fillable);
+        self::format($fillable);
 
         return $errors;
     }
@@ -208,7 +207,7 @@ trait Validaciones
         return $errors;
     }
 
-    private static function formatPost($fillable)
+    private static function format($fillable)
     {
         foreach ($_POST as $key => $p) {
             if (!in_array($key, $fillable)) {

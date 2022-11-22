@@ -111,8 +111,9 @@ class BaseModel
 
     public function update($req, $id)
     {
-        $req = $this->formatPost($req);
+        unset($req[$this->identity]);
 
+        $req = $this->formatPost($req);
         /* Verificamos si el recurso existe */
         $search = $this->get([$this->identity => $id])->value;
         if ($search) {

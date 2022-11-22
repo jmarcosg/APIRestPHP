@@ -28,7 +28,7 @@ class WlFotoPerfilController
 
     public static function getLastFotos()
     {
-        self::checkParams(__FUNCTION__);
+        WlFotoPerfil::checkParams(__FUNCTION__);
 
         $wlFotoPerfil = new WlFotoPerfil();
 
@@ -50,7 +50,7 @@ class WlFotoPerfilController
 
     public static function getFotoById()
     {
-        self::checkParams(__FUNCTION__);
+        WlFotoPerfil::checkParams(__FUNCTION__);
 
         $wlFotoPerfil = new WlFotoPerfil();
 
@@ -72,7 +72,7 @@ class WlFotoPerfilController
 
     public static function saveFoto()
     {
-        self::checkParams(__FUNCTION__);
+        WlFotoPerfil::checkParams(__FUNCTION__);
 
         $wlFotoPerfil = new WlFotoPerfil();
 
@@ -98,9 +98,10 @@ class WlFotoPerfilController
 
     public static function editFotoByUser()
     {
-        self::checkParams(__FUNCTION__);
+        WlFotoPerfil::checkParams(__FUNCTION__);
 
         $wlFotoPerfil = new WlFotoPerfil();
+
 
         $id = $_POST['id'];
 
@@ -163,7 +164,7 @@ class WlFotoPerfilController
 
     public static function changeEstado()
     {
-        self::checkParams(__FUNCTION__);
+        WlFotoPerfil::checkParams(__FUNCTION__);
 
         $wlFotoPerfil = new WlFotoPerfil();
 
