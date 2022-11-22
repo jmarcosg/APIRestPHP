@@ -113,6 +113,9 @@ class BaseModel
     {
         unset($req[$this->identity]);
 
+        $algo = $this->req[$req] = array_key_exists($req, $req) ? $req[$req] : null;
+
+        
         /* Verificamos si el recurso existe */
         $search = $this->get([$this->identity => $id])->value;
         if ($search) {

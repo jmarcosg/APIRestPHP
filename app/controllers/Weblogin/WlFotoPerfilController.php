@@ -30,7 +30,12 @@ class WlFotoPerfilController
     {
         $wlFotoPerfil = new WlFotoPerfil();
 
-        $data = $wlFotoPerfil->get($_POST, ['order' => ' ORDER BY id DESC'])->value;
+        $dni = $_GET['dni'];
+
+        $sql = self::getPersonsSql("id = $dni");
+        $data = $wlFotoPerfil->executeSqlQuery($sql);
+
+        sendResError($data);
 
         if ($data) {
             $data = $wlFotoPerfil->setBase64($data);
