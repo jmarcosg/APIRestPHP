@@ -30,9 +30,10 @@ class WlFotoPerfilController
     {
         $wlFotoPerfil = new WlFotoPerfil();
 
-        $dni = $_GET['dni'];
+        $dni = $_POST['dni'];
 
-        $sql = self::getPersonsSql("id = $dni");
+        $where = "(wapPer.Documento = '$dni' OR wapPerUsr.Documento = '$dni') AND fUsr.estado = 0";
+        $sql = self::getPersonsSql($where);
         $data = $wlFotoPerfil->executeSqlQuery($sql);
 
         sendResError($data);
