@@ -153,7 +153,6 @@ class WlFotoPerfilController
     {
         $wlFotoPerfil = new WlFotoPerfil();
 
-        $wlFotoPerfil->saveFotoPerfil($uniqid);
         $data = $wlFotoPerfil->update($params, $id);
 
         if ($data) {
