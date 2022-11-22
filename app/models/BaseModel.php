@@ -111,8 +111,8 @@ class BaseModel
 
     public function update($req, $id)
     {
-        unset($req[$this->identity]);
-        
+        $req = $this->formatPost($req);
+
         /* Verificamos si el recurso existe */
         $search = $this->get([$this->identity => $id])->value;
         if ($search) {
@@ -329,5 +329,16 @@ class BaseModel
                 }
             }
         }
+    }
+
+    private function formatPost($req)
+    {
+        foreach ($req as $key => $p) {
+            if (!in_array($key, $this->fillable)) {
+                unset($req[$key]);
+            }
+        }
+
+        return $req;
     }
 }

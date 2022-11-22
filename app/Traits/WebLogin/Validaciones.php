@@ -52,7 +52,6 @@ trait Validaciones
 
     private static function validateSaveFoto()
     {
-
         $fillable = [
             'id',
             'id_app',
@@ -141,13 +140,6 @@ trait Validaciones
 
     private static function validateChangeEstado()
     {
-        $fillable = [
-            'id',
-            'estado',
-            'observacion',
-            'id_usuario_admin'
-        ];
-
         $errors = [];
 
         /* id */
@@ -187,6 +179,13 @@ trait Validaciones
                 $errors[] = 'id_usuario_admin debe ser numérico';
             }
         }
+
+        $fillable = [
+            'id',
+            'estado',
+            'observacion',
+            'id_usuario_admin'
+        ];
 
         self::formatPost($fillable);
 

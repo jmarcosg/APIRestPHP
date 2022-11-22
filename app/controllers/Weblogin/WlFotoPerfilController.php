@@ -115,8 +115,7 @@ class WlFotoPerfilController
             if (isset($_FILES['foto_perfil'])) {
                 $perfil = $registro['foto_perfil'];
                 $wlFotoPerfil->saveFotoPerfil($uniqid);
-                $params = ['foto_perfil' => $_POST['foto_perfil']];
-                $data = self::updateFoto($perfil, $uniqid, $params, $id);
+                $data = self::updateFoto($perfil, $_POST, $id);
 
                 if (!$data) {
                     sendResError($data, 'Hubo un error al actualizar la foto de perfil', $_POST);
@@ -127,8 +126,7 @@ class WlFotoPerfilController
 
                 $dni = $registro['foto_dni'];
                 $wlFotoPerfil->saveFotoDni($uniqid);
-                $params = ['foto_dni' => $_POST['foto_dni']];
-                $data = self::updateFoto($dni, $uniqid, $params, $id);
+                $data = self::updateFoto($dni, $_POST, $id);
 
                 if (!$data) {
                     sendResError($data, 'Hubo un error al actualizar la foto del dni', $_POST);
@@ -149,7 +147,7 @@ class WlFotoPerfilController
         exit;
     }
 
-    private static function updateFoto($foto, $uniqid, $params, $id)
+    private static function updateFoto($foto, $params, $id)
     {
         $wlFotoPerfil = new WlFotoPerfil();
 

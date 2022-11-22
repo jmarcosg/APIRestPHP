@@ -33,39 +33,31 @@ class WlFotoPerfil extends BaseModel
 
     public function saveFotoPerfil($uniqid)
     {
-        if (isset($_FILES['foto_perfil']) && isset($_POST['nombre_archivo'])) {
-            $nameFile = $_POST['nombre_archivo'];
+        $nameFile = $_POST['nombre_archivo'];
 
-            $foto_perfil = $_FILES['foto_perfil'];
-            $nameFilePerfil = $nameFile . '_PERFIL_' . $uniqid . getExtFile($foto_perfil);
-            $path_perfil = getPathFile($foto_perfil, $this->filesUrl, $nameFilePerfil);
+        $foto_perfil = $_FILES['foto_perfil'];
+        $nameFilePerfil = $nameFile . '_PERFIL_' . $uniqid . getExtFile($foto_perfil);
+        $path_perfil = getPathFile($foto_perfil, $this->filesUrl, $nameFilePerfil);
 
-            if (copy($foto_perfil['tmp_name'], $path_perfil)) {
-                $_POST['foto_perfil'] = $nameFilePerfil;
-            } else {
-                sendRes(null, 'No se guardo la foto de perfil');
-            }
+        if (copy($foto_perfil['tmp_name'], $path_perfil)) {
+            $_POST['foto_perfil'] = $nameFilePerfil;
         } else {
-            sendRes(null, 'Los parametros son incorrectos', $_POST);
+            sendRes(null, 'No se guardo la foto de perfil');
         }
     }
 
     public function saveFotoDni($uniqid)
     {
-        if (isset($_FILES['foto_dni']) && isset($_POST['nombre_archivo'])) {
-            $nameFile = $_POST['nombre_archivo'];
+        $nameFile = $_POST['nombre_archivo'];
 
-            $foto_dni = $_FILES['foto_dni'];
-            $nameFileDni = $nameFile . '_DNI_' . $uniqid . getExtFile($foto_dni);
-            $path_dni = getPathFile($foto_dni, $this->filesUrl, $nameFileDni);
+        $foto_dni = $_FILES['foto_dni'];
+        $nameFileDni = $nameFile . '_DNI_' . $uniqid . getExtFile($foto_dni);
+        $path_dni = getPathFile($foto_dni, $this->filesUrl, $nameFileDni);
 
-            if (copy($foto_dni['tmp_name'], $path_dni)) {
-                $_POST['foto_dni'] = $nameFileDni;
-            } else {
-                sendRes(null, 'No se guardo la foto del DNI');
-            }
+        if (copy($foto_dni['tmp_name'], $path_dni)) {
+            $_POST['foto_dni'] = $nameFileDni;
         } else {
-            sendRes(null, 'Los parametros son incorrectos', $_POST);
+            sendRes(null, 'No se guardo la foto del DNI');
         }
     }
 
