@@ -155,6 +155,15 @@ trait Validaciones
             }
         }
 
+        /* id_usuario_admin */
+        if (!isset($_POST['id_usuario_admin'])) {
+            $errors[] = 'id_usuario_admin es requerid_usuario_admino';
+        } else {
+            if (!is_numeric($_POST['id_usuario_admin'])) {
+                $errors[] = 'id_usuario_admin debe ser numerico';
+            }
+        }
+
         return $errors;
     }
 }
