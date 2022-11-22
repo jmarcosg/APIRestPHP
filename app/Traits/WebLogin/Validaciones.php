@@ -25,6 +25,10 @@ trait Validaciones
             case 'changeEstado':
                 $errors = self::validateChangeEstado();
                 break;
+
+            case 'getLastFotos':
+                $errors = self::validateGetLastFotos();
+                break;
         }
 
         if (count($errors) != 0) sendRes(null, 'Problema con los parametros', $errors);
@@ -39,7 +43,7 @@ trait Validaciones
             $errors[] = 'id es requerido';
         } else {
             if (!is_numeric($_GET['id'])) {
-                $errors[] = 'id debe ser numerico';
+                $errors[] = 'id debe ser numérico';
             }
         }
 
@@ -65,7 +69,7 @@ trait Validaciones
             $errors[] = 'id_app es requerido';
         } else {
             if (!is_numeric($_POST['id_app'])) {
-                $errors[] = 'id_app debe ser numerico';
+                $errors[] = 'id_app debe ser numérico';
             }
         }
 
@@ -78,11 +82,11 @@ trait Validaciones
             } else {
                 if (isset($_POST['id_persona'])) {
                     if (!is_numeric($_POST['id_persona'])) {
-                        $errors[] = 'id_persona debe ser numerico';
+                        $errors[] = 'id_persona debe ser numérico';
                     }
                 } else {
                     if (!is_numeric($_POST['id_usuario'])) {
-                        $errors[] = 'id_usuario debe ser numerico';
+                        $errors[] = 'id_usuario debe ser numérico';
                     }
                 }
             }
@@ -105,7 +109,7 @@ trait Validaciones
             $errors[] = 'id es requerido';
         } else {
             if (!is_numeric($_POST['id'])) {
-                $errors[] = 'id debe ser numerico';
+                $errors[] = 'id debe ser numérico';
             }
         }
 
@@ -131,7 +135,7 @@ trait Validaciones
             $errors[] = 'id es requerido';
         } else {
             if (!is_numeric($_POST['id'])) {
-                $errors[] = 'id debe ser numerico';
+                $errors[] = 'id debe ser numérico';
             }
         }
 
@@ -140,7 +144,7 @@ trait Validaciones
             $errors[] = 'estado es requerido';
         } else {
             if (!is_numeric($_POST['estado'])) {
-                $errors[] = 'estado debe ser numerico';
+                $errors[] = 'estado debe ser numérico';
             } else {
                 if ($_POST['estado'] != 1 && $_POST['estado'] != -1) {
                     $errors[] = 'estado invalido: 1 - aprobado | -1 - rechazada ';
@@ -160,7 +164,23 @@ trait Validaciones
             $errors[] = 'id_usuario_admin es requerid_usuario_admino';
         } else {
             if (!is_numeric($_POST['id_usuario_admin'])) {
-                $errors[] = 'id_usuario_admin debe ser numerico';
+                $errors[] = 'id_usuario_admin debe ser numérico';
+            }
+        }
+
+        return $errors;
+    }
+
+    private static function validateGetLastFotos()
+    {
+        $errors = [];
+
+        /* dni */
+        if (!isset($_POST['dni'])) {
+            $errors[] = 'dni es requerido';
+        } else {
+            if (!is_numeric($_POST['dni'])) {
+                $errors[] = 'dni debe ser numérico';
             }
         }
 
