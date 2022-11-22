@@ -2,7 +2,7 @@
 
 namespace App\Traits\WebLogin;
 
-trait Validaciones
+trait ValidacionesWlFotos
 {
     public static function checkParams($scope)
     {
