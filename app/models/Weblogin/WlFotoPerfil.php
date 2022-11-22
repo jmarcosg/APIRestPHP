@@ -76,8 +76,8 @@ class WlFotoPerfil extends BaseModel
             sendRes(null, 'No se encontraron registros');
         }
 
-        if ($data['estado'] !== "0") {
-            sendRes(null, 'Ya fue evaluada', $data);
+        if ($data['estado'] != "0") {
+            sendRes(null, 'Ya fue evaluada');
         }
     }
 
@@ -107,33 +107,15 @@ class WlFotoPerfil extends BaseModel
         return $data;
     }
 
-    public function setFotoRenaper()
+    public function setFotoRenaper($genero, $dni)
     {
-        $dni = $_POST['dni'];
+        if ($genero == 'M') $newPath = PATH_RENAPER . 'MASCULINO\\';
 
-        $sql = "SELECT Genero FROM wapPersonas WHERE Documento = $dni";
-        $data = $this->executeSqlQuery($sql);
+        if ($genero == 'F') $newPath = PATH_RENAPER . 'FEMENINO\\';
 
-        if (!$data) {
-            sendRes(null, "No existe persona con documento: $dni");
-        }
+        if ($genero == 'X') $newPath = PATH_RENAPER . 'NO BINARIO\\';
 
-        sendResError($data, 'Hubo un error al generar la foto');
-
-        if ($data['Genero'] == 'M') {
-            $newPath = PATH_RENAPER . 'MASCULINO\\';
-        }
-
-        if ($data['Genero'] == 'F') {
-            $newPath = PATH_RENAPER . 'FEMENINO\\';
-        }
-
-        if ($data['Genero'] == 'X') {
-            $newPath = PATH_RENAPER . 'NO BINARIO\\';
-        }
-
-        $nameFile = $data['Genero'] . $dni . '.png';
-
+        $nameFile = $genero . $dni . '.png';
         $path = getPathFile($_FILES['img'], $newPath, $nameFile);
 
         if (file_exists($path)) {

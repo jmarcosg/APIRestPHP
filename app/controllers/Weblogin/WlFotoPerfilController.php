@@ -3,10 +3,11 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\Weblogin\WlFotoPerfil;
+use App\Traits\WebLogin\Validaciones;
 
 class WlFotoPerfilController
 {
-    use SqlTrait;
+    use SqlTrait, Validaciones;
 
     public static function getPersonasSinVerificar()
     {
@@ -41,6 +42,8 @@ class WlFotoPerfilController
 
     public static function getFotoById()
     {
+        self::checkParams(__FUNCTION__);
+
         $wlFotoPerfil = new WlFotoPerfil();
 
         $id = $_GET['id'];
@@ -61,6 +64,8 @@ class WlFotoPerfilController
 
     public static function saveFoto()
     {
+        self::checkParams(__FUNCTION__);
+
         $wlFotoPerfil = new WlFotoPerfil();
 
         $wlFotoPerfil->saveFotos(uniqid());
@@ -85,6 +90,8 @@ class WlFotoPerfilController
 
     public static function editFotoByUser()
     {
+        self::checkParams(__FUNCTION__);
+
         $wlFotoPerfil = new WlFotoPerfil();
 
         $id = $_POST['id'];
@@ -151,35 +158,35 @@ class WlFotoPerfilController
 
     public static function changeEstado()
     {
+        self::checkParams(__FUNCTION__);
+
         $wlFotoPerfil = new WlFotoPerfil();
 
         $id = $_POST['id'];
 
-        $registro = $wlFotoPerfil->get(['id' => $id])->value;
+        $sql = self::getPersonsSql("id = $id");
+        $registro = $wlFotoPerfil->executeSqlQuery($sql);
 
         /* Verifica si encuenta el registro sin evaluar */
         $wlFotoPerfil->verifyEstados($registro);
 
-        if (isset($_POST['estado'])) {
+        /* Si es aprobado guardamos la foto */
+        if ($_POST['estado'] == '1') {
+            $wlFotoPerfil->setFotoRenaper($registro['genero'], $registro['dni']);
+        }
 
-            /* Si es aprobado guardamos la foto */
-            if ($_POST['estado'] == '1') $wlFotoPerfil->setFotoRenaper();
+        if (isset($_POST['img'])) unset($_POST['img']);
 
-            if (isset($_POST['img'])) unset($_POST['img']);
-            if (isset($_POST['dni'])) unset($_POST['dni']);
+        /* Actualizamos los registros en la base de datos */
+        $data = $wlFotoPerfil->update($_POST, $id);
 
-            /* Actualizamos los registros en la base de datos */
-            $data = $wlFotoPerfil->update($_POST, $id);
-
-            if ($data) {
-                $registro = $wlFotoPerfil->get(['id' => $id])->value;
-                $data = $wlFotoPerfil->setBase64($registro);
-                sendRes($data);
-            } else {
-                sendRes(null, 'Hubo un problema para actulizar el registro');
-            }
+        if ($data) {
+            $sql = self::getPersonsSql("id = $id");
+            $registro = $wlFotoPerfil->executeSqlQuery($sql);
+            $data = $wlFotoPerfil->setBase64($registro);
+            sendRes($data);
         } else {
-            sendRes(null,  'Requiere estado');
+            sendRes(null, 'Hubo un problema para actulizar el registro');
         }
     }
 }

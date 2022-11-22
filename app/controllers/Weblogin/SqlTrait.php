@@ -198,6 +198,12 @@ trait SqlTrait
                 THEN wapPerUsr.Documento       
                 ELSE wapPer.Documento       
             END as dni,   
+            CASE
+
+                WHEN fUsr.id_usuario IS NOT NULL      
+                THEN wapPerUsr.Genero       
+                ELSE wapPer.Genero       
+            END as genero,   
             
             CASE
                 WHEN fUsr.id_usuario IS NOT NULL      
