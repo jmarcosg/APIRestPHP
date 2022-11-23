@@ -15,6 +15,13 @@ class Adop_AnimalesController
 
     public static function index($param = [], $ops = [])
     {
+        $data = new Adop_Animal();
+        $data = $data->list($param, $ops)->value;
+        return $data;
+    }
+
+    public static function indexEverything($param = [], $ops = [])
+    {
         $encodedData = [];
         $data = new Adop_Animal();
         $data = $data->list($param, $ops)->value;
