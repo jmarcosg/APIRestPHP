@@ -3,11 +3,10 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\Weblogin\WlFotoPerfil;
-use App\Traits\WebLogin\Validaciones;
 
 class WlFotoPerfilController
 {
-    use SqlTrait, Validaciones;
+    use SqlTrait;
 
     public static function getPersonasSinVerificar()
     {
@@ -16,12 +15,11 @@ class WlFotoPerfilController
         $sql = self::getPersonsSql('estado = 0');
         $data = $wlFotoPerfil->executeSqlQuery($sql, false);
 
-        if (count($data) == 0) {
-            sendRes($data, 'No hay informacion');
-        }
         sendResError($data, 'Hubo un error en la obtención de las personas');
 
-        $data = $wlFotoPerfil->setBase64($data);
+        if (count($data) == 0) {
+            sendRes(null, 'No hay informacion');
+        }
 
         sendRes($data);
     }

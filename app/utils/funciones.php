@@ -155,7 +155,7 @@ function createJsonError($subPath, ErrorException $e, $class = null, $function =
         ],
     ];;
 
-    $json_string = json_encode($regArray);
+    $json_string = json_encode(utf8ize($regArray));
     $file = $path . date('Ymd_His') . '_' . uniqid() . '.json';
 
     file_put_contents($file, $json_string);

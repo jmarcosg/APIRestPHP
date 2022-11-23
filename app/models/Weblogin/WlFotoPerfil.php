@@ -84,39 +84,20 @@ class WlFotoPerfil extends BaseModel
 
     public function setBase64($data)
     {
-        if (is_multi_array($data)) {
-            foreach ($data as $key => $reg) {
-
-                $url = $this->filesUrl . $reg['foto_perfil'];
-
-                if (file_exists($url)) {
-                    $data[$key]['foto_perfil'] = getBase64String($url, $reg['foto_perfil']);
-                } else {
-                    $data[$key]['foto_perfil'] = 'FIN FOTO';
-                }
-
-                $url = $this->filesUrl . $reg['foto_dni'];
-                if (file_exists($url)) {
-                    $data[$key]['foto_dni'] = getBase64String($url, $reg['foto_dni']);
-                } else {
-                    $data[$key]['foto_dni'] = 'FIN FOTO';
-                }
-            }
+        $url = $this->filesUrl . $data['foto_perfil'];
+        if (file_exists($url)) {
+            $data['foto_perfil'] = getBase64String($url, $data['foto_perfil']);
         } else {
-            $url = $this->filesUrl . $data['foto_perfil'];
-            if (file_exists($url)) {
-                $data['foto_perfil'] = getBase64String($url, $data['foto_perfil']);
-            } else {
-                $data['foto_perfil'] = 'FIN FOTO';
-            }
-
-            $url = $this->filesUrl . $data['foto_dni'];
-            if (file_exists($url)) {
-                $data['foto_dni'] = getBase64String($url, $data['foto_dni']);
-            } else {
-                $data['foto_dni'] = 'FIN FOTO';
-            }
+            $data['foto_perfil'] = 'FIN FOTO';
         }
+
+        $url = $this->filesUrl . $data['foto_dni'];
+        if (file_exists($url)) {
+            $data['foto_dni'] = getBase64String($url, $data['foto_dni']);
+        } else {
+            $data['foto_dni'] = 'FIN FOTO';
+        }
+
         return $data;
     }
 
