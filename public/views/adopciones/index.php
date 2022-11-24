@@ -6,7 +6,7 @@ use App\Controllers\Adopciones\Adop_AnimalesController;
 
 if ($_GET['action'] == 'anp') {
     $animalesController = new Adop_AnimalesController();
-    $data = $animalesController->index();
+    $data = $animalesController->indexEverything();
 
     $data = [
         'data' => $data,

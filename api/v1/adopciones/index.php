@@ -42,10 +42,6 @@ if ($url['method'] == "GET") {
 				$animalesController = new Adop_AnimalesController();
 				$data = Adop_AnimalesController::indexEverything(['id' => $_GET['id']]);
 
-				// $data = [
-				// 	'data' => $data,
-				// ];
-
 				if (count($data) == 0) {
 					$data = [
 						'animal' => null,
@@ -53,7 +49,21 @@ if ($url['method'] == "GET") {
 					];
 				} else {
 					$data = $data[0];
-					// $data['error'] = null;
+				}
+				break;
+
+			case 'an3':
+				//* Obtener fotos del animal por id
+				$animalesController = new Adop_AnimalesController();
+				$data = Adop_AnimalesController::indexAnimalPhotos(['id' => $_GET['id']]);
+
+				if (count($data) == 0) {
+					$data = [
+						'animal' => null,
+						'error' => "Animal no encontrado"
+					];
+				} else {
+					$data['error'] = null;
 				}
 				break;
 
@@ -91,7 +101,6 @@ if ($url['method'] == "GET") {
 					];
 				} else {
 					$data = $data['data'][0];
-					// $data['data'] = null;
 				}
 				break;
 
