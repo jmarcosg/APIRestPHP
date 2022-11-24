@@ -19,7 +19,7 @@ if ($url['method'] == "GET") {
 
 		switch ($_GET['action']) {
 			case 'an1':
-				//* Listado de animales
+				//* Listado simple de animales
 				$animalesController = new Adop_AnimalesController();
 				$data = $animalesController->index();
 
@@ -38,9 +38,9 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'an2':
-				//* Obtener animal por id
+				//* Obtener animal con todos sus datos por id
 				$animalesController = new Adop_AnimalesController();
-				$data = Adop_AnimalesController::index(['id' => $_GET['id']]);
+				$data = Adop_AnimalesController::indexEverything(['id' => $_GET['id']]);
 
 				// $data = [
 				// 	'data' => $data,
@@ -95,6 +95,26 @@ if ($url['method'] == "GET") {
 				}
 				break;
 
+			case 'v3':
+				//* Obtener adoptante por id animal
+				$adopcionesController = new Adop_AdopcionesController();
+				$adopciones = Adop_AdopcionesController::index(['id_animal' => $_GET['id_animal']]);
+
+				// filtro por la adopcion mas reciente
+				$adopcionMasReciente = $adopciones[count($adopciones) - 1];
+
+				// obtengo el adoptante de la adopcion mas reciente
+				$data = Adop_AdoptantesController::index(['id' => $adopcionMasReciente['id_adoptante']])[0];
+
+
+				if (count($data) == 0) {
+					$data = [
+						'adopciones' => null,
+						'error' => "Éste animal todavía no fue adoptado"
+					];
+				}
+				break;
+
 			case 'ad1':
 				//* Listado de adopciones
 				$data = Adop_AdopcionesController::index();
@@ -114,17 +134,18 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'ad2':
-				//* Obtener adopcion por id
+				//* Obtener adopciones por id adoptante
 				$adopcionesController = new Adop_AdopcionesController();
-				$data = Adop_AdopcionesController::index(['id_adoptante' => $_GET['id_adoptante']]);
+				$adopciones = Adop_AdopcionesController::getMostRecentAdopterAdoptions($_GET['id_adoptante']);
 
-				// recorro el arreglo de animales para obtener las adopciones de las personas segun su id
-				$adopciones = [];
-				foreach ($data as $adoptante) {
-					$adopciones[] = Adop_AnimalesController::index(['id' => $adoptante['id_animal']])[0];
+				$data = [];
+				foreach ($adopciones as $adopcion) {
+					$animal = Adop_AnimalesController::indexEverything(['id' => $adopcion['id_animal']])[0];
+					// formateo la fecha de adopcion con formato dd/mm/yyyy hh:mm
+					$adopcion['fecha_adopcion'] = date('d/m/Y H:i', strtotime($adopcion['fecha_adopcion']));
+					$animal['fecha_adopcion'] = $adopcion['fecha_adopcion'];
+					array_push($data, $animal);
 				}
-
-				$data = $adopciones;
 
 				if (count($data) == 0) {
 					$data = [
@@ -303,7 +324,7 @@ if ($url['method'] == "POST") {
 				}
 
 				if (isset($_FILES['imagen2_path'])) {
-					$imagen2Modificada = Adop_AnimalesController::storeImage($_FILES['imagen2_path'], $idAnimalModificar, "imagen1_path");
+					$imagen2Modificada = Adop_AnimalesController::storeImage($_FILES['imagen2_path'], $idAnimalModificar, "imagen2_path");
 				}
 			} else {
 				$mensaje = $id->getMessage();
@@ -356,13 +377,12 @@ if ($url['method'] == "POST") {
 					sendRes($mensaje);
 				} else {
 					$mensaje = $id->getMessage();
-					// $mensaje = "prueba error";
 					logFileEE('prueba', $id, null, null);
 					sendRes($mensaje);
 				}
 			} else {
-				$mensaje = $id->getMessage();
-				logFileEE('prueba', $id, null, null);
+				$mensaje = "Adoptante ya existente";
+				sendRes($mensaje);
 			}
 
 			exit;
@@ -486,6 +506,10 @@ if ($url['method'] == "POST") {
 					$mensaje = $id->getMessage();
 					logFileEE('prueba', $id, null, null);
 				}
+			} else {
+				$mensaje = "error adopcion";
+				logFileEE('prueba', $animalAdoptado, null, null);
+				sendRes($mensaje);
 			}
 
 			exit;
