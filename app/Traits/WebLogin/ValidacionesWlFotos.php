@@ -7,33 +7,12 @@ trait ValidacionesWlFotos
     public static function checkParams($scope)
     {
         $errors = [];
-
-        switch ($scope) {
-            case 'getFotoById':
-                $errors = self::validateGetFotosById();
-                break;
-
-            case 'saveFoto':
-                $errors = self::validateSaveFoto();
-                break;
-
-            case 'editFotoByUser':
-                $errors = self::validateEditFotoByUser();
-                break;
-
-            case 'changeEstado':
-                $errors = self::validateChangeEstado();
-                break;
-
-            case 'getLastFotos':
-                $errors = self::validateGetLastFotos();
-                break;
-        }
-
+        $scope = "validate$scope";
+        $errors = self::$scope();
         if (count($errors) != 0) sendRes(null, 'Problema con los parametros', $errors);
     }
 
-    private static function validateGetFotosById()
+    private static function validategetFotosById()
     {
         $errors = [];
 
@@ -49,7 +28,7 @@ trait ValidacionesWlFotos
         return $errors;
     }
 
-    private static function validateSaveFoto()
+    private static function validatesaveFoto()
     {
         $fillable = [
             'id',
@@ -109,7 +88,7 @@ trait ValidacionesWlFotos
         return $errors;
     }
 
-    private static function validateEditFotoByUser()
+    private static function validateeditFotoByUser()
     {
         $errors = [];
 
@@ -137,7 +116,7 @@ trait ValidacionesWlFotos
         return $errors;
     }
 
-    private static function validateChangeEstado()
+    private static function validatechangeEstado()
     {
         $errors = [];
 
@@ -191,7 +170,7 @@ trait ValidacionesWlFotos
         return $errors;
     }
 
-    private static function validateGetLastFotos()
+    private static function validategetLastFotos()
     {
         $errors = [];
 
