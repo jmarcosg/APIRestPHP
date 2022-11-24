@@ -84,7 +84,16 @@ class WlFotoPerfil extends BaseModel
 
     public function setBase64($data)
     {
-        $url = $this->filesUrl . $data['foto_perfil'];
+
+        if ($data['estado'] != 1) {
+            $url = $this->filesUrl . $data['foto_perfil'];
+        } else {
+            $genero = substr($data['foto_perfil'], 0, 1);
+            if ($genero == 'M') $url = PATH_RENAPER . 'MASCULINO\\' . $data['foto_perfil'];
+            if ($genero == 'F') $url = PATH_RENAPER . 'FEMENINO\\' . $data['foto_perfil'];
+            if ($genero == 'X') $url = PATH_RENAPER . 'NO BINARIO\\' . $data['foto_perfil'];
+        }
+
         if (file_exists($url)) {
             $data['foto_perfil'] = getBase64String($url, $data['foto_perfil']);
         } else {
@@ -104,9 +113,7 @@ class WlFotoPerfil extends BaseModel
     public function setFotoRenaper($genero, $dni)
     {
         if ($genero == 'M') $newPath = PATH_RENAPER . 'MASCULINO\\';
-
         if ($genero == 'F') $newPath = PATH_RENAPER . 'FEMENINO\\';
-
         if ($genero == 'X') $newPath = PATH_RENAPER . 'NO BINARIO\\';
 
         $nameFile = $genero . $dni . '.png';
@@ -119,5 +126,7 @@ class WlFotoPerfil extends BaseModel
         if (!copy($_FILES['img']['tmp_name'], $path)) {
             sendRes(null, 'No se copia correctamente el archivo');
         }
+
+        $_POST['foto_perfil'] = $nameFile;
     }
 }

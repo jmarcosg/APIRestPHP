@@ -185,6 +185,7 @@ class WlFotoPerfilController
         $data = $wlFotoPerfil->update($_POST, $id);
 
         if ($data) {
+            $wlFotoPerfil->deleteFoto($registro['foto_perfil']);
             $sql = self::getPersonsSql("id = $id");
             $registro = $wlFotoPerfil->executeSqlQuery($sql);
             $data = $wlFotoPerfil->setBase64($registro);

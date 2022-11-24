@@ -5,7 +5,6 @@ use App\Controllers\Weblogin\WlFotoPerfilController;
 $dotenv = \Dotenv\Dotenv::createImmutable('./wlfotoperfil/');
 $dotenv->load();
 
-
 include './wlfotoperfil/config.php';
 
 if ($url['method'] == 'GET') {
