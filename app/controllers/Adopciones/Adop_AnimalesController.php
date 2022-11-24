@@ -33,6 +33,24 @@ class Adop_AnimalesController
         return $encodedData;
     }
 
+    public static function indexAnimalPhotos($param = [], $ops = [])
+    {
+        $encodedData = [];
+        $data = new Adop_Animal();
+        $data = $data->list($param, $ops)->value;
+        foreach ($data as $animal) {
+            $animal['imagen1_path'] = getBase64String(FILE_PATH . "adopciones/animales/$animal[id]/$animal[imagen1_path]", $animal['imagen1_path']);
+            $animal['imagen2_path'] = getBase64String(FILE_PATH . "adopciones/animales/$animal[id]/$animal[imagen2_path]", $animal['imagen2_path']);
+
+            $encodedData = [
+                'imagen1_path' => $animal['imagen1_path'],
+                'imagen2_path' => $animal['imagen2_path']
+            ];
+        }
+
+        return $encodedData;
+    }
+
     public static function store($res)
     {
         $data = new Adop_Animal();
