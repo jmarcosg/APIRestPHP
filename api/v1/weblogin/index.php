@@ -44,8 +44,6 @@ if ($url['method'] == 'GET') {
 	}
 }
 
-
-
 if ($url['method'] == 'POST') {
 	$action = $_POST['action'];
 	unset($_POST['action']);

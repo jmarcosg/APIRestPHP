@@ -31,13 +31,14 @@ class LoginController
             $referenciaId = $userData->value->profile->wapUsuarioID;
             $fetch = self::viewFetch($referenciaId, $dni);
 
-            if (!$fetch instanceof ErrorException) {
-                $data['fetch'] = $fetch;
-                sendRes($data);
-            } else {
-                Weblogin::saveLog($fetch, __CLASS__, __FUNCTION__);
-                sendRes(null, $fetch->getMessage(), $_GET);
-            }
+            sendResError($fetch, 'Hubo un error al realizar el inicio de sesion');
+
+            /* Weblogin::saveLog($fetch, __CLASS__, __FUNCTION__); */
+            /* sendRes(null, $fetch->getMessage(), $_GET); */
+
+            $data['fetch'] = $fetch;
+
+            sendRes($data);
         } else {
             $error = new ErrorException($userData->error);
             Weblogin::saveLog($error->getMessage(), __CLASS__, __FUNCTION__);

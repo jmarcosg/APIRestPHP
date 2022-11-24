@@ -17,14 +17,15 @@ trait SqlTrait
         $data['acarreo'] = false;
         if (FETCH_ACARREO) {
             $rodados = ImponiblesController::getRodados(22089786);
-            $acarreos = self::getAcarreos($rodados);
-            if (!$acarreos instanceof ErrorException && count($acarreos) > 0) {
-                $data['acarreo'] = $acarreos;
+            if ($rodados) {
+                $acarreos = self::getAcarreos($rodados);
+                if (!$acarreos instanceof ErrorException && count($acarreos) > 0) {
+                    $data['acarreo'] = $acarreos;
+                }
             }
         }
 
         $data['muniEventos'] = FETCH_LEGAJO && self::getMuniEventosFetch($dni) ? true : false;
-
         $data['legajo'] = $data['legajo'] != null && FETCH_LEGAJO ? true : false;
         $data['libreta'] = $data['libreta'] != null && FETCH_LIBRETA ? true : false;
         $data['libretaDos'] = FETCH_LIBRETA ? true : false;
