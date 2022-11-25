@@ -25,6 +25,9 @@ if ($url['method'] == 'GET') {
 		case 'getUsuarios':
 			IdeasPropuestasController::getUsuarios();
 
+		case 'getCategorias':
+			IdeasPropuestasController::getCategorias();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);

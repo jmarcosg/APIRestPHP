@@ -2,9 +2,9 @@
 
 namespace App\Controllers\IdeasPropuestas;
 
+use App\Models\IdeasPropuestas\Categorias;
 use App\Models\IdeasPropuestas\IdeasPropuestas;
 use App\Models\IdeasPropuestas\Usuarios;
-use ErrorException;
 
 class IdeasPropuestasController
 {
@@ -23,6 +23,8 @@ class IdeasPropuestasController
             $contents = self::getContentSql($result['id']);
 
             sendResError($contents, 'Hubo un error inesperado');
+
+            $contents = self::formatContents($contents);
 
             $result['is_admin'] = $result['is_admin'] == "0" ? false : true;
             $result['contents'] = $contents;
@@ -46,6 +48,8 @@ class IdeasPropuestasController
 
         sendResError($contents, 'Hubo un error al obtener las ideas');
 
+        $contents = self::formatContents($contents);
+
         sendRes($contents);
         exit;
     }
@@ -54,13 +58,17 @@ class IdeasPropuestasController
     {
         $data = new IdeasPropuestas();
 
-        $data = $data->update(['content' => $_POST['content']], $_POST['id']);
+        $params = ['content' => $_POST['content'], 'id_categoria' => $_POST['id_categoria']];
+        $data = $data->update($params, $_POST['id']);
+
         if ($data) {
             sendResError($data, 'Hubo un error al guardar su idea, intente mas tarde');
 
             $contents = self::getContentSql($_POST['id_usuario']);
 
             sendResError($contents, 'Hubo un error al obtener las ideas');
+
+            $contents = self::formatContents($contents);
 
             sendRes($contents);
         } else {
@@ -77,7 +85,11 @@ class IdeasPropuestasController
 
         if ($data) {
             $contents = self::getContentSql($_POST['id_usuario']);
+
             sendResError($contents, 'Hubo un error al obtener las ideas');
+
+            $contents = self::formatContents($contents);
+
             sendRes($contents, null);
         } else {
             sendRes(null, 'No se pudo eliminar el recurso');
@@ -88,11 +100,13 @@ class IdeasPropuestasController
 
     public static function getContents($where = "1=1")
     {
-        $result = self::getContentsSql($where);
+        $contents = self::getContentsSql($where);
 
-        sendResError($result, 'Hubo un error inesperado');
+        sendResError($contents, 'Hubo un error inesperado');
 
-        sendRes($result);
+        $contents = self::formatContents($contents);
+
+        sendRes($contents);
 
         exit;
     }
@@ -117,6 +131,20 @@ class IdeasPropuestasController
         sendResError($usuarios, 'Hubo un error al obtener los usuarios');
 
         sendRes($usuarios->value);
+
+        exit;
+    }
+
+    public static function getCategorias()
+    {
+        $data = new Categorias();
+
+        $categorias = $data->list();
+
+        sendResError($categorias, 'Hubo un error al obtener los usuarios');
+
+        sendRes($categorias->value);
+
         exit;
     }
 
@@ -137,5 +165,13 @@ class IdeasPropuestasController
 
         sendRes($usuarios->value);
         exit;
+    }
+
+    private static function formatContents($contents)
+    {
+        foreach ($contents as $key => $content) {
+            if (!$content['id_categoria']) $contents[$key]['id_categoria'] = 'DEFAULT';
+        }
+        return $contents;
     }
 }

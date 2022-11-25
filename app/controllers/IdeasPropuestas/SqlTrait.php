@@ -35,9 +35,12 @@ trait SqlTrait
     {
         $sql =
             "SELECT 
-                id,
-                content
-            FROM dbo.ip_ideas
+                i.id as id,
+                i.content as content,
+                cat.nombre as categoria,
+                cat.id as id_categoria
+            FROM dbo.ip_ideas i
+            LEFT JOIN ip_categorias cat ON cat.id = i.id_categoria 
             WHERE id_usuario = '$idUsuario'";
 
         $model = new IdeasPropuestas();
