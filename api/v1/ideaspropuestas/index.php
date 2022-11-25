@@ -19,6 +19,9 @@ if ($url['method'] == 'GET') {
 		case 'getAllContentsUser':
 			IdeasPropuestasController::getContentsByUser();
 
+		case 'getAllContentsCategorias':
+			IdeasPropuestasController::getContentsByCat();
+
 		case 'getAllContentsByDni':
 			IdeasPropuestasController::getContents('dni = ' . $_GET['dni']);
 

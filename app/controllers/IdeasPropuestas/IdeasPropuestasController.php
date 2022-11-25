@@ -20,7 +20,8 @@ class IdeasPropuestasController
         sendResError($result, 'Hubo un error inesperado');
 
         if ($result) {
-            $contents = self::getContentSql($result['id']);
+            $id = $result['id'];
+            $contents = self::getContentSql("id_usuario = '$id'");
 
             sendResError($contents, 'Hubo un error inesperado');
 
@@ -44,7 +45,7 @@ class IdeasPropuestasController
 
         sendResError($id, 'Hubo un error al guardar su idea, intente mas tarde');
 
-        $contents = self::getContentSql($_POST['id_usuario']);
+        $contents = self::getContentSql(self::getWhereSql());
 
         sendResError($contents, 'Hubo un error al obtener las ideas');
 
@@ -64,7 +65,7 @@ class IdeasPropuestasController
         if ($data) {
             sendResError($data, 'Hubo un error al guardar su idea, intente mas tarde');
 
-            $contents = self::getContentSql($_POST['id_usuario']);
+            $contents = self::getContentSql(self::getWhereSql());
 
             sendResError($contents, 'Hubo un error al obtener las ideas');
 
@@ -74,7 +75,6 @@ class IdeasPropuestasController
         } else {
             sendRes(null, 'Hubo un error al guardar la idea');
         }
-        exit;
     }
 
     public static function deleteContent()
@@ -83,8 +83,10 @@ class IdeasPropuestasController
 
         $data = $data->delete($_POST['id']);
 
+        sendResError($data, 'Hubo un error al obtener las ideas');
+
         if ($data) {
-            $contents = self::getContentSql($_POST['id_usuario']);
+            $contents = self::getContentSql(self::getWhereSql());
 
             sendResError($contents, 'Hubo un error al obtener las ideas');
 
@@ -94,8 +96,6 @@ class IdeasPropuestasController
         } else {
             sendRes(null, 'No se pudo eliminar el recurso');
         }
-
-        exit;
     }
 
     public static function getContents($where = "1=1")
@@ -104,22 +104,31 @@ class IdeasPropuestasController
 
         sendResError($contents, 'Hubo un error inesperado');
 
-        $contents = self::formatContents($contents);
-
         sendRes($contents);
-
-        exit;
     }
 
     public static function getContentsByUser()
     {
-        $result = self::getContentsSqlByUser();
+        $resultInterno = self::getContentsSqlByUser();
+
+        sendResError($resultInterno, 'Hubo un error inesperado');
+
+        $resultExterno = self::getContentsSqlByUser('externo');
+
+        sendResError($resultInterno, 'Hubo un error inesperado');
+
+        $result = array_merge($resultInterno, $resultExterno);
+
+        sendRes($result);
+    }
+
+    public static function getContentsByCat()
+    {
+        $result = self::getContentsSqlByCat();
 
         sendResError($result, 'Hubo un error inesperado');
 
         sendRes($result);
-
-        exit;
     }
 
     public static function getUsuarios()
@@ -173,5 +182,20 @@ class IdeasPropuestasController
             if (!$content['id_categoria']) $contents[$key]['id_categoria'] = 'DEFAULT';
         }
         return $contents;
+    }
+
+    private static function getWhereSql()
+    {
+        if (key_exists('id_usuario_wl', $_POST)) {
+            $id = $_POST['id_usuario_wl'];
+            $where = "id_usuario_wl = '$id'";
+        }
+
+        if (key_exists('id_usuario', $_POST)) {
+            $id = $_POST['id_usuario'];
+            $where = "id_usuario = '$id'";
+        }
+
+        return $where;
     }
 }

@@ -31,17 +31,17 @@ trait SqlTrait
         return $result;
     }
 
-    public static function getContentSql($idUsuario)
+    public static function getContentSql($where)
     {
         $sql =
             "SELECT 
-                i.id as id,
-                i.content as content,
+                ipi.id as id,
+                ipi.content as content,
                 cat.nombre as categoria,
                 cat.id as id_categoria
-            FROM dbo.ip_ideas i
-            LEFT JOIN ip_categorias cat ON cat.id = i.id_categoria 
-            WHERE id_usuario = '$idUsuario'";
+            FROM dbo.ip_ideas ipi
+            LEFT JOIN ip_categorias cat ON cat.id = ipi.id_categoria 
+            WHERE $where";
 
         $model = new IdeasPropuestas();
         $result = $model->executeSqlQuery($sql, false);
@@ -57,8 +57,10 @@ trait SqlTrait
                 ipi.content as content,
                 ipu.nombre as nombre,
                 ipu.dni as dni,
-                ipu.legajo as legajo
+                ipu.legajo as legajo,                
+                cat.nombre as categoria
             FROM ip_ideas ipi
+            LEFT JOIN ip_categorias cat ON cat.id = ipi.id_categoria 
             LEFT JOIN ip_usuarios ipu ON ipu.id = ipi.id_usuario WHERE $where";
 
         $model = new IdeasPropuestas();
@@ -67,16 +69,46 @@ trait SqlTrait
         return $result;
     }
 
-    public static function getContentsSqlByUser()
+    public static function getContentsSqlByUser($tabla = 'interno')
     {
-        $sql =
-            "SELECT 
+        if ($tabla == 'interno') {
+            $sql =
+                "SELECT 
                 ipu.dni as dni,
                 ipu.nombre as nombre,
                 count(ipi.id) as cantidad
             FROM ip_usuarios ipu
-            RIGHT JOIN ip_ideas ipi ON ipi.id_usuario = ipu.id 
+            INNER JOIN ip_ideas ipi ON ipi.id_usuario = ipu.id 
             GROUP BY ipu.nombre, ipu.dni";
+        }
+
+        if ($tabla == 'externo') {
+            $sql =
+                "SELECT 
+                wapper.Documento as dni,
+                wapper.Nombre as nombre,
+                count(ipi.id) as cantidad
+            FROM wapUsuarios as wapUsr
+            INNER JOIN ip_ideas ipi ON ipi.id_usuario_wl = wapUsr.ReferenciaID 
+            INNER JOIN wapPersonas wapper ON wapper.ReferenciaID = wapUsr.PersonaID 
+            GROUP BY wapper.Nombre, wapper.Documento";
+        }
+
+        $model = new IdeasPropuestas();
+        $result = $model->executeSqlQuery($sql, false);
+
+        return $result;
+    }
+
+    public static function getContentsSqlByCat()
+    {
+        $sql =
+            "SELECT 
+                cat.nombre as nombre,
+                count(ipi.id) as cantidad
+            FROM ip_categorias cat
+            INNER JOIN ip_ideas ipi ON ipi.id_categoria = cat.id 
+            GROUP BY cat.nombre";
 
         $model = new IdeasPropuestas();
         $result = $model->executeSqlQuery($sql, false);
