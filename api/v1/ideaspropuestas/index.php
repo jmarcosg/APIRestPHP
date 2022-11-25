@@ -16,6 +16,9 @@ if ($url['method'] == 'GET') {
 		case 'getAllContents':
 			IdeasPropuestasController::getContents();
 
+		case 'getContentsWl':
+			IdeasPropuestasController::getContents('id_usuario_wl =' . $_GET['id_usuario']);
+
 		case 'getAllContentsUser':
 			IdeasPropuestasController::getContentsByUser();
 
