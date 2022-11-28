@@ -33,7 +33,6 @@ class IdeasPropuestasController
         } else {
             sendRes(null, 'Credenciales invalidas');
         }
-        exit;
     }
 
     public static function saveContent()
@@ -52,7 +51,6 @@ class IdeasPropuestasController
         $contents = self::formatContents($contents);
 
         sendRes($contents);
-        exit;
     }
 
     public static function saveEditContent()
@@ -122,7 +120,7 @@ class IdeasPropuestasController
         sendRes($result);
     }
 
-    public static function getContentsByCat()
+    public static function getCountContentsByCat()
     {
         $result = self::getContentsSqlByCat();
 
@@ -140,8 +138,6 @@ class IdeasPropuestasController
         sendResError($usuarios, 'Hubo un error al obtener los usuarios');
 
         sendRes($usuarios->value);
-
-        exit;
     }
 
     public static function getCategorias()
@@ -153,8 +149,16 @@ class IdeasPropuestasController
         sendResError($categorias, 'Hubo un error al obtener los usuarios');
 
         sendRes($categorias->value);
+    }
 
-        exit;
+    public static function getContentsByCat()
+    {
+        $cat = $_GET['categoria'];
+        $contents = self::getContentsSql("cat.nombre =  '$cat'");
+
+        sendResError($contents, 'Hubo un error inesperado');
+
+        sendRes($contents);
     }
 
     public static function saveUser()
@@ -173,7 +177,6 @@ class IdeasPropuestasController
         sendResError($usuarios, 'Hubo un error al obtener los usuarios');
 
         sendRes($usuarios->value);
-        exit;
     }
 
     private static function formatContents($contents)

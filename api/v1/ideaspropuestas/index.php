@@ -23,7 +23,7 @@ if ($url['method'] == 'GET') {
 			IdeasPropuestasController::getContentsByUser();
 
 		case 'getAllContentsCategorias':
-			IdeasPropuestasController::getContentsByCat();
+			IdeasPropuestasController::getCountContentsByCat();
 
 		case 'getAllContentsByDni':
 			IdeasPropuestasController::getContents('dni = ' . $_GET['dni']);
@@ -33,6 +33,9 @@ if ($url['method'] == 'GET') {
 
 		case 'getCategorias':
 			IdeasPropuestasController::getCategorias();
+
+		case 'getContentsByCat':
+			IdeasPropuestasController::getContentsByCat();
 
 		default:
 			$error = new ErrorException('El action no es valido');
