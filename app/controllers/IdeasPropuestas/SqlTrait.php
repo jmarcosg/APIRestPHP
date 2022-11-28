@@ -55,13 +55,28 @@ trait SqlTrait
             "SELECT 
                 ipi.id as id,
                 ipi.content as content,
-                ipu.nombre as nombre,
-                ipu.dni as dni,
-                ipu.legajo as legajo,                
+                
+                CASE
+                    WHEN ipi.id_usuario IS NOT NULL      
+                    THEN ipu.nombre    
+                    ELSE wPer.Nombre       
+                END as nombre,
+                
+                CASE
+                    WHEN ipi.id_usuario IS NOT NULL      
+                    THEN ipu.dni     
+                    ELSE wPer.Documento       
+                END as dni,
+                
+                ipu.legajo as legajo,
+                
                 cat.nombre as categoria
             FROM ip_ideas ipi
-            LEFT JOIN ip_categorias cat ON cat.id = ipi.id_categoria 
-            LEFT JOIN ip_usuarios ipu ON ipu.id = ipi.id_usuario WHERE $where";
+                LEFT JOIN ip_categorias cat ON cat.id = ipi.id_categoria 
+                LEFT JOIN ip_usuarios ipu ON ipu.id = ipi.id_usuario
+                LEFT JOIN wapUsuarios wUsr ON wUsr.ReferenciaID = ipi.id_usuario_wl 
+                LEFT JOIN wapPersonas wPer ON wPer.ReferenciaID = wUsr.PersonaID 
+            WHERE $where";
 
         $model = new IdeasPropuestas();
         $result = $model->executeSqlQuery($sql, false);
