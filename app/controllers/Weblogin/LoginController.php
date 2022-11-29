@@ -61,7 +61,7 @@ class LoginController
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => WEBLOGIN2,
+                CURLOPT_URL => BASE_WEB_LOGIN_API . 'webLogin2',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,

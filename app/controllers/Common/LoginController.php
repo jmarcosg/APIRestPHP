@@ -19,7 +19,7 @@ class LoginController
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => WS_WEBLOGIN . $senssionKey,
+                CURLOPT_URL => BASE_WEB_LOGIN_API . "/getUserByToken/$senssionKey",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
