@@ -72,6 +72,8 @@ class WlFotoPerfilController
     {
         WlFotoPerfil::checkParams(__FUNCTION__);
 
+        self::existFoto();
+
         $wlFotoPerfil = new WlFotoPerfil();
 
         $wlFotoPerfil->saveFotos(uniqid());
@@ -99,7 +101,6 @@ class WlFotoPerfilController
         WlFotoPerfil::checkParams(__FUNCTION__);
 
         $wlFotoPerfil = new WlFotoPerfil();
-
 
         $id = $_POST['id'];
 
@@ -192,6 +193,30 @@ class WlFotoPerfilController
             sendRes($data);
         } else {
             sendRes(null, 'Hubo un problema para actulizar el registro');
+        }
+    }
+
+    private static function existFoto()
+    {
+        if (isset($_POST['id_persona']) && $_POST['id_persona'] != null) {
+            $where = "(fUsr.estado = 0 OR fUsr.estado = 1) AND fUsr.id_persona = " . $_POST['id_persona'];
+        } else {
+            $where = "(fUsr.estado = 0 OR fUsr.estado = 1) AND fUsr.id_usuario = " . $_POST['id_usuario'];
+        }
+
+        $wlFotoPerfil = new WlFotoPerfil();
+
+        $sql = self::getPersonsSql($where);
+        $data = $wlFotoPerfil->executeSqlQuery($sql);
+
+        sendResError($data, 'Hubo un error consultando si existe la foto', $_POST);
+
+        if ($data && $data['estado'] == "0") {
+            sendRes($data, 'Ya existe una foto previamente cargada', $data);
+        }
+
+        if ($data && $data['estado'] == "1") {
+            sendRes($data, 'Ya existe una foto aprobada');
         }
     }
 }
