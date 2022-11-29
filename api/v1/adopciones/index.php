@@ -187,18 +187,11 @@ if ($url['method'] == "GET") {
 				$empleadosController = new Adop_EmpleadosController();
 				$data = Adop_EmpleadosController::index(['id' => $_GET['id']]);
 
-				$data = [
-					'data' => $data,
-				];
-
 				if (count($data) == 0) {
 					$data = [
 						'empleado' => null,
 						'error' => "Empleado no encontrado"
 					];
-				} else {
-					$data = $data[0];
-					$data['error'] = null;
 				}
 				break;
 
@@ -212,10 +205,8 @@ if ($url['method'] == "GET") {
 						'empleado' => null,
 						'error' => "Empleado no encontrado"
 					];
-				} else {
-					$data['data'] = $data[0];
-					$data['error'] = null;
 				}
+
 				break;
 
 			case 't':
@@ -579,7 +570,7 @@ if ($url['method'] == "POST") {
 				$mensaje = "empleado ya cargado";
 			}
 
-			echo $mensaje;
+			sendRes($mensaje);
 			exit;
 
 		case 'e2':
