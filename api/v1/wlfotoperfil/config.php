@@ -9,3 +9,4 @@ define('DB_PORT', $_ENV['DB_PORT']);
 define('DB_CHARSET', $_ENV['DB_CHARSET']);
 
 define('PATH_RENAPER', $_ENV['PATH_RENAPER']);
+define('FILE_PATH', $_ENV['FILE_PATH']);
