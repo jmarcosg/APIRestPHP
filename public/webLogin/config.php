@@ -27,20 +27,8 @@ define('FETCH_LICENCIA', $_ENV['FETCH_LICENCIA'] == 'true' ? true : false);
 define('FETCH_ACARREO', $_ENV['FETCH_ACARREO'] == 'true' ? true : false);
 define('FETCH_MUNI_EVENTOS', $_ENV['FETCH_MUNI_EVENTOS'] == 'true' ? true : false);
 
-if (ENV == 'produccion') {
-    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_PRODUCCION']);
-    define('URL_MUNI_EVENTOS', $_ENV['URL_MUNI_EVENTOS_PRODUCCION']);
-}
-
-if (ENV == 'replica') {
-    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_REPLICA']);
-    define('URL_MUNI_EVENTOS', $_ENV['URL_MUNI_EVENTOS_REPLICA']);
-}
-
-if (ENV == 'local') {
-    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_LOCAL']);
-    define('URL_MUNI_EVENTOS', $_ENV['URL_MUNI_EVENTOS_REPLICA']);
-}
+define('BASE_WEB_LOGIN_API', $_ENV['BASE_WEB_LOGIN_API']);
+define('URL_MUNI_EVENTOS', $_ENV['URL_MUNI_EVENTOS']);
 
 /* Token */
 define('TOKEN_KEY', $_ENV['TOKEN_KEY']);
