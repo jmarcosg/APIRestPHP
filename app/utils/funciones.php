@@ -313,6 +313,44 @@ function getExtFile($file)
     };
 }
 
+/**
+ * @param $file
+ * @param $fileType
+ * @param $destinationFilepath
+ * @return boolean
+ * 
+ * Esta funcion comprime imagenes que recibe en con extension .jpg, .jpeg, .png o .bmp
+ * Crea una nueva imagen en formato .webp para no perder calidad en la compresion
+ * Devuelve true si la compresion fue exitosa, false si no
+ */
+function comprimirImagen($file, $fileType, $destinationFilepath)
+{
+    $imgSize = $file['size'];
+    $tempFile = $file['tmp_name'];
+
+    // Porcentaje de compresion segun peso de la imagen
+    // A menor porcentaje, mayor compresion
+    if ($imgSize > 3072000) {
+        $porcentajeCompresion = 1;
+    } else if ($imgSize < 3072000 && $imgSize > 1024000) {
+        $porcentajeCompresion = 75;
+    } else if ($imgSize < 1024000) {
+        $porcentajeCompresion = 75;
+    } else if ($imgSize < 102400) {
+        $porcentajeCompresion = 90;
+    }
+
+    if ($fileType == 'image/jpg' || $fileType == 'image/jpeg') {
+        $image = imagecreatefromjpeg($tempFile);
+    } elseif ($fileType == 'image/png') {
+        $image = imagecreatefrompng($tempFile);
+    } elseif ($fileType == 'image/bmp') {
+        $image = imagecreatefrombmp($tempFile);
+    }
+
+    return imagewebp($image, $destinationFilepath, $porcentajeCompresion);
+}
+
 function sendEmail($address, $subject, $body, $attachments = null)
 {
     $arrayFilds = ['address' => $address, 'subject' => $subject, 'htmlBody' => $body];
