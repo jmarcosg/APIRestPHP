@@ -14,7 +14,7 @@ trait ValidacionesWlFotos
         if (count($errors) != 0) sendRes(null, 'Problema con los parametros', $errors);
     }
 
-    private static function validategetFotosById()
+    private static function validategetFotoById()
     {
         $errors = [];
 
