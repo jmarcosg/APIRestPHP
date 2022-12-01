@@ -42,7 +42,7 @@ class WlFotoPerfil extends BaseModel
         $nameFilePerfil = $nameFile . '_PERFIL_' . $uniqid . getExtFile($foto_perfil);
         $path_perfil = getPathFile($foto_perfil, $this->filesUrl, $nameFilePerfil);
 
-        if (copy($foto_perfil['tmp_name'], $path_perfil)) {
+        if (comprimirImagen($foto_perfil, $foto_perfil['type'], $path_perfil)) {
             $_POST['foto_perfil'] = $nameFilePerfil;
         } else {
             sendRes(null, 'No se guardo la foto de perfil');
@@ -57,7 +57,7 @@ class WlFotoPerfil extends BaseModel
         $nameFileDni = $nameFile . '_DNI_' . $uniqid . getExtFile($foto_dni);
         $path_dni = getPathFile($foto_dni, $this->filesUrl, $nameFileDni);
 
-        if (copy($foto_dni['tmp_name'], $path_dni)) {
+        if (comprimirImagen($foto_dni, $foto_dni['type'], $path_dni)) {
             $_POST['foto_dni'] = $nameFileDni;
         } else {
             sendRes(null, 'No se guardo la foto del DNI');

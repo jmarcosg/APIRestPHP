@@ -149,6 +149,26 @@ class LoginController
         exit;
     }
 
+    public static function getLicenciaComercial()
+    {
+        $id = $_GET['id'];
+
+        $model = new Weblogin();
+
+        $sql = self::datosLicComercial($id);
+        $data = $model->executeSqlQuery($sql, false);
+        
+        if ($data && !$data instanceof ErrorException) {
+            $data = self::formatLicenciaComercial($data);
+            sendRes($data);
+        } else {
+            $error = new ErrorException("Problema al obtener los datos de licencia de conducir | id: $id");
+            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
+            sendRes(null, $error->getMessage(), $_GET);
+        };
+        exit;
+    }
+
     /** Obtenemos los datos de licencia de conducir */
     public static function getMuniEventos()
     {

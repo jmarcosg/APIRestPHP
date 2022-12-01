@@ -88,4 +88,23 @@ trait FormatTrait
 
         return $result;
     }
+
+    private static function formatLicenciaComercial(array $result)
+    {
+        $data = [
+            'count_not' => count($result),
+            'data' => group_by("id_solicitud", $result)
+        ];
+
+        foreach ($data['data'] as $key => $d) {
+            $data['data'][$key] = [
+                'count' => count($d),
+                'solicitud' => $key,
+                'data' => $d
+            ];
+        }
+        $data['data'] = array_values($data['data']);
+
+        return $data;
+    }
 }

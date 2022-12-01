@@ -3,7 +3,6 @@
 namespace App\Controllers\Weblogin;
 
 use App\Controllers\Common\ImponiblesController;
-use App\Models\BaseModel;
 use App\Models\Weblogin\Weblogin;
 use ErrorException;
 
@@ -25,6 +24,7 @@ trait SqlTrait
             }
         }
 
+        $data['licencia_comercial'] = (FETCH_LEGAJO && $data['licencia_comercial'] != null && $data['licencia_comercial'] != "0") ? true : false;
         $data['muniEventos'] = FETCH_LEGAJO && self::getMuniEventosFetch($dni) ? true : false;
         $data['legajo'] = $data['legajo'] != null && FETCH_LEGAJO ? true : false;
         $data['libreta'] = $data['libreta'] != null && FETCH_LIBRETA ? true : false;
@@ -78,6 +78,8 @@ trait SqlTrait
                     LEFT JOIN libretas_solicitudes sol ON sol.id_usuario_solicitante = usu.id
                 WHERE wu.ReferenciaID = $referenciaId ORDER BY id DESC
             ) AS libreta,
+            (SELECT COUNT(id) FROM lc_solicitudes WHERE id_usuario = $referenciaId) as licencia_comercial,
+            /* (SELECT COUNT(id) FROM lc_solicitudes WHERE id_usuario = $referenciaId AND visto = 0) as licencia_comercial, */
             (SELECT insumo FROM licLicencias WHERE Licencia = $doc) as licencia";
 
         $model = new Weblogin();
@@ -131,6 +133,13 @@ trait SqlTrait
                 Insumo as insumo
             FROM dbo.licLicencias 
                 WHERE Licencia = $id";
+
+        return $sql;
+    }
+
+    public static function datosLicComercial($id)
+    {
+        $sql = "SELECT * FROM lc_solicitudes_historial WHERE id_usuario = $id AND visto = 0";
 
         return $sql;
     }
