@@ -31,6 +31,8 @@ class Adop_Animal extends BaseModel
 
     public function storeImage($file, $id, $imagenPath)
     {
+        $fileType = $file['type'];
+
         $fileCopied = false;
 
         /* Agarramos la extension del archivo  */
@@ -46,7 +48,7 @@ class Adop_Animal extends BaseModel
 
         /* Borramos la imagen si existe a partir de su extension */
         $i = 0;
-        $allowedExt = [".jpeg", ".jpg", ".png"];
+        $allowedExt = [".jpeg", ".jpg", ".png", ".webp"];
         $fileExists = false;
         while (!$fileExists && $i < count($allowedExt)) {
             $fileExists = file_exists(FILE_PATH . "adopciones\\animales\\$id\\$imagenPath" . $allowedExt[$i]);
@@ -59,8 +61,7 @@ class Adop_Animal extends BaseModel
             $i++;
         }
 
-        /* Copiamos el archivo y creamos su directorio */
-        $tmpFile = $file['tmp_name'];
+
 
         $fileUrl = $fileName . $fileExt;
         $fileFolder = $this->filesUrl . "$id\\";
@@ -72,7 +73,15 @@ class Adop_Animal extends BaseModel
             mkdir($fileFolder, 0777, true);
         }
 
-        if (copy($tmpFile, $fileFolderWithFile)) {
+        /* Copiamos el archivo y creamos su directorio */
+        $tmpFile = $file['tmp_name'];
+        $filePath = FILE_PATH . "adopciones\\animales\\$id\\";
+        $filePath = FILE_PATH . "adopciones\\animales\\$id\\$imagenPath" . $fileExt;
+
+        /* Comprimimos la imagen */
+        $compressedFile = comprimirImagen($file, $fileType, $filePath);
+
+        if ($compressedFile && $fileFolderWithFile) {
             $animal = new Adop_Animal();
             $animal->update([$imagenPath => $fileUrl], $id);
             $fileCopied = $fileUrl;
