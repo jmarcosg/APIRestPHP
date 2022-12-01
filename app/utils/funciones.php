@@ -370,3 +370,24 @@ function sendResError($object, $error = null, $params = null)
         sendRes(null, $error, $params);
     }
 }
+
+/**
+ * Function that groups an array of associative arrays by some key.
+ * 
+ * @param {String} $key Property to sort by.
+ * @param {Array} $data Array that stores multiple associative arrays.
+ */
+function group_by($key, $data)
+{
+    $result = array();
+
+    foreach ($data as $val) {
+        if (array_key_exists($key, $val)) {
+            $result[$val[$key]][] = $val;
+        } else {
+            $result[""][] = $val;
+        }
+    }
+
+    return $result;
+}
