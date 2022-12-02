@@ -24,10 +24,24 @@ class Adop_AnimalesController
     {
         $encodedData = [];
         $data = new Adop_Animal();
+
         $data = $data->list($param, $ops)->value;
+
+
+
         foreach ($data as $animal) {
-            $animal['imagen1_path'] = getBase64String(FILE_PATH . "adopciones/animales/$animal[id]/$animal[imagen1_path]", $animal['imagen1_path']);
-            $animal['imagen2_path'] = getBase64String(FILE_PATH . "adopciones/animales/$animal[id]/$animal[imagen2_path]", $animal['imagen2_path']);
+            $apiPath = "";
+
+            if ($_ENV['ENV'] == "local") {
+                $apiPath = LOCAL_API_FETCH_PATH;
+            } else if ($_ENV['ENV'] == "replica") {
+                $apiPath = REPLICA_API_FETCH_PATH;
+            } else if ($_ENV['ENV'] == "produccion") {
+                $apiPath = WEBLOGIN_API_FETCH_PATH;
+            }
+
+            $animal['imagen1_path'] = $apiPath . "$animal[id]/$animal[imagen1_path]";
+            $animal['imagen2_path'] = $apiPath . "$animal[id]/$animal[imagen2_path]";
             array_push($encodedData, $animal);
         }
         return $encodedData;

@@ -27,10 +27,22 @@ class Adop_Animal extends BaseModel
         'fecha_modificacion',
     ];
 
-    public $filesUrl = FILE_PATH . 'adopciones\\animales\\';
+    // public $filesUrl = FILE_PATH . 'adopciones\\animales\\';
+    // public $filesUrl = "C:\\xampp\\htdocs\\apirestphp\\files\\adopciones\\animales\\";
+    public function filesUrl()
+    {
+        if ($_ENV['ENV'] == "local") {
+            return LOCAL_API_SAVE_PATH;
+        } else if ($_ENV['ENV'] == "replica") {
+            return REPLICA_API_SAVE_PATH;
+        } else if ($_ENV['ENV'] == "produccion") {
+            return WEBLOGIN_API_SAVE_PATH;
+        }
+    }
 
     public function storeImage($file, $id, $imagenPath)
     {
+        $fileUrl = $this->filesUrl();
         $fileType = $file['type'];
 
         $fileCopied = false;
@@ -51,17 +63,17 @@ class Adop_Animal extends BaseModel
         $allowedExt = [".jpeg", ".jpg", ".png", ".webp"];
         $fileExists = false;
         while (!$fileExists && $i < count($allowedExt)) {
-            $fileExists = file_exists(FILE_PATH . "adopciones\\animales\\$id\\$imagenPath" . $allowedExt[$i]);
+            // $fileExists = file_exists(FILE_PATH . "adopciones\\animales\\$id\\$imagenPath" . $allowedExt[$i]);
+            $fileExists = file_exists($this->filesUrl . "$id\\$imagenPath" . $allowedExt[$i]);
 
             if ($fileExists) {
                 $fileExt = $allowedExt[$i];
-                deleteDir(FILE_PATH . "adopciones\\animales\\$id\\$imagenPath" . $fileExt);
+                // deleteDir(FILE_PATH . "adopciones\\animales\\$id\\$imagenPath" . $fileExt);
+                deleteDir($this->filesUrl . "$id\\$imagenPath" . $fileExt);
             }
 
             $i++;
         }
-
-
 
         $fileUrl = $fileName . $fileExt;
         $fileFolder = $this->filesUrl . "$id\\";
@@ -74,9 +86,11 @@ class Adop_Animal extends BaseModel
         }
 
         /* Copiamos el archivo y creamos su directorio */
-        $tmpFile = $file['tmp_name'];
-        $filePath = FILE_PATH . "adopciones\\animales\\$id\\";
-        $filePath = FILE_PATH . "adopciones\\animales\\$id\\$imagenPath" . $fileExt;
+        // $tmpFile = $file['tmp_name'];
+        // $filePath = FILE_PATH . "adopciones\\animales\\$id\\";
+        $filePath = $this->filesUrl . "\\$id\\";
+        // $filePath = FILE_PATH . "adopciones\\animales\\$id\\$imagenPath" . $fileExt;
+        $filePath = $this->filesUrl . "\\$id\\$fileUrl";
 
         /* Comprimimos la imagen */
         $compressedFile = comprimirImagen($file, $fileType, $filePath);
@@ -89,5 +103,10 @@ class Adop_Animal extends BaseModel
 
         return $fileCopied;
         exit;
+    }
+
+    public function getPath()
+    {
+        return $this->filesUrl;
     }
 }
