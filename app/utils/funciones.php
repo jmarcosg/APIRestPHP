@@ -298,11 +298,22 @@ function comprimirImagen($file, $fileType, $destinationFilepath)
         $image = imagecreatefromjpeg($tempFile);
     } elseif ($fileType == 'image/png') {
         $image = imagecreatefrompng($tempFile);
+
+        imagepalettetotruecolor($image);
+        imagealphablending($image, true);
+        imagesavealpha($image, true);
     } elseif ($fileType == 'image/bmp') {
         $image = imagecreatefrombmp($tempFile);
+    } else {
+        return false;
     }
 
-    return imagewebp($image, $destinationFilepath, $porcentajeCompresion);
+    if (imagewebp($image, $destinationFilepath, $porcentajeCompresion)) {
+        imagedestroy($image);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function sendEmail($address, $subject, $body, $attachments = null)

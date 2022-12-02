@@ -247,8 +247,8 @@ if ($url['method'] == "POST") {
 			$currentTime = $date->format('Y-m-d H:i:s');
 
 			$data = [
-				'imagen1_path' => "a",
-				'imagen2_path' => "a",
+				'imagen1_path' => "",
+				'imagen2_path' => "",
 				'nombre' => $_POST['nombre'],
 				'edad' => $_POST['edad'],
 				'tipo_edad' => $_POST['tipo_edad'],
