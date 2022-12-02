@@ -27,22 +27,12 @@ class Adop_Animal extends BaseModel
         'fecha_modificacion',
     ];
 
-    // public $filesUrl = FILE_PATH . 'adopciones\\animales\\';
-    // public $filesUrl = "C:\\xampp\\htdocs\\apirestphp\\files\\adopciones\\animales\\";
-    public function filesUrl()
-    {
-        if ($_ENV['ENV'] == "local") {
-            return LOCAL_API_SAVE_PATH;
-        } else if ($_ENV['ENV'] == "replica") {
-            return REPLICA_API_SAVE_PATH;
-        } else if ($_ENV['ENV'] == "produccion") {
-            return WEBLOGIN_API_SAVE_PATH;
-        }
-    }
+
+    public $filesUrl = FILE_PATH . 'adopciones\\animales\\';
 
     public function storeImage($file, $id, $imagenPath)
     {
-        $fileUrl = $this->filesUrl();
+
         $fileType = $file['type'];
 
         $fileCopied = false;
