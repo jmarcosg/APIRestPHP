@@ -1,5 +1,17 @@
 <?php
 $noUrl = true;
+
+include "../../../app/config/paths.php";
+
+require ROOT_PATH . 'vendor/autoload.php';
+require ROOT_PATH . 'app/utils/funciones.php';
+
+$dotenv = \Dotenv\Dotenv::createImmutable(V1_PATH . '/adopciones');
+$dotenv->load();
+
+// $dotenv = \Dotenv\Dotenv::createImmutable("./");
+// $dotenv->load();
+
 include './config.php';
 
 use App\Controllers\Adopciones\Adop_AnimalesController;
