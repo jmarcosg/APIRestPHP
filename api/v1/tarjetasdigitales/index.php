@@ -79,6 +79,16 @@ if ($url['method'] == "GET") {
                 } else {
                     $data = ['error' => "QR no encontrado", 'data' => null];
                 }
+                break;
+
+            case '8':
+                $data = QRI_PersonaController::index(['dni' => $_GET['dni']]);
+                if (count($data) > 0) {
+                    $data = $data[0];
+                } else {
+                    $data = ['error' => "Persona no encontrada", 'data' => null];
+                }
+                break;
         }
     } else {
         $data = [
