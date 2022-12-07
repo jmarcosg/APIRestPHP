@@ -27,26 +27,26 @@ define('TOKEN_KEY', $_ENV['TOKEN_KEY']);
 /* ######################### */
 
 if (ENV == 'produccion') {
-    define('FILE_PATH', $_ENV['FILE_PATH_PRODUCCION']);
+    // define('FILE_PATH', $_ENV['FILE_PATH_PRODUCCION']);
     define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_PRODUCCION']);
     define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_PRODUCCION']);
 }
 
 if (ENV == 'replica') {
-    define('FILE_PATH', $_ENV['FILE_PATH_REPLICA']);
+    // define('FILE_PATH', $_ENV['FILE_PATH_REPLICA']);
     define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_REPLICA']);
     define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_REPLICA']);
 }
 
 if (ENV == 'local') {
     /** LOCAL */
-    define('FILE_PATH', 'C:\xampp\htdocs\apirestphp\files\\');
+    // define('FILE_PATH', 'C:\xampp\htdocs\apirestphp\files\\');
     define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_PRODUCCION']);
 }
 
 if (ENV == 'mac') {
     /** LOCAL */
-    define('FILE_PATH', '');
+    // define('FILE_PATH', '');
     define('WS_WEBLOGIN', 'http://200.85.183.194:90/api/getUserByToken/');
     define('FILE_PATH', $_ENV['FILE_PATH_LOCAL']);
     define('WS_WEBLOGIN', $_ENV['WS_WEBLOGIN_LOCAL']);
