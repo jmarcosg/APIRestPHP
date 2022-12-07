@@ -32,6 +32,9 @@ class BaseModel
     /** Metodos que no se deben ejecutar, en los en las relaciones */
     protected $filterMethod = [];
 
+    /** Arreglo de indices, se utiliza para indicar si se inserta valor repetido */
+    public $uniques = [];
+
     public function __construct()
     {
         $this->filterMethod = get_class_methods(get_parent_class($this));
@@ -64,16 +67,17 @@ class BaseModel
             /* $methods = $this->filterMethods(get_class_methods($this));
             foreach ($methods as $method) $this->$method(); */
         } else {
-            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            /* logFileEE($this->logPath, $result, get_class($this), __FUNCTION__); */
+            createJsonError($this->logPath, $result, get_class($this), __FUNCTION__, $param, $this);
             $this->value = $result;
         }
         return $this;
     }
 
-    public function get($params)
+    public function get($params, $ops = [])
     {
         $conn = new BaseDatos();
-        $result = $conn->search($this->table, $params);
+        $result = $conn->search($this->table, $params, $ops);
 
         if (!$result instanceof ErrorException) {
             $this->value = $conn->fetch_assoc($result);
@@ -84,7 +88,8 @@ class BaseModel
                 foreach ($methods as $method) $this->$method();
             } */
         } else {
-            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            /* logFileEE($this->logPath, $result, get_class($this), __FUNCTION__); */
+            createJsonError($this->logPath, $result, get_class($this), __FUNCTION__, $params, $this);
             $this->value = $result;
         }
         return $this;
@@ -98,7 +103,8 @@ class BaseModel
         $result = $conn->store($this->table, $array);
 
         if ($result instanceof ErrorException) {
-            logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+            /* logFileEE($this->logPath, $result, get_class($this), __FUNCTION__, $array); */
+            createJsonError($this->logPath, $result, get_class($this), __FUNCTION__, $array, $this);
         }
         return $result;
     }
@@ -107,6 +113,7 @@ class BaseModel
     {
         unset($req[$this->identity]);
 
+        $req = $this->formatPost($req);
         /* Verificamos si el recurso existe */
         $search = $this->get([$this->identity => $id])->value;
         if ($search) {
@@ -114,7 +121,8 @@ class BaseModel
             $result = $conn->update($this->table, $req, $id, $this->identity);
 
             if ($result instanceof ErrorException) {
-                logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+                /* logFileEE($this->logPath, $result, get_class($this), __FUNCTION__); */
+                createJsonError($this->logPath, $result, get_class($this), __FUNCTION__, $req, $this);
             }
         } else {
             $result = new ErrorException('No se encuentra el recurso');
@@ -143,7 +151,8 @@ class BaseModel
             }
 
             if ($result instanceof ErrorException) {
-                logFileEE($this->logPath, $result, get_class($this), __FUNCTION__);
+                /* logFileEE($this->logPath, $result, get_class($this), __FUNCTION__); */
+                createJsonError($this->logPath, $result, get_class($this), __FUNCTION__, ['id' => $id], $this);
             }
         } else {
             $result = new ErrorException('No se encuentra el recurso');
@@ -168,7 +177,8 @@ class BaseModel
             }
             return $result;
         } catch (\Throwable $th) {
-            logFileEE($this->logPath, $th, get_class($this), __FUNCTION__);
+            /* logFileEE($this->logPath, $th, get_class($this), __FUNCTION__); */
+            createJsonError($this->logPath, $th, get_class($this), __FUNCTION__, null, $this);
             return $th;
         }
     }
@@ -286,5 +296,50 @@ class BaseModel
         foreach ($methods as $method) {
             $this->filterMethod[] = $method;
         }
+    }
+
+    /** Genera el arreglo de los indices para determinar los valores unicos en la tabla  */
+    public function setUniquesIndex()
+    {
+        $indexs = $this->executeSqlQuery('EXEC sp_helpindex ' . $this->table, false);
+
+        if ($indexs instanceof ErrorException) {
+            /* logFileEE($this->logPath, $indexs, get_class($this), __FUNCTION__); */
+            createJsonError($this->logPath, $indexs, get_class($this), __FUNCTION__, null, $this);
+        } else {
+            $indexs = array_filter($indexs, function ($index) {
+                return str_contains($index['index_description'], 'unique');
+            });
+
+            $this->uniques = array_map(
+                function ($index) {
+                    return $index['index_name'];
+                },
+                $indexs
+            );
+        }
+    }
+
+    /** Envia una respuesta si el motor SQL reponde un error de un valor existente */
+    public function sendRepeatError($data)
+    {
+        if ($data instanceof ErrorException) {
+            foreach ($this->uniques as $unique) {
+                if (str_contains($data->getMessage(), "UNIQUE KEY '$unique'")) {
+                    sendResError($data, "UNIQUE_KEY_$unique");
+                }
+            }
+        }
+    }
+
+    private function formatPost($req)
+    {
+        foreach ($req as $key => $p) {
+            if (!in_array($key, $this->fillable)) {
+                unset($req[$key]);
+            }
+        }
+
+        return $req;
     }
 }

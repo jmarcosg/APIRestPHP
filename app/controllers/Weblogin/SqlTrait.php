@@ -17,12 +17,15 @@ trait SqlTrait
         $data['acarreo'] = false;
         if (FETCH_ACARREO) {
             $rodados = ImponiblesController::getRodados(22089786);
-            $acarreos = self::getAcarreos($rodados);
-            if (!$acarreos instanceof ErrorException && count($acarreos) > 0) {
-                $data['acarreo'] = $acarreos;
+            if ($rodados) {
+                $acarreos = self::getAcarreos($rodados);
+                if (!$acarreos instanceof ErrorException && count($acarreos) > 0) {
+                    $data['acarreo'] = $acarreos;
+                }
             }
         }
 
+        $data['muniEventos'] = FETCH_LEGAJO && self::getMuniEventosFetch($dni) ? true : false;
         $data['legajo'] = $data['legajo'] != null && FETCH_LEGAJO ? true : false;
         $data['libreta'] = $data['libreta'] != null && FETCH_LIBRETA ? true : false;
         $data['libretaDos'] = FETCH_LIBRETA ? true : false;
@@ -147,6 +150,85 @@ trait SqlTrait
                 LEFT JOIN libretas_usuarios usu ON usu.id_wappersonas = per.ReferenciaID
                 LEFT JOIN libretas_solicitudes sol ON sol.id_usuario_solicitante = usu.id
             WHERE wu.ReferenciaID = $id ORDER BY id DESC";
+
+        return $sql;
+    }
+
+    public static function getMuniEventosFetch($dni)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => URL_MUNI_EVENTOS . 38493877,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $response = json_decode($response);
+
+        return $response->data;
+    }
+
+    /* wlFotosPerfil */
+
+    public static function getPersonsSql($where)
+    {
+        $sql =
+            "SELECT
+            fUsr.id as id,
+            fUsr.foto_perfil as foto_perfil,
+            fUsr.foto_dni as foto_dni,    
+            fUsr.id_app as id_app,            
+            CASE
+                WHEN fUsr.id_usuario IS NOT NULL      
+                THEN wapPerUsr.Nombre       
+                ELSE wapPer.Nombre       
+            END as nombre,
+            
+            CASE
+                WHEN fUsr.id_usuario IS NOT NULL      
+                THEN wapPerUsr.Documento       
+                ELSE wapPer.Documento       
+            END as dni,   
+            CASE
+
+                WHEN fUsr.id_usuario IS NOT NULL      
+                THEN wapPerUsr.Genero       
+                ELSE wapPer.Genero       
+            END as genero,   
+            
+            CASE
+                WHEN fUsr.id_usuario IS NOT NULL      
+                THEN wapPerUsr.DomicilioLegal       
+                ELSE wapPer.DomicilioLegal       
+            END as dom_legal, 
+            
+            CASE
+                WHEN fUsr.id_usuario IS NOT NULL      
+                THEN wapPerUsr.DomicilioReal       
+                ELSE wapPer.DomicilioReal       
+            END as dom_real,
+            
+            fUsr.estado as estado,
+            apps.APLICACION as aplicacion,
+            fUsr.observacion as observacion    
+            
+            FROM dbo.wlFotosUsuarios fUsr    
+                LEFT JOIN dbo.wapUsuarios wapUsr ON fUsr.id_usuario = wapUsr.ReferenciaID    
+                LEFT JOIN dbo.wapPersonas wapPer ON fUsr.id_persona = wapPer.ReferenciaID    
+                LEFT JOIN dbo.wapPersonas wapPerUsr ON wapUsr.PersonaID = wapPerUsr.ReferenciaID 
+                LEFT JOIN dbo.wlAplicaciones apps ON fUsr.id_app = apps.REFERENCIA 
+            WHERE $where
+            ORDER BY fUsr.fecha_alta DESC";
 
         return $sql;
     }

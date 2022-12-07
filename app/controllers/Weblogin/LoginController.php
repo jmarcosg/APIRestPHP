@@ -31,13 +31,14 @@ class LoginController
             $referenciaId = $userData->value->profile->wapUsuarioID;
             $fetch = self::viewFetch($referenciaId, $dni);
 
-            if (!$fetch instanceof ErrorException) {
-                $data['fetch'] = $fetch;
-                sendRes($data);
-            } else {
-                Weblogin::saveLog($fetch, __CLASS__, __FUNCTION__);
-                sendRes(null, $fetch->getMessage(), $_GET);
-            }
+            sendResError($fetch, 'Hubo un error al realizar el inicio de sesion');
+
+            /* Weblogin::saveLog($fetch, __CLASS__, __FUNCTION__); */
+            /* sendRes(null, $fetch->getMessage(), $_GET); */
+
+            $data['fetch'] = $fetch;
+
+            sendRes($data);
         } else {
             $error = new ErrorException($userData->error);
             Weblogin::saveLog($error->getMessage(), __CLASS__, __FUNCTION__);
@@ -60,7 +61,7 @@ class LoginController
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => WEBLOGIN2,
+                CURLOPT_URL => BASE_WEB_LOGIN_API . 'webLogin2',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -77,14 +78,10 @@ class LoginController
             $response = curl_exec($curl);
             curl_close($curl);
             $response = json_decode($response);
-            if ($response) {
-                if ($response->error != null) {
-                    return new ErrorException($response->error);
-                }
-                return $response;
-            } else {
+            if ($response == null || $response->error != null) {
                 return new ErrorException('Problema con el inicio de sesion');
             }
+            return $response;
         } catch (\Throwable $th) {
             return $th;
         }
@@ -153,6 +150,23 @@ class LoginController
     }
 
     /** Obtenemos los datos de licencia de conducir */
+    public static function getMuniEventos()
+    {
+        $id = $_GET['dni'];
+
+        $data = self::getMuniEventosFetch($id);
+
+        if ($data && !$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            $error = new ErrorException("Problema al obtener los datos de muni eventos | dni: $id");
+            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
+            sendRes(null, $error->getMessage(), $_GET);
+        };
+        exit;
+    }
+
+    /** Obtenemos los datos de licencia de conducir */
     public static function getLibretasanitariaData()
     {
         $id = $_GET['id'];
@@ -172,6 +186,7 @@ class LoginController
         };
         exit;
     }
+
     public static function getLibretasanitariaDataDos()
     {
         $id = $_GET['id'];

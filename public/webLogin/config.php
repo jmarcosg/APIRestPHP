@@ -10,10 +10,8 @@ $dotenv = \Dotenv\Dotenv::createImmutable(ROOT_PATH);
 $dotenv->load();
 
 /* Carga del DOTENV - Weblogin */
-$dotenv = \Dotenv\Dotenv::createImmutable("./");
+$dotenv = \Dotenv\Dotenv::createImmutable(V1_PATH . '/weblogin');
 $dotenv->load();
-
-define('WEBLOGIN2', 'https://weblogin.muninqn.gov.ar/api/webLogin2');
 
 /* Modo produccion: true */
 define('PROD', $_ENV['PROD'] == 'true' ? true : false);
@@ -25,18 +23,10 @@ define('FETCH_LEGAJO', $_ENV['FETCH_LEGAJO'] == 'true' ? true : false);
 define('FETCH_LIBRETA', $_ENV['FETCH_LIBRETA'] == 'true' ? true : false);
 define('FETCH_LICENCIA', $_ENV['FETCH_LICENCIA'] == 'true' ? true : false);
 define('FETCH_ACARREO', $_ENV['FETCH_ACARREO'] == 'true' ? true : false);
+define('FETCH_MUNI_EVENTOS', $_ENV['FETCH_MUNI_EVENTOS'] == 'true' ? true : false);
 
-if (ENV == 'produccion') {
-    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_PRODUCCION']);
-}
-
-if (ENV == 'replica') {
-    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_REPLICA']);
-}
-
-if (ENV == 'local') {
-    define('BASE_WEB_LOGIN', $_ENV['BASE_WEB_LOGIN_LOCAL']);
-}
+define('BASE_WEB_LOGIN_API', $_ENV['BASE_WEB_LOGIN_API']);
+define('URL_MUNI_EVENTOS', $_ENV['URL_MUNI_EVENTOS']);
 
 /* Token */
 define('TOKEN_KEY', $_ENV['TOKEN_KEY']);

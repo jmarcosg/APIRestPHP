@@ -12,9 +12,6 @@ require ROOT_PATH . 'app/utils/funciones.php';
 $dotenv = \Dotenv\Dotenv::createImmutable(ROOT_PATH);
 $dotenv->load();
 
-/* Sentry */
-/* \Sentry\init(['dsn' => $_ENV['sentry']]); */
-
 /* Modo produccion: true */
 define('PROD', $_ENV['PROD'] == 'true' ? true : false);
 
@@ -23,8 +20,6 @@ define('ENV', $_ENV['ENV']);
 
 /* Token */
 define('TOKEN_KEY', $_ENV['TOKEN_KEY']);
-
-/* ######################### */
 
 if (ENV == 'produccion') {
     // define('FILE_PATH', $_ENV['FILE_PATH_PRODUCCION']);
@@ -54,6 +49,8 @@ if (ENV == 'mac') {
 }
 
 define('BASE_WEBLOGIN_APPS', 'https://weblogin.muninqn.gov.ar/apps/');
+
+define('BASE_WEB_LOGIN_API', $_ENV['BASE_WEB_LOGIN_API']);
 
 /* Headers */
 include_once 'headers.php';

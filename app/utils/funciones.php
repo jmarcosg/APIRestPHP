@@ -22,12 +22,12 @@ set_error_handler(
     }
 );
 
-function verEstructura($e, $die = false)
+function verEstructura($e, $exit = false)
 {
     echo "<pre>";
     print_r($e);
     echo "</pre>";
-    if ($die) die();
+    if ($exit) exit;
 }
 
 function getBearerToken()
@@ -65,12 +65,13 @@ function getAuthorizationHeader()
 function sendRes($res, string $error = null, array $params = null)
 {
 
-    $res = utf8ize($res);    
+    $res = utf8ize($res);
     if ($error) {
         echo json_encode(['data' => null, 'error' => $error, 'params' => $params]);
     } else {
-        echo json_encode(['data' => $res, 'error' => $error], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['data' => $res, 'error' => $error, 'params' => $params], JSON_UNESCAPED_UNICODE);
     }
+    exit;
 }
 
 function utf8ize($d)
@@ -103,7 +104,7 @@ function deutf8ize($param)
     return $param;
 }
 
-function logFileEE($subPath, ErrorException $e, $class, $function)
+function logFileEE($subPath, ErrorException $e, $class, $function, $data = [])
 {
     $path = LOG_PATH . $subPath . "/";
 
@@ -115,6 +116,49 @@ function logFileEE($subPath, ErrorException $e, $class, $function)
     $logFile = fopen($path . date("Ymd") . ".log", 'a') or die("Error creando archivo");
     fwrite($logFile, "\n" . "$msg") or die("Error escribiendo en el archivo");
     fclose($logFile);
+}
+
+/**
+ * It takes an error, and creates a json file with the error message, line number, class, function,
+ * data, and all the global variables.
+ * 
+ * @param subPath The sub-directory to store the log file in.
+ * @param ErrorException e The error object
+ * @param class The class that the error occurred in.
+ * @param function createJsonError
+ * @param data The data that was being processed when the error occurred.
+ * @param obj the object that threw the error
+ */
+function createJsonError($subPath, ErrorException $e, $class = null, $function = null, $data = null, $obj = null)
+{
+    $path = LOG_PATH . $subPath . "/";
+
+    if (!file_exists($path)) mkdir($path, 0755, true);
+
+    $regArray = [
+        'datetime' => date("d/m/Y H:i:s"),
+        'error' => $e->getMessage(),
+        'line' =>  $e->getLine(),
+        'class' => $class,
+        'object' => $obj,
+        'trace' => $e->getTrace(),
+        'function' => $function,
+        'data' => $data,
+        'globals' => [
+            '$_COOKIE' => $_COOKIE,
+            '$_ENV' => $_ENV,
+            '$_FILES' => $_FILES,
+            '$_GET' => $_GET,
+            '$_POST' => $_POST,
+            '$_REQUEST' => $_REQUEST,
+            '$_SERVER' => $_SERVER,
+        ],
+    ];;
+
+    $json_string = json_encode(utf8ize($regArray));
+    $file = $path . date('Ymd_His') . '_' . uniqid() . '.json';
+
+    file_put_contents($file, $json_string);
 }
 
 function isErrorException($object)
@@ -257,6 +301,8 @@ function getExtFile($file)
 
             case ('image/png'):
                 return '.png';
+            case ('png'):
+                return '.png';
 
             case 'application/pdf':
                 return '.pdf';
@@ -265,6 +311,55 @@ function getExtFile($file)
                 return '.bmp';
         }
     };
+}
+
+/**
+ * @param $file
+ * @param $fileType
+ * @param $destinationFilepath
+ * @return boolean
+ * 
+ * Esta funcion comprime imagenes que recibe en con extension .jpg, .jpeg, .png o .bmp
+ * Crea una nueva imagen en formato .webp para no perder calidad en la compresion
+ * Devuelve true si la compresion fue exitosa, false si no
+ */
+function comprimirImagen($file, $fileType, $destinationFilepath)
+{
+    $imgSize = $file['size'];
+    $tempFile = $file['tmp_name'];
+
+    // Porcentaje de compresion segun peso de la imagen
+    // A menor porcentaje, mayor compresion
+    if ($imgSize > 3072000) {
+        $porcentajeCompresion = 1;
+    } else if ($imgSize < 3072000 && $imgSize > 1024000) {
+        $porcentajeCompresion = 75;
+    } else if ($imgSize < 1024000) {
+        $porcentajeCompresion = 75;
+    } else if ($imgSize < 102400) {
+        $porcentajeCompresion = 90;
+    }
+
+    if ($fileType == 'image/jpg' || $fileType == 'image/jpeg') {
+        $image = imagecreatefromjpeg($tempFile);
+    } elseif ($fileType == 'image/png') {
+        $image = imagecreatefrompng($tempFile);
+
+        imagepalettetotruecolor($image);
+        imagealphablending($image, true);
+        imagesavealpha($image, true);
+    } elseif ($fileType == 'image/bmp') {
+        $image = imagecreatefrombmp($tempFile);
+    } else {
+        return false;
+    }
+
+    if (imagewebp($image, $destinationFilepath, $porcentajeCompresion)) {
+        imagedestroy($image);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function sendEmail($address, $subject, $body, $attachments = null)
@@ -322,6 +417,5 @@ function sendResError($object, $error = null, $params = null)
 {
     if ($object instanceof ErrorException) {
         sendRes(null, $error, $params);
-        exit;
     }
 }

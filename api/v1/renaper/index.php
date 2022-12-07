@@ -4,6 +4,11 @@ use App\Controllers\RenaperController;
 
 $renaperController = new RenaperController();
 
+$dotenv = \Dotenv\Dotenv::createImmutable('./renaper/');
+$dotenv->load();
+
+include './renaper/config.php';
+
 /* Metodo GET */
 if ($url['method'] == 'GET') {
 	if (isset($_GET) && isset($_GET['sexo']) && isset($_GET['dni'])) {

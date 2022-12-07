@@ -1,10 +1,26 @@
 {
     "login": {
-        "userLabel": "USUARIO O DNI" ,
+        "userLabel": "USUARIO O DNI",
         "passwordLabel": "CLAVE",
         "submitBtn": "ACCEDER",
         "regintroBtn": "QUIERO REGISTRARME",
         "recuperarBtn": "NO RECUERDO MI CLAVE"
+    },
+
+    "general": {
+        "cardOne": {
+            "title": "TRAMITES RECIENTES",
+            "sinTramites": "No hay tramites recientes"
+        },
+
+        "cardTwo": {
+            "title": "TRAMITES POR CATEGORIAS"
+        },
+
+        "appsCard": {
+            "title": "TRAMITES",
+            "buscar": "Buscar tramite..."
+        }
     },
 
     "perfil": {
@@ -61,6 +77,81 @@
                 "descripcionTres": "El cambio de dirección/nombre de usuario tendrá efecto inmediato luego de confirmar el enlace enviado.",
                 "submitBtn": "Guardar"
             }
+        }
+    },
+
+    "tramitesInit": {
+        "acarreo": {
+            "headerTitle": "Acarreo: ",
+            "headerBackground": "red",
+
+            "direccionLabel": "Dirección",
+            "playaLabel": "Playa",
+            "motivoLabel": "Motivo",
+            "fechaLabel": "Fecha",
+
+            "reciboLabel": "Número de recibo",
+            "infoPago": "El acarreo ya se encuentra pago, pero no hay registro que lo hayan retirado.",
+            "cuponBtn": "Generar cupon de pago",
+
+            "modalHeaderTitle": "Acarreo:",
+            "modalHeaderBackground": "red",
+            "modalHeaderColor": "white"
+        },
+
+        "licConducir": {
+            "headerTitle": "Licencia de conducir",
+            "headerBackground": "green",
+
+            "direccionLabel": "Dirección",
+            "subClaseLabel": "Sub Clase",
+            "emisionLabel": "Fecha Emisión",
+            "vencLabel": "Fecha Vencimiento",
+            "estadoLabel": "Estado",
+            "diasVencLabel": "Días de Vencimiento",
+            "diasVigLabel": "Dias de Vigencia",
+
+            "modalHeaderTitle": "Licencia de conducir:",
+            "modalHeaderBackground": "green",
+            "modalHeaderColor": "white",
+            "grupoSangLabel": "Grupo Sanguineo",
+            "donanteLabel": "¿Donante?",
+
+            "btnRenovar": "Renovación Lic. conducir",
+            "btnTramite": "Tramite Lic. conducir",
+            "btnCurso": "Curso profesional Lic. conducir"
+        },
+
+        "muniEventos": {
+            "headerTitle": "Evento: ",
+            "headerBackground": "green",
+
+            "fechaLabel": "Fecha",
+            "horaLabel": "Hora",
+            "lugarLabel": "Lugar",
+            "particupantesLabel": "Participantes",
+
+            "qrLabel": "QR de asistencia",
+            "qrVolver": "Volver"
+        },
+
+        "libretaSanitaria": {
+            "headerTitle": "Carnet manipulación de alimentos",
+            "headerBackground": "#3a8fda",
+
+            "modalHeaderTitle": "Licencia de conducir:",
+            "modalHeaderBackground": "#3a8fda",
+            "modalHeaderColor": "white",
+
+            "numeroLabel": "Número",
+            "estadoLabel": "Estado",
+            "fechaVencLabel": "Fecha Vencimiento",
+            "fechaEmisionLabel": "Fecha Emisión",
+            "reciboLabel": "N° Recibo",
+
+            "descVerOnline": "Click para ver online",
+
+            "renovarBtn": "Renovar carnet"
         }
     }
 }
