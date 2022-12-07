@@ -132,14 +132,28 @@ trait SqlTrait
                 Donante as donante,
                 Insumo as insumo
             FROM dbo.licLicencias 
-                WHERE Licencia = $id";
+            WHERE Licencia = $id";
+
+        return $sql;
+    }
+
+    public static function datosHistorialLicComercial($id)
+    {
+        $sql = "SELECT * FROM lc_solicitudes_historial WHERE id_usuario = $id AND visto = 0";
 
         return $sql;
     }
 
     public static function datosLicComercial($id)
     {
-        $sql = "SELECT * FROM lc_solicitudes_historial WHERE id_usuario = $id AND visto = 0";
+        $sql =
+            "SELECT 
+                lcsol.id as id,
+                lcsol.estado as estado,
+                (SELECT COUNT(id) FROM lc_solicitudes_historial WHERE id_solicitud = lcsol.id) as historial
+        
+            FROM lc_solicitudes lcsol 
+            WHERE id_usuario = $id AND  estado NOT LIKE '%rechazado%'";
 
         return $sql;
     }

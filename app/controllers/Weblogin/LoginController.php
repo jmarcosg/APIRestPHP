@@ -157,9 +157,13 @@ class LoginController
 
         $sql = self::datosLicComercial($id);
         $data = $model->executeSqlQuery($sql, false);
-        
+
+        usort($data, function ($a, $b) {
+            return intval($a['historial']) < intval($b['historial']);
+        });
+
         if ($data && !$data instanceof ErrorException) {
-            $data = self::formatLicenciaComercial($data);
+            /* $data = self::formatLicenciaComercial($data); */
             sendRes($data);
         } else {
             $error = new ErrorException("Problema al obtener los datos de licencia de conducir | id: $id");

@@ -37,6 +37,7 @@ trait SqlTrait
             "SELECT 
                 ipi.id as id,
                 ipi.content as content,
+                ipi.barrio as barrio,
                 cat.nombre as categoria,
                 cat.id as id_categoria
             FROM dbo.ip_ideas ipi
@@ -55,6 +56,7 @@ trait SqlTrait
             "SELECT 
                 ipi.id as id,
                 ipi.content as content,
+                ipi.barrio as barrio,
                 
                 CASE
                     WHEN ipi.id_usuario IS NOT NULL      
@@ -70,6 +72,7 @@ trait SqlTrait
                 
                 ipu.legajo as legajo,
                 
+                cat.id as id_categoria,
                 cat.nombre as categoria
             FROM ip_ideas ipi
                 LEFT JOIN ip_categorias cat ON cat.id = ipi.id_categoria 
