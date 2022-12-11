@@ -87,6 +87,18 @@ class LoginController
         }
     }
 
+    public static function getAllData()
+    {
+        $id_usuario = $_POST['id_usuario'];
+        $dni = $_POST['dni'];
+        $genero = $_POST['genero'];
+
+        $response = [
+            'appsRecientes' => WapAppsRecientesController::getAppsRecientes($id_usuario)
+        ];
+        exit;
+    }
+
     /** Obtenemos los datos del legajo en funcion del sexo y documento */
     public static function getLegajoData()
     {

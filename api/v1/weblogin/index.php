@@ -56,8 +56,11 @@ if ($url['method'] == 'POST') {
 		case 'getIntoApp':
 			WapAppsRecientesController::getIntoApp();
 
-		case 'checkIncomingApps':
-			WapAppsRecientesController::checkIncomingApps();
+		/* case 'checkIncomingApps':
+			WapAppsRecientesController::checkIncomingApps(20936); */
+
+			case 'getAllData':
+				LoginController::getAllData();
 
 		default:
 			$error = new ErrorException('El action no es valido');

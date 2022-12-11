@@ -148,12 +148,12 @@ trait SqlTrait
     {
         $sql =
             "SELECT 
-                lcsol.id as id,
-                lcsol.estado as estado,
-                (SELECT COUNT(id) FROM lc_solicitudes_historial WHERE id_solicitud = lcsol.id) as historial
+                lc_sol.id as id,
+                lc_sol.estado as estado,
+                (SELECT COUNT(id) FROM lc_solicitudes_historial WHERE id_solicitud = lc_sol.id) as historial
         
-            FROM lc_solicitudes lcsol 
-            WHERE id_usuario = $id AND  estado NOT LIKE '%rechazado%'";
+            FROM lc_solicitudes lc_sol 
+            WHERE id_usuario = $id AND estado NOT LIKE '%rechazado%'";
 
         return $sql;
     }
