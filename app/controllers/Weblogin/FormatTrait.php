@@ -107,18 +107,24 @@ trait FormatTrait
         $data['data'] = array_values($data['data']);
 
         return $data;
-    }    
+    }
 
-    private static function formatData($data, $msgError = null)
+    private static function formatData($data, $msgError = null, $msgErrorArray = null)
     {
         $error = null;
-        if ($data instanceof ErrorException) {
+        if ($data && $data instanceof ErrorException) {
             $error = $msgError;
+            $data = null;
+        }
+
+        if (is_array($data) && count($data) == 0 && $msgError) {
+            $error = $msgErrorArray;
             $data = null;
         }
 
         return [
             'data' => $data,
+            'fetch' => true,
             'loading' => false,
             'error' => $error
         ];

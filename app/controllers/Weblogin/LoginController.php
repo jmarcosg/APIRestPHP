@@ -89,14 +89,18 @@ class LoginController
 
     public static function getAllData()
     {
-        $id_usuario = $_POST['id_usuario'];
-        $dni = $_POST['dni'];
-        $genero = $_POST['genero'];
-
+        $ps =  json_decode($_POST['procedures_started']);
         $response = [
-            'appsRecientes' => WapAppsRecientesController::getAppsRecientes($id_usuario),
-            'legajo' => self::getLegajoData($genero, $dni),
+            'appsRecientes' => WapAppsRecientesController::getAppsRecientes($_POST['id_usuario']),
+            'legajo' => $ps->legajo->fetch ? self::getLegajoData($_POST['genero'], $_POST['dni']) : false,
+            'acarreo' => $ps->acarreo->fetch ? self::getAcarreoData($_POST['id_usuario']) : false,
+            'licencia' => $ps->licencia->fetch ? self::getLicConducirData($_POST['dni']) : false,
+            'muniEventos' => $ps->muniEventos->fetch ? self::getMuniEventos($_POST['dni']) : false,
+            'licencia_comercial' => $ps->licencia_comercial->fetch ? self::getLicenciaComercial($_POST['id_usuario']) : false,
+            'libreta' => $ps->libreta->fetch ? self::getLibretasanitariaData($_POST['id_usuario']) : false,
+            'libretaDos' => $ps->libretaDos->fetch ? self::getLicenciaComercial($_POST['dni']) : false,
         ];
+
         sendRes($response);
     }
 
@@ -108,135 +112,81 @@ class LoginController
         $sql = self::datosLegajo($genero, $dni);
         $legajo = $model->executeSqlQuery($sql);
 
-        $legajo = self::formatData($legajo);
+        $legajo = self::formatData($legajo, 'Problame al obtener el legajo');
 
         return $legajo;
     }
 
-    private static function formatLegajo()
-    {
-    }
-
     /** Obtenemos los datos del acarreo */
-    public static function getAcarreoData()
+    public static function getAcarreoData($id_usuario)
     {
-        $id = $_GET['id'];
-
         $model = new Weblogin();
 
-        $sql = self::datosAccareo($id);
-        $data = $model->executeSqlQuery($sql);
+        $sql = self::datosAccareo($id_usuario);
+        $acarreo = $model->executeSqlQuery($sql);
 
-        if ($data && !$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos del accareo | id: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
+        $acarreo = self::formatData($acarreo, 'Problame al obtener el acarreo');
+        return $acarreo;
     }
 
     /** Obtenemos los datos de licencia de conducir */
-    public static function getLicConducirData()
+    public static function getLicConducirData($dni)
     {
-        $id = $_GET['id'];
-
         $model = new Weblogin();
 
-        $sql = self::datosLicConducir($id);
-        $data = $model->executeSqlQuery($sql);
+        $sql = self::datosLicConducir($dni);
+        $licencia = $model->executeSqlQuery($sql);
 
-        if ($data && !$data instanceof ErrorException) {
-            $data = self::formatLicConducir($data);
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos de licencia de conducir | id: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
+        $licencia = self::formatData($licencia, 'Problame al obtener la licencia de conducir');
+        return $licencia;
     }
 
-    public static function getLicenciaComercial()
+    public static function getLicenciaComercial($id_usuario)
     {
-        $id = $_GET['id'];
-
         $model = new Weblogin();
 
-        $sql = self::datosLicComercial($id);
-        $data = $model->executeSqlQuery($sql, false);
+        $sql = self::datosLicComercial($id_usuario);
+        $licComercial = $model->executeSqlQuery($sql, false);
 
-        usort($data, function ($a, $b) {
-            return intval($a['historial']) < intval($b['historial']);
-        });
+        if ($licComercial && !$licComercial instanceof ErrorException) {
+            usort($licComercial, function ($a, $b) {
+                return intval($a['historial']) < intval($b['historial']);
+            });
+        }
 
-        if ($data && !$data instanceof ErrorException) {
-            /* $data = self::formatLicenciaComercial($data); */
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos de licencia de conducir | id: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
+        $licComercial = self::formatData($licComercial, 'Problema al obtener la licencia comercial', 'No se encontraron licencias comerciales');
+        return $licComercial;
+    }
+
+    /** Obtenemos los datos de de MuniEventos */
+    public static function getMuniEventos($dni)
+    {
+        $muniEventos = self::getMuniEventosFetch($dni);
+        $muniEventos = self::formatData($muniEventos, 'Problame al obtener los eventos');
+        return $muniEventos;
     }
 
     /** Obtenemos los datos de licencia de conducir */
-    public static function getMuniEventos()
+    public static function getLibretasanitariaData($id_usuario)
     {
-        $id = $_GET['dni'];
-
-        $data = self::getMuniEventosFetch($id);
-
-        if ($data && !$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos de muni eventos | dni: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
-    }
-
-    /** Obtenemos los datos de licencia de conducir */
-    public static function getLibretasanitariaData()
-    {
-        $id = $_GET['id'];
-
         $model = new Weblogin();
 
-        $sql = self::datosLibretaSanitaria($id);
-        $data = $model->executeSqlQuery($sql);
+        $sql = self::datosLibretaSanitaria($id_usuario);
+        $libretaSanitaria = $model->executeSqlQuery($sql);
 
-        if ($data && !$data instanceof ErrorException) {
-            $data = self::formatLibretaSanitaria($data);
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos de la libreta sanitaria | id: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
+        $libretaSanitaria = self::formatData($libretaSanitaria, 'Problame al obtener carnet de manipulacion');
+        return $libretaSanitaria;
     }
 
     public static function getLibretasanitariaDataDos()
     {
-        $id = $_GET['id'];
 
         $model = new Weblogin();
 
         $sql = self::datosLibretaSanitaria(37216);
-        $data = $model->executeSqlQuery($sql);
+        $libretaSanitaria = $model->executeSqlQuery($sql);
 
-        if ($data && !$data instanceof ErrorException) {
-            $data = self::formatLibretaSanitaria($data);
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos de la libreta sanitaria | id: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
+        $libretaSanitaria = self::formatData($libretaSanitaria, 'Problame al obtener carnet de manipulacion');
+        return $libretaSanitaria;
     }
 }

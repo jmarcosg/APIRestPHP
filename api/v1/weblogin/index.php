@@ -15,27 +15,6 @@ if ($url['method'] == 'GET') {
 
 	switch ($action) {
 
-		case 'legajo':
-			LoginController::getLegajoData();
-
-		case 'acarreo':
-			LoginController::getAcarreoData();
-
-		case 'licenciaconducir':
-			LoginController::getLicConducirData();
-
-		case 'licenciaComercial':
-			LoginController::getLicenciaComercial();
-
-		case 'muniEventos':
-			LoginController::getMuniEventos();
-
-		case 'libretasanitaria':
-			LoginController::getLibretasanitariaData();
-
-		case 'libretasanitariaDos':
-			LoginController::getLibretasanitariaDataDos();
-
 		case 'aplicaciones':
 			WlAppController::getApps();
 
@@ -56,11 +35,8 @@ if ($url['method'] == 'POST') {
 		case 'getIntoApp':
 			WapAppsRecientesController::getIntoApp();
 
-		/* case 'checkIncomingApps':
-			WapAppsRecientesController::checkIncomingApps(20936); */
-
-			case 'getAllData':
-				LoginController::getAllData();
+		case 'getAllData':
+			LoginController::getAllData();
 
 		default:
 			$error = new ErrorException('El action no es valido');
