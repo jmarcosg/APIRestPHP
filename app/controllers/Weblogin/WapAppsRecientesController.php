@@ -9,6 +9,7 @@ use ErrorException;
 
 class WapAppsRecientesController
 {
+    use FormatTrait;
     /** Cuando se ingresa a una APP, se debe sumar 1 ingreso */
     public static function getIntoApp()
     {
@@ -101,22 +102,8 @@ class WapAppsRecientesController
             $listadoApps = self::getAppsRecientesQuery($id_usuario);
             $listadoApps = self::formatData($listadoApps, '[02] - Hubo un error al obtener listado de apps recientes');
         }
-        
+
         return $listadoApps;
-    }
-
-    private static function formatData($data, $msgError = null)
-    {
-        $error = null;
-        if ($data instanceof ErrorException) {
-            $error = $msgError;
-            $data = null;
-        }
-
-        return [
-            'data' => $data,
-            'error' => $error
-        ];
     }
 
     private static function validateIntoAppdata()

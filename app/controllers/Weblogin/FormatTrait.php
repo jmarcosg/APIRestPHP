@@ -3,6 +3,7 @@
 namespace App\Controllers\Weblogin;
 
 use DateTime;
+use ErrorException;
 
 trait FormatTrait
 {
@@ -106,5 +107,20 @@ trait FormatTrait
         $data['data'] = array_values($data['data']);
 
         return $data;
+    }    
+
+    private static function formatData($data, $msgError = null)
+    {
+        $error = null;
+        if ($data instanceof ErrorException) {
+            $error = $msgError;
+            $data = null;
+        }
+
+        return [
+            'data' => $data,
+            'loading' => false,
+            'error' => $error
+        ];
     }
 }

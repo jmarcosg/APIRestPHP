@@ -94,30 +94,27 @@ class LoginController
         $genero = $_POST['genero'];
 
         $response = [
-            'appsRecientes' => WapAppsRecientesController::getAppsRecientes($id_usuario)
+            'appsRecientes' => WapAppsRecientesController::getAppsRecientes($id_usuario),
+            'legajo' => self::getLegajoData($genero, $dni),
         ];
-        exit;
+        sendRes($response);
     }
 
     /** Obtenemos los datos del legajo en funcion del sexo y documento */
-    public static function getLegajoData()
+    public static function getLegajoData($genero, $dni)
     {
-        $sexo = $_GET['sexo'];
-        $doc =  $_GET['doc'];
-
         $model = new Weblogin();
 
-        $sql = self::datosLegajo($sexo, $doc);
-        $data = $model->executeSqlQuery($sql);
+        $sql = self::datosLegajo($genero, $dni);
+        $legajo = $model->executeSqlQuery($sql);
 
-        if ($data && !$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener el legajo | genero: $sexo | documento: $doc");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
+        $legajo = self::formatData($legajo);
+
+        return $legajo;
+    }
+
+    private static function formatLegajo()
+    {
     }
 
     /** Obtenemos los datos del acarreo */
