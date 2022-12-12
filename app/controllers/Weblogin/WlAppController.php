@@ -2,9 +2,8 @@
 
 namespace App\Controllers\Weblogin;
 
-use App\Models\BaseModel;
+use App\Controllers\LicenciaComercial\Lc_SolicitudController;
 use App\Models\Weblogin\Weblogin;
-use ErrorException;
 
 class WlAppController
 {

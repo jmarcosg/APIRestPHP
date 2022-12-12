@@ -102,4 +102,13 @@ class LoginController
 
         sendRes($response);
     }
+
+    public static function getLicComercialId()
+    {
+        $data = self::datosLicComercialId($_GET['id']);
+
+        sendResError($data, 'Al obtener los datos de la licencia comercial número: ' . $_GET['id']);
+
+        sendRes($data);
+    }
 }

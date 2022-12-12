@@ -18,6 +18,9 @@ if ($url['method'] == 'GET') {
 		case 'aplicaciones':
 			WlAppController::getApps();
 
+		case 'getLicComercialId':
+			LoginController::getLicComercialId();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
