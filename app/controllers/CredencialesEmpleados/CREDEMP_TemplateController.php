@@ -43,7 +43,7 @@ class CREDEMP_TemplateController
                 self::update($res, $template['id']);
 
                 $oldInputs = CREDEMP_InputController::index(['id_template' => $template['id']]);
-                
+
                 if (count($oldInputs) > count($inputs)) {
                     // print_r($oldInputs);
                     $i = count($oldInputs) - 1;
@@ -73,19 +73,23 @@ class CREDEMP_TemplateController
             }
         } else {
             $res['deshabilitado'] = 0;
+            $res['needed_inputs'] = $res['needed_inputs'] == "" ? 0 : $res['needed_inputs'];
             $data = new CREDEMP_Template();
             $data->set($res);
             $idTemplate = $data->save();
 
-            $inputs = $res['inputs'];
+            if ($res['needed_inputs'] != 0) {
 
-            foreach ($inputs as $input) {
-                $input['name'] = $input['id'];
-                $input['id_template'] = $idTemplate;
-                $input['id_tipo'] = $input['tipo'];
-                unset($input['id']);
-                unset($input['tipo']);
-                CREDEMP_InputController::store($input);
+                $inputs = $res['inputs'];
+
+                foreach ($inputs as $input) {
+                    $input['name'] = $input['id'];
+                    $input['id_template'] = $idTemplate;
+                    $input['id_tipo'] = $input['tipo'];
+                    unset($input['id']);
+                    unset($input['tipo']);
+                    CREDEMP_InputController::store($input);
+                }
             }
         }
 
