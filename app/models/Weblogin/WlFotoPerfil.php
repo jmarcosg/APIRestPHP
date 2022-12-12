@@ -8,7 +8,6 @@ use App\Traits\WebLogin\ValidacionesWlFotos;
 class WlFotoPerfil extends BaseModel
 {
     use ValidacionesWlFotos;
-
     protected $table = 'wlFotosUsuarios';
     protected $identity = 'id';
     protected $logPath = 'v1/wlFotosUsuarios';
@@ -29,7 +28,9 @@ class WlFotoPerfil extends BaseModel
     /** Guarda los arhivos fisicamente */
     public function saveFotos($uniqid)
     {
+
         $this->saveFotoPerfil($uniqid);
+
         $this->saveFotoDni($uniqid);
         unset($_POST['nombre_archivo']);
     }
@@ -42,7 +43,7 @@ class WlFotoPerfil extends BaseModel
         $nameFilePerfil = $nameFile . '_PERFIL_' . $uniqid . getExtFile($foto_perfil);
         $path_perfil = getPathFile($foto_perfil, $this->filesUrl, $nameFilePerfil);
 
-        if (comprimirImagen($foto_perfil, $foto_perfil['type'], $path_perfil)) {
+        if (copy($foto_perfil['tmp_name'], $path_perfil)) {
             $_POST['foto_perfil'] = $nameFilePerfil;
         } else {
             sendRes(null, 'No se guardo la foto de perfil');
@@ -57,7 +58,7 @@ class WlFotoPerfil extends BaseModel
         $nameFileDni = $nameFile . '_DNI_' . $uniqid . getExtFile($foto_dni);
         $path_dni = getPathFile($foto_dni, $this->filesUrl, $nameFileDni);
 
-        if (comprimirImagen($foto_dni, $foto_dni['type'], $path_dni)) {
+        if (copy($foto_dni['tmp_name'], $path_dni)) {
             $_POST['foto_dni'] = $nameFileDni;
         } else {
             sendRes(null, 'No se guardo la foto del DNI');

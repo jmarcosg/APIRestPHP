@@ -6,8 +6,7 @@ use App\Models\Weblogin\WlFotoPerfil;
 
 class WlFotoPerfilController
 {
-    use SqlTrait;
-
+    use QueryData;
     public static function getPersonasSinVerificar()
     {
         $wlFotoPerfil = new WlFotoPerfil();
