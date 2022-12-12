@@ -18,6 +18,7 @@ class CREDEMP_Template extends BaseModel
         'visibilidad_apellido',
         'visibilidad_legajo',
         'visibilidad_cargo',
+        'needed_inputs',
         'deshabilitado'
     ];
 }

@@ -39,19 +39,21 @@ class CREDEMP_PersonaController
                     $i = 1;
                     $ok = true;
 
-                    while (!$ok instanceof ErrorException && $i <= count($res['data']['dinamicos'])) {
-                        $input = $res['data']['dinamicos']["input$i"];
+                    if ($template['needed_inputs'] != "0") {
+                        while (!$ok instanceof ErrorException && $i <= count($res['data']['dinamicos'])) {
+                            $input = $res['data']['dinamicos']["input$i"];
 
-                        $inputObj = CREDEMP_InputController::index(['id_template' => $idTemplate, 'name' => "input$i"])[0];
+                            $inputObj = CREDEMP_InputController::index(['id_template' => $idTemplate, 'name' => "input$i"])[0];
 
-                        $value = [
-                            'valor' => $input,
-                            'id_template' => $idTemplate,
-                            'id_persona' => $idPersona,
-                            'id_input' => $inputObj['id']
-                        ];
-                        $ok = CREDEMP_ValorController::store($value);
-                        $i++;
+                            $value = [
+                                'valor' => $input,
+                                'id_template' => $idTemplate,
+                                'id_persona' => $idPersona,
+                                'id_input' => $inputObj['id']
+                            ];
+                            $ok = CREDEMP_ValorController::store($value);
+                            $i++;
+                        }
                     }
                     if ($ok instanceof ErrorException) {
                         $idPersona = new ErrorException();
