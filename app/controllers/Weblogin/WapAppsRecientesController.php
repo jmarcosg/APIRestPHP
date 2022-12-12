@@ -105,7 +105,6 @@ class WapAppsRecientesController
 
         return $listadoApps;
     }
-
     private static function validateIntoAppdata()
     {
         if (isset($_POST['id_usuario']) && isset($_POST['id_app'])) {
@@ -119,7 +118,6 @@ class WapAppsRecientesController
 
         return false;
     }
-
     /** Obtiene el listado de las apps recientes de ordenado por la cantidad de ingresos */
     private static function getAppsRecientesQuery($id)
     {

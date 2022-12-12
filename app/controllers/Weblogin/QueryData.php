@@ -6,11 +6,17 @@ use App\Controllers\Common\ImponiblesController;
 use App\Models\Weblogin\Weblogin;
 use ErrorException;
 
-trait SqlTrait
+trait QueryData
 {
+    /**
+     * Se determina en varios factores que datos vamos a traer para cuando se concrete el login
+     * @param mixed $referenciaId
+     * @param mixed $dni
+     * @return \Throwable|array|bool
+     */
     public static function viewFetch($referenciaId, $dni)
     {
-        /** Determina que vamos a llamar desde el front */
+
         $data = self::sqlViewFetch($referenciaId, $dni);
 
         $data['acarreo'] = false;
@@ -34,7 +40,43 @@ trait SqlTrait
         return $data;
     }
 
-    private static function getAcarreos($rodados)
+    /**
+     * Consulta SQL para los posibles datos que se pueden llegar a solicitar cuando concrete el login del usuario
+     * legajo | libreta | licencia_comercial | licenca_conducir
+     * @param mixed $referenciaId
+     * @param mixed $doc
+     * @return \Throwable|array|bool
+     */
+    private static function sqlViewFetch($referenciaId, $doc)
+    {
+        $sql =
+            "SELECT 
+            (SELECT AppID FROM  wapUsuariosPerfiles WHERE ReferenciaID = $referenciaId AND AppID = 19) as legajo,
+            (
+                SELECT
+                TOP 1
+                    sol.id as id
+                FROM wapUsuarios wu
+                    LEFT JOIN wapPersonas per ON per.ReferenciaID = wu.PersonaID
+                    LEFT JOIN libretas_usuarios usu ON usu.id_wappersonas = per.ReferenciaID
+                    LEFT JOIN libretas_solicitudes sol ON sol.id_usuario_solicitante = usu.id
+                WHERE wu.ReferenciaID = $referenciaId ORDER BY id DESC
+            ) AS libreta,
+            (SELECT COUNT(id) FROM lc_solicitudes WHERE id_usuario = $referenciaId) as licencia_comercial,
+            /* (SELECT COUNT(id) FROM lc_solicitudes WHERE id_usuario = $referenciaId AND visto = 0) as licencia_comercial, */
+            (SELECT insumo FROM licLicencias WHERE Licencia = $doc) as licencia";
+
+        $model = new Weblogin();
+        $result = $model->executeSqlQuery($sql);
+        return $result;
+    }
+
+    /**
+     * Summary of getAcarreos
+     * @param array $rodados
+     * @return \Throwable|array|bool
+     */
+    private static function getAcarreos(array $rodados)
     {
         $where = '(';
         foreach ($rodados as $rodado) {
@@ -63,30 +105,12 @@ trait SqlTrait
         return $result;
     }
 
-    private static function sqlViewFetch($referenciaId, $doc)
-    {
-        $sql =
-            "SELECT 
-            (SELECT AppID FROM  wapUsuariosPerfiles WHERE ReferenciaID = $referenciaId AND AppID = 19) as legajo,
-            (
-                SELECT
-                TOP 1
-                    sol.id as id
-                FROM wapUsuarios wu
-                    LEFT JOIN wapPersonas per ON per.ReferenciaID = wu.PersonaID
-                    LEFT JOIN libretas_usuarios usu ON usu.id_wappersonas = per.ReferenciaID
-                    LEFT JOIN libretas_solicitudes sol ON sol.id_usuario_solicitante = usu.id
-                WHERE wu.ReferenciaID = $referenciaId ORDER BY id DESC
-            ) AS libreta,
-            (SELECT COUNT(id) FROM lc_solicitudes WHERE id_usuario = $referenciaId) as licencia_comercial,
-            /* (SELECT COUNT(id) FROM lc_solicitudes WHERE id_usuario = $referenciaId AND visto = 0) as licencia_comercial, */
-            (SELECT insumo FROM licLicencias WHERE Licencia = $doc) as licencia";
-
-        $model = new Weblogin();
-        $result = $model->executeSqlQuery($sql);
-        return $result;
-    }
-
+    /**
+     * Summary of datosLegajo
+     * @param mixed $gender
+     * @param mixed $doc
+     * @return \Throwable|array|bool
+     */
     public static function datosLegajo($gender, $doc)
     {
         $sql =
@@ -96,9 +120,16 @@ trait SqlTrait
             FROM PERSONAL.su.dbo.mae 
             WHERE doc = '0$doc' AND sexo = '$gender'";
 
-        return $sql;
+        $model = new Weblogin();
+        $result = $model->executeSqlQuery($sql);
+        return $result;
     }
 
+    /**
+     * Summary of datosAccareo
+     * @param mixed $id
+     * @return \Throwable|array|bool
+     */
     public static function datosAccareo($id)
     {
         $sql =
@@ -116,9 +147,16 @@ trait SqlTrait
                 LEFT JOIN AC_PLAYA p ON p.ID_PLAYA= a.ID_PLAYA
             WHERE wu.ReferenciaID = $id and a.BORRADO_LOGICO = 'NO'";
 
-        return $sql;
+        $model = new Weblogin();
+        $result = $model->executeSqlQuery($sql);
+        return $result;
     }
 
+    /**
+     * Summary of datosLicConducir
+     * @param mixed $id
+     * @return string
+     */
     public static function datosLicConducir($id)
     {
         $sql =
@@ -134,14 +172,23 @@ trait SqlTrait
             FROM dbo.licLicencias 
             WHERE Licencia = $id";
 
-        return $sql;
+        $model = new Weblogin();
+        $result = $model->executeSqlQuery($sql);
+        return $result;
     }
 
+    /**
+     * Summary of datosHistorialLicComercial
+     * @param mixed $id
+     * @return string
+     */
     public static function datosHistorialLicComercial($id)
     {
         $sql = "SELECT * FROM lc_solicitudes_historial WHERE id_usuario = $id AND visto = 0";
 
-        return $sql;
+        $model = new Weblogin();
+        $result = $model->executeSqlQuery($sql);
+        return $result;
     }
 
     public static function datosLicComercial($id)
@@ -155,7 +202,9 @@ trait SqlTrait
             FROM lc_solicitudes lc_sol 
             WHERE id_usuario = $id AND estado NOT LIKE '%rechazado%'";
 
-        return $sql;
+        $model = new Weblogin();
+        $result = $model->executeSqlQuery($sql, false);
+        return $result;
     }
 
     public static function datosLibretaSanitaria($id)
@@ -174,7 +223,13 @@ trait SqlTrait
                 LEFT JOIN libretas_solicitudes sol ON sol.id_usuario_solicitante = usu.id
             WHERE wu.ReferenciaID = $id ORDER BY id DESC";
 
-        return $sql;
+        $model = new Weblogin();
+        $result = $model->executeSqlQuery($sql);
+
+        if (!$result instanceof ErrorException) {
+            $result['wqr'] = 'asdads';
+        }
+        return $result;
     }
 
     public static function getMuniEventosFetch($dni)
@@ -203,6 +258,11 @@ trait SqlTrait
 
     /* wlFotosPerfil */
 
+    /**
+     * Summary of getPersonsSql
+     * @param mixed $where
+     * @return string
+     */
     public static function getPersonsSql($where)
     {
         $sql =

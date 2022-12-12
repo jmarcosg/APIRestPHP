@@ -22,7 +22,6 @@ if ($url['method'] == 'GET') {
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
 			exit;
-			break;
 	}
 }
 
@@ -31,18 +30,16 @@ if ($url['method'] == 'POST') {
 	unset($_POST['action']);
 
 	switch ($action) {
+		case 'getAllData':
+			LoginController::getAllData();
 
 		case 'getIntoApp':
 			WapAppsRecientesController::getIntoApp();
-
-		case 'getAllData':
-			LoginController::getAllData();
 
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
 			exit;
-			break;
 	}
 }
 

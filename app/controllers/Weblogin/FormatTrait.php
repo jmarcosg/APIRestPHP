@@ -109,7 +109,14 @@ trait FormatTrait
         return $data;
     }
 
-    private static function formatData($data, $msgError = null, $msgErrorArray = null)
+    /**
+     * Genera un formato para una respuesta, si requiere enviar un error array vacio se debe ingresar @param mixed $msgErrorArray
+     * @param mixed $data
+     * @param mixed $msgError
+     * @param mixed $msgErrorArray
+     * @return array
+     */
+    private static function formatData(array $data, string $msgError = null, string $msgErrorArray = null): array
     {
         $error = null;
         if ($data && $data instanceof ErrorException) {
