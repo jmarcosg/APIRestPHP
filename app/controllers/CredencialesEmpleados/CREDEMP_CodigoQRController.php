@@ -28,7 +28,7 @@ class CREDEMP_CodigoQRController
         $res['qr_token'] = $qrToken;
         $output = RequestGenerarQR::sendRequest($res);
 
-        if ($output['code'] == "200") {
+        if ($output['data']['urlQR']) {
             $usuario = CREDEMP_UsuarioController::index(['email' => $res['mailUsuario']])[0];
             $qrData = [
                 'id_usuario' => $usuario['id'],

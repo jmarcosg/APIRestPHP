@@ -23,7 +23,13 @@ if ($url['method'] == 'GET') {
             case '1':
                 //GET TEMPLATES E INPUTS
                 $data = [];
-                $templates = CREDEMP_TemplateController::index(['deshabilitado' => 0]);
+                // print_r($_GET);
+                // exit;
+                if ($_GET['userProfile'] == "10") {
+                    $templates = CREDEMP_TemplateController::index(['deshabilitado' => 0]);
+                } else {
+                    $templates = CREDEMP_TemplateController::index(['deshabilitado' => 0, 'id_usuario_creador' => $_GET['id_usuario_creador']]);
+                }
                 if (!empty($templates)) {
                     $tempData = [];
                     foreach ($templates as $template) {
@@ -62,30 +68,58 @@ if ($url['method'] == 'GET') {
                 break;
 
             case '4':
-                $personas = CREDEMP_PersonaController::index(['deshabilitado' => 0]);
-                $data = [];
-                foreach ($personas as $persona) {
-                    $tempData = [];
-                    $values = CREDEMP_ValorController::index(['id_persona' => $persona['id'], 'id_template' => $persona['id_template']]);
-                    $inputs = CREDEMP_InputController::index(['id_template' => $persona['id_template']]);
-                    $template = CREDEMP_TemplateController::index(['id' => $persona['id_template']])[0];
-                    if ($template['needed_inputs'] != 0) {
+                if ($_GET['userProfile'] == "10") {
+                    $personas = CREDEMP_PersonaController::index(['deshabilitado' => 0]);
+                    $data = [];
+                    foreach ($personas as $persona) {
+                        $tempData = [];
+                        $values = CREDEMP_ValorController::index(['id_persona' => $persona['id'], 'id_template' => $persona['id_template']]);
+                        $inputs = CREDEMP_InputController::index(['id_template' => $persona['id_template']]);
+                        $template = CREDEMP_TemplateController::index(['id' => $persona['id_template']])[0];
+                        if ($template['needed_inputs'] != 0) {
 
-                        $inputsAndTypes = [];
-                        foreach ($inputs as $input) {
-                            $tipo = CREDEMP_TipoController::index(['id' => $input['id_tipo']])[0];
-                            $value = CREDEMP_ValorController::index(['id_input' => $input['id'], 'id_persona' => $persona['id'], 'id_template' => $template['id']])[0];
-                            $input['tipo'] = $tipo;
-                            $input['value'] = $value;
-                            $inputsAndTypes[] = $input;
+                            $inputsAndTypes = [];
+                            foreach ($inputs as $input) {
+                                $tipo = CREDEMP_TipoController::index(['id' => $input['id_tipo']])[0];
+                                $value = CREDEMP_ValorController::index(['id_input' => $input['id'], 'id_persona' => $persona['id'], 'id_template' => $template['id']])[0];
+                                $input['tipo'] = $tipo;
+                                $input['value'] = $value;
+                                $inputsAndTypes[] = $input;
+                            }
+                            $template['inputs'] = $inputsAndTypes;
                         }
-                        $template['inputs'] = $inputsAndTypes;
+                        $qr = CREDEMP_CodigoQRController::index(['id_persona_identificada' => $persona['id']])[0];
+                        $persona['qr'] = $qr;
+                        $persona['template'] = $template;
+                        $tempData[] = $persona;
+                        $data[] = $tempData;
                     }
-                    $qr = CREDEMP_CodigoQRController::index(['id_persona_identificada' => $persona['id']])[0];
-                    $persona['qr'] = $qr;
-                    $persona['template'] = $template;
-                    $tempData[] = $persona;
-                    $data[] = $tempData;
+                } else {
+                    $templates = CREDEMP_TemplateController::index(['id_usuario_creador' => $_GET['id_usuario_creador']]);
+                    foreach ($templates as $template) {
+                        $personas = CREDEMP_PersonaController::index(['id_template' => $template['id']]);
+                        foreach ($personas as $persona) {
+                            $tempData = [];
+                            $values = CREDEMP_ValorController::index(['id_persona' => $persona['id'], 'id_template' => $persona['id_template']]);
+                            $inputs = CREDEMP_InputController::index(['id_template' => $persona['id_template']]);
+                            if ($template['needed_inputs'] != 0) {
+                                $inputsAndTypes = [];
+                                foreach ($inputs as $input) {
+                                    $tipo = CREDEMP_TipoController::index(['id' => $input['id_tipo']])[0];
+                                    $value = CREDEMP_ValorController::index(['id_input' => $input['id'], 'id_persona' => $persona['id'], 'id_template' => $template['id']])[0];
+                                    $input['tipo'] = $tipo;
+                                    $input['value'] = $value;
+                                    $inputsAndTypes[] = $input;
+                                }
+                                $template['inputs'] = $inputsAndTypes;
+                            }
+                            $qr = CREDEMP_CodigoQRController::index(['id_persona_identificada' => $persona['id']])[0];
+                            $persona['qr'] = $qr;
+                            $persona['template'] = $template;
+                            $tempData[] = $persona;
+                            $data[] = $tempData;
+                        }
+                    }
                 }
                 break;
 
@@ -113,7 +147,11 @@ if ($url['method'] == 'GET') {
                 break;
 
             case '7':
-                $templates = CREDEMP_TemplateController::index();
+                if ($_GET['userProfile'] == "10") {
+                    $templates = CREDEMP_TemplateController::index();
+                } else {
+                    $templates = CREDEMP_TemplateController::index(['id_usuario_creador' => $_GET['id_usuario_creador']]);
+                }
                 $data = [];
                 foreach ($templates as $template) {
                     if ($template['needed_inputs'] != 0) {
