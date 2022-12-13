@@ -241,7 +241,7 @@ if ($url['method'] == "GET") {
 if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case 'an1':
-			//* Cargar animal
+			//* Cargar animall
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
 			$currentTime = $date->format('Y-m-d H:i:s');
