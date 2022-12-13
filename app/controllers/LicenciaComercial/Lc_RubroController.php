@@ -24,7 +24,13 @@ class Lc_RubroController
 
         $data = $data->executeSqlQuery($sql, false);
 
-        return $data;
+        if (!$data instanceof ErrorException) {
+            sendRes($data);
+        } else {
+            sendRes(null, $data->getMessage(), $_GET);
+        };
+
+        exit;
     }
 
     public function get($params)
