@@ -12,12 +12,12 @@ use App\Models\LicenciaComercial\Lc_Documento;
 use App\Traits\LicenciaComercial\TemplateEmailSolicitud;
 use App\Traits\LicenciaComercial\QuerysSql;
 use App\Traits\LicenciaComercial\Reportes;
-use DateTime;
+use App\Traits\LicenciaComercial\FormatTrait;
 use ErrorException;
 
 class Lc_SolicitudController
 {
-    use QuerysSql, TemplateEmailSolicitud, Reportes;
+    use QuerysSql, TemplateEmailSolicitud, Reportes, FormatTrait;
 
     public function __construct()
     {
@@ -49,13 +49,7 @@ class Lc_SolicitudController
         if ($data) {
 
             /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
-            if ($data['pertenece'] == 'tercero') {
-                $rc = new RenaperController();
-                $dni = $data["dni_tercero"];
-                $tramite = $data["tramite_tercero"];
-                $genero = $data["genero_tercero"];
-                $data['dataTercero'] = $rc->getDataTramite($genero, $dni, $tramite);
-            }
+            $data = self::formatEsTerceroSolicitud($data);
 
             /* Obtenemos los rubros cargados */
             $rubro = new Lc_SolicitudRubroController();
@@ -116,13 +110,7 @@ class Lc_SolicitudController
 
             if ($data) {
                 /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
-                if ($data['pertenece'] == 'tercero') {
-                    $rc = new RenaperController();
-                    $dni = $data["dni_tercero"];
-                    $tramite = $data["tramite_tercero"];
-                    $genero = $data["genero_tercero"];
-                    $data['dataTercero'] = $rc->getDataTramite($genero, $dni, $tramite);
-                }
+                $data = self::formatEsTerceroSolicitud($data);
 
                 /* Obtenemos los rubros cargados */
                 $rubro = new Lc_SolicitudRubroController();

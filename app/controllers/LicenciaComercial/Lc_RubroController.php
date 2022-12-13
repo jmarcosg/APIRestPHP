@@ -13,7 +13,7 @@ class Lc_RubroController
         $GLOBALS['exect'][] = 'lc_solicitud_rubros';
     }
 
-    public static function index($param = [], $ops = [])
+    public static function index()
     {
         $data = new Lc_Rubro();
         $sql =

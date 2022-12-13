@@ -3,11 +3,12 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\Weblogin\Weblogin;
+use App\Traits\WebLogin\GettersDataTrait;
 use ErrorException;
 
 class LoginController
 {
-    use SqlTrait, FormatTrait;
+    use FormatTrait, GettersDataTrait;
 
     public static function getUserData($user, $pass)
     {
@@ -20,24 +21,15 @@ class LoginController
         }
 
         if ($userData && $userData->value && !$userData->error) {
-            $data = [
-                'authenticationToken' => $userData->value->authenticationToken,
-                'profile' => $userData->value->profile,
-                'apps' => $userData->value->apps
-            ];
+            $data = $userData->value;
 
-            $dni = $userData->value->profile->documento;
+            $fetch = self::viewFetch($data->profile->wapUsuarioID, $data->profile->documento);
 
-            $referenciaId = $userData->value->profile->wapUsuarioID;
-            $fetch = self::viewFetch($referenciaId, $dni);
+            sendResError($fetch, 'Hubo un error al realizar el inicio de sesion');
 
-            if (!$fetch instanceof ErrorException) {
-                $data['fetch'] = $fetch;
-                sendRes($data);
-            } else {
-                Weblogin::saveLog($fetch, __CLASS__, __FUNCTION__);
-                sendRes(null, $fetch->getMessage(), $_GET);
-            }
+            $data->fetch = $fetch;
+
+            sendRes($data);
         } else {
             $error = new ErrorException($userData->error);
             Weblogin::saveLog($error->getMessage(), __CLASS__, __FUNCTION__);
@@ -47,7 +39,8 @@ class LoginController
         exit;
     }
 
-    public static function fetchUserData($user, $pass)
+    /** Obtiene los datos de usuario basado en sus credenciales*/
+    private static function fetchUserData($user, $pass)
     {
         try {
             $postData = [
@@ -60,7 +53,7 @@ class LoginController
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => WEBLOGIN2,
+                CURLOPT_URL => BASE_WEB_LOGIN_API . 'webLogin2',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -77,132 +70,45 @@ class LoginController
             $response = curl_exec($curl);
             curl_close($curl);
             $response = json_decode($response);
+
             if ($response == null || $response->error != null) {
-                return new ErrorException('Problema con el inicio de sesion');
+                return new ErrorException("Problema con el inicio de sesion: $response->error");
             }
+
             return $response;
         } catch (\Throwable $th) {
             return $th;
         }
     }
 
-    /** Obtenemos los datos del legajo en funcion del sexo y documento */
-    public static function getLegajoData()
+    /** Obtenemos todos los datos para mostrar al usuario */
+    public static function getAllData()
     {
-        $sexo = $_GET['sexo'];
-        $doc =  $_GET['doc'];
+        $ps =  json_decode($_POST['procedures_started']);
+        $response = [
+            'appsRecientes' => WapAppsRecientesController::getAppsRecientes($_POST['id_usuario']),
+            'tramites' => WlAppController::getApps(),
 
-        $model = new Weblogin();
+            'procedures_started' => [
+                'legajo' => $ps->legajo->fetch ? self::getLegajoData($_POST['genero'], $_POST['dni']) : false,
+                'acarreo' => $ps->acarreo->fetch ? self::getAcarreoData($_POST['id_usuario']) : false,
+                'licencia' => $ps->licencia->fetch ? self::getLicConducirData($_POST['dni']) : false,
+                'muniEventos' => $ps->muniEventos->fetch ? self::getMuniEventos($_POST['dni']) : false,
+                'licencia_comercial' => $ps->licencia_comercial->fetch ? self::getLicenciaComercial($_POST['id_usuario']) : false,
+                'libreta' => $ps->libreta->fetch ? self::getLibretasanitariaData($_POST['id_usuario']) : false,
+                'libretaDos' => $ps->libretaDos->fetch ? self::getLibretasanitariaData($_POST['id_usuario']) : false,
+            ]
+        ];
 
-        $sql = self::datosLegajo($sexo, $doc);
-        $data = $model->executeSqlQuery($sql);
-
-        if ($data && !$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener el legajo | genero: $sexo | documento: $doc");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
+        sendRes($response);
     }
 
-    /** Obtenemos los datos del acarreo */
-    public static function getAcarreoData()
+    public static function getLicComercialId()
     {
-        $id = $_GET['id'];
+        $data = self::datosLicComercialId($_GET['id']);
 
-        $model = new Weblogin();
+        sendResError($data, 'Al obtener los datos de la licencia comercial número: ' . $_GET['id']);
 
-        $sql = self::datosAccareo($id);
-        $data = $model->executeSqlQuery($sql);
-
-        if ($data && !$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos del accareo | id: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
-    }
-
-    /** Obtenemos los datos de licencia de conducir */
-    public static function getLicConducirData()
-    {
-        $id = $_GET['id'];
-
-        $model = new Weblogin();
-
-        $sql = self::datosLicConducir($id);
-        $data = $model->executeSqlQuery($sql);
-
-        if ($data && !$data instanceof ErrorException) {
-            $data = self::formatLicConducir($data);
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos de licencia de conducir | id: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
-    }
-
-    /** Obtenemos los datos de licencia de conducir */
-    public static function getMuniEventos()
-    {
-        $id = $_GET['dni'];
-
-        $data = self::getMuniEventosFetch($id);
-
-        if ($data && !$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos de muni eventos | dni: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
-    }
-
-    /** Obtenemos los datos de licencia de conducir */
-    public static function getLibretasanitariaData()
-    {
-        $id = $_GET['id'];
-
-        $model = new Weblogin();
-
-        $sql = self::datosLibretaSanitaria($id);
-        $data = $model->executeSqlQuery($sql);
-
-        if ($data && !$data instanceof ErrorException) {
-            $data = self::formatLibretaSanitaria($data);
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos de la libreta sanitaria | id: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
-    }
-
-    public static function getLibretasanitariaDataDos()
-    {
-        $id = $_GET['id'];
-
-        $model = new Weblogin();
-
-        $sql = self::datosLibretaSanitaria(37216);
-        $data = $model->executeSqlQuery($sql);
-
-        if ($data && !$data instanceof ErrorException) {
-            $data = self::formatLibretaSanitaria($data);
-            sendRes($data);
-        } else {
-            $error = new ErrorException("Problema al obtener los datos de la libreta sanitaria | id: $id");
-            Weblogin::saveLog($error, __CLASS__, __FUNCTION__);
-            sendRes(null, $error->getMessage(), $_GET);
-        };
-        exit;
+        sendRes($data);
     }
 }

@@ -16,11 +16,26 @@ if ($url['method'] == 'GET') {
 		case 'getAllContents':
 			IdeasPropuestasController::getContents();
 
+		case 'getContentsWl':
+			IdeasPropuestasController::getContents('id_usuario_wl =' . $_GET['id_usuario']);
+
 		case 'getAllContentsUser':
 			IdeasPropuestasController::getContentsByUser();
 
+		case 'getAllContentsCategorias':
+			IdeasPropuestasController::getCountContentsByCat();
+
 		case 'getAllContentsByDni':
 			IdeasPropuestasController::getContents('dni = ' . $_GET['dni']);
+
+		case 'getUsuarios':
+			IdeasPropuestasController::getUsuarios();
+
+		case 'getCategorias':
+			IdeasPropuestasController::getCategorias();
+
+		case 'getContentsByCat':
+			IdeasPropuestasController::getContentsByCat();
 
 		default:
 			$error = new ErrorException('El action no es valido');
@@ -43,6 +58,9 @@ if ($url['method'] == 'POST') {
 
 		case 'editContent':
 			IdeasPropuestasController::saveEditContent();
+
+		case 'saveUser':
+			IdeasPropuestasController::saveUser();
 
 		case 'deleteContent':
 			IdeasPropuestasController::deleteContent();

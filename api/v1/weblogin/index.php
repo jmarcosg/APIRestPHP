@@ -15,54 +15,34 @@ if ($url['method'] == 'GET') {
 
 	switch ($action) {
 
-		case 'legajo':
-			LoginController::getLegajoData();
-
-		case 'acarreo':
-			LoginController::getAcarreoData();
-
-		case 'licenciaconducir':
-			LoginController::getLicConducirData();
-
-		case 'muniEventos':
-			LoginController::getMuniEventos();
-
-		case 'libretasanitaria':
-			LoginController::getLibretasanitariaData();
-
-		case 'libretasanitariaDos':
-			LoginController::getLibretasanitariaDataDos();
-
 		case 'aplicaciones':
 			WlAppController::getApps();
+
+		case 'getLicComercialId':
+			LoginController::getLicComercialId();
 
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
 			exit;
-			break;
 	}
 }
-
-
 
 if ($url['method'] == 'POST') {
 	$action = $_POST['action'];
 	unset($_POST['action']);
 
 	switch ($action) {
+		case 'getAllData':
+			LoginController::getAllData();
 
 		case 'getIntoApp':
 			WapAppsRecientesController::getIntoApp();
-
-		case 'checkIncomingApps':
-			WapAppsRecientesController::checkIncomingApps();
 
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
 			exit;
-			break;
 	}
 }
 

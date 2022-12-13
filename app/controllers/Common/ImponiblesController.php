@@ -12,7 +12,7 @@ class ImponiblesController
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => BASE_WEB_LOGIN . "/Imponibles/$dni",
+                CURLOPT_URL => BASE_WEB_LOGIN_API . "/Imponibles/$dni",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,

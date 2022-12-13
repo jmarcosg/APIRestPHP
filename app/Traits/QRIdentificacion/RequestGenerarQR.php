@@ -8,8 +8,10 @@ trait RequestGenerarQR
     {
         if (ENV == "local") {
             $urlQR = "http://localhost/APIRestPHP/public/views/QRIdentificacion/index.php?token=$param[qr_token]";
+            $urlApi = "http://200.85.183.194:90/apps/generador_credenciales_api/api/index.php/credencial/generarCUERRE";
         } else {
-            $urlQR = (PROD == "true") ? "https://weblogin.muninqn.gov.ar/apps/APIRest/public/views/QRIdentificacion/index.php?token=$param[qr_token]" : "http://200.85.183.194:90/apps/APIRest/public/views/QRIdentificacion/index.php?token=$param[qr_token]";
+            $urlQR = (PROD == "true") ? "https://weblogin.muninqn.gov.ar/apps/tarjetas_digitales/index.html#/tarjeta-de-contacto/?token=$param[qr_token]" : "http://200.85.183.194:90/apps/tarjetas_digitales/index.html#/tarjeta-de-contacto/?token=$param[qr_token]";
+            $urlApi = (PROD == "true") ? "https://weblogin.muninqn.gov.ar/apps/generador_credenciales_api/api/index.php/credencial/generarCUERRE" : "http://200.85.183.194:90/apps/generador_credenciales_api/api/index.php/credencial/generarCUERRE";
         }
 
         $postParams = [
@@ -24,7 +26,7 @@ trait RequestGenerarQR
 
         $curl = curl_init();
         curl_setopt_array($curl, [
-            CURLOPT_URL => "http://200.85.183.194:90/apps/generador_credenciales_api/api/index.php/credencial/generarCUERRE",
+            CURLOPT_URL => $urlApi,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -44,9 +46,5 @@ trait RequestGenerarQR
         $serverOutput["data"]["urlQR"] = $postParams["urlQR"];
 
         return $serverOutput;
-    }
-
-    public static function operacionesQR()
-    {
     }
 }

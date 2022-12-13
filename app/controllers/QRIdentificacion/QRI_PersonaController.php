@@ -44,14 +44,11 @@ class QRI_PersonaController
     {
         $persona = QRI_PersonaController::indexOf(['dni' => $_PUT['dni']]);
 
+        $_PUT['deshabilitado'] = 0;
         if (count($persona) == 0) {
             $personaCargada = new QRI_Persona();
-            $personaCargada->set(deutf8ize($_PUT));
+            $personaCargada->set($_PUT);
             $idPersona = $personaCargada->save();
-
-
-            // echo $idPersona;
-            // die();
 
             $persona = QRI_PersonaController::index(['id' => $idPersona])[0];
 
@@ -80,10 +77,6 @@ class QRI_PersonaController
                 $dataQR['sessionkey'] = $_PUT['sessionkey'];
                 $dataQR['id_solicitud'] = $idNuevoQR;
                 $resp = RequestGenerarQR::sendRequest($dataQR);
-
-                $data = $_PUT;
-                $data['id'] = $idNuevoQR;
-                RequestGenerarVCard::generateVcard($data);
 
                 $nuevoQR = QRI_CodigoQRController::index(['id' => $idNuevoQR])[0];
                 $resp = ["error" => null, "message" => "exito", "token" => $nuevoQR['qr_token']];

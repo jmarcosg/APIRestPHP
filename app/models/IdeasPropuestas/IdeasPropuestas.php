@@ -13,5 +13,8 @@ class IdeasPropuestas extends BaseModel
     protected $fillable = [
         'id_usuario',
         'content',
+        'barrio',
+        'id_categoria',
+        'id_usuario_wl',
     ];
 }

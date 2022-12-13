@@ -3,6 +3,7 @@
 namespace App\Controllers\Weblogin;
 
 use DateTime;
+use ErrorException;
 
 trait FormatTrait
 {
@@ -87,5 +88,52 @@ trait FormatTrait
 
 
         return $result;
+    }
+
+    private static function formatLicenciaComercial(array $result)
+    {
+        $data = [
+            'count_not' => count($result),
+            'data' => group_by("id_solicitud", $result)
+        ];
+
+        foreach ($data['data'] as $key => $d) {
+            $data['data'][$key] = [
+                'count' => count($d),
+                'solicitud' => $key,
+                'data' => $d
+            ];
+        }
+        $data['data'] = array_values($data['data']);
+
+        return $data;
+    }
+
+    /**
+     * Genera un formato para una respuesta, si requiere enviar un error array vacio se debe ingresar @param mixed $msgErrorArray
+     * @param mixed $data
+     * @param mixed $msgError
+     * @param mixed $msgErrorArray
+     * @return array
+     */
+    private static function formatData(array $data, string $msgError = null, string $msgErrorArray = null): array
+    {
+        $error = null;
+        if ($data && $data instanceof ErrorException) {
+            $error = $msgError;
+            $data = null;
+        }
+
+        if (is_array($data) && count($data) == 0 && $msgError) {
+            $error = $msgErrorArray;
+            $data = null;
+        }
+
+        return [
+            'data' => $data,
+            'fetch' => true,
+            'loading' => false,
+            'error' => $error
+        ];
     }
 }
