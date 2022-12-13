@@ -11,6 +11,7 @@ class CREDEMP_Template extends BaseModel
     protected $identity = 'id';
 
     protected $fillable = [
+        'id_usuario_creador',
         'name',
         'descripcion',
         'visibilidad_dni',
