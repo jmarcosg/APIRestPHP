@@ -39,6 +39,9 @@ if ($url['method'] == 'POST') {
 		case 'getIntoApp':
 			WapAppsRecientesController::getIntoApp();
 
+		case 'getLicComercialInfo':
+			LoginController::getLicComercialInfo();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);

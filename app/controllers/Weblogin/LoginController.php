@@ -103,11 +103,30 @@ class LoginController
         sendRes($response);
     }
 
+    /* licencia comercial */
     public static function getLicComercialId()
     {
-        $data = self::datosLicComercialId($_GET['id']);
+        $id = $_GET['id'];
+        $data = self::datosLicComercial("id = '$id");
 
-        sendResError($data, 'Al obtener los datos de la licencia comercial número: ' . $_GET['id']);
+        sendResError($data, 'Al obtener los datos de la licencia comercial número: ' . $id);
+
+        sendRes($data);
+    }
+
+    public static function getLicComercialInfo()
+    {
+        $data = json_decode($_POST['data'], true);
+
+        $where = '';
+        foreach ($data as  $value) {
+            $where .= "id = '$value' OR ";
+        }
+        $where =  substr($where, 0, -3);
+
+        $data = self::datosLicComercial($where, false);
+
+        sendResError($data, "Problema al obtener los datos de las licencias");
 
         sendRes($data);
     }

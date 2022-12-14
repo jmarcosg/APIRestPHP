@@ -48,15 +48,57 @@ trait GettersDataTrait
     /** Obtenemos los datos de Licencia Comercial */
     private static function getLicenciaComercial($id_usuario)
     {
-        $licComercial = self::datosLicComercial($id_usuario);
+        $licComercial = self::datosLicComercial("id_usuario = $id_usuario", false);
 
+        $data = self::filterLicComercial($licComercial);
+
+        $licComercial = self::formatData($data, 'Problema al obtener la licencia comercial', 'No se encontraron licencias comerciales');
+        return $licComercial;
+    }
+
+    private static function filterLicComercial($licComercial)
+    {
         if ($licComercial && !$licComercial instanceof ErrorException) {
-            usort($licComercial, function ($a, $b) {
-                return intval($a['historial']) < intval($b['historial']);
-            });
-        }
+            $count = count($licComercial);
+            if ($count > 0) {
 
-        $licComercial = self::formatData($licComercial, 'Problema al obtener la licencia comercial', 'No se encontraron licencias comerciales');
+                usort($licComercial, function ($a, $b) {
+                    return intval($a['cant_historial']) < intval($b['cant_historial']);
+                });
+
+                $rechazadas = array_values(array_filter($licComercial, function ($sol) {
+                    return str_contains($sol['estado'], 'rechazado');
+                }));
+
+                $finalizados = array_values(array_filter($licComercial, function ($sol) {
+                    return $sol['estado'] == 'finalizado';
+                }));
+
+                $noFinalizados = array_values(array_filter($licComercial, function ($sol) {
+                    return $sol['estado'] != 'finalizado' && !str_contains($sol['estado'], 'rechazado');
+                }));
+
+                $historial = array_values(array_filter($licComercial, function ($sol) {
+                    return $sol['cant_historial'] > 0;
+                }));
+
+                $licComercial = [
+                    'count' => $count,
+
+                    /* Todas las solicitudes rechazadas */
+                    'rechazadas' => count($rechazadas) > 0 ? $rechazadas : null,
+
+                    /* Todas las solicitudes finalizadas */
+                    'finalizados' => count($finalizados) > 0 ? $finalizados : null,
+
+                    /* Todas las solicitudes no finalizadas */
+                    'noFinalizados' => count($noFinalizados) > 0 ? $noFinalizados : null,
+
+                    /* Todas las solicitudes que tienen al menos una notificacion no visto */
+                    'historial' => count($historial) > 0 ? $historial : null,
+                ];
+            }
+        }
         return $licComercial;
     }
 
