@@ -70,6 +70,10 @@ trait GettersDataTrait
                     return str_contains($sol['estado'], 'rechazado');
                 }));
 
+                $retornados = array_values(array_filter($licComercial, function ($sol) {
+                    return str_contains($sol['estado'], 'retornado');
+                }));
+
                 $finalizados = array_values(array_filter($licComercial, function ($sol) {
                     return $sol['estado'] == 'finalizado';
                 }));
@@ -87,6 +91,9 @@ trait GettersDataTrait
 
                     /* Todas las solicitudes rechazadas */
                     'rechazadas' => count($rechazadas) > 0 ? $rechazadas : null,
+
+                    /* Todas las solicitudes retornadas */
+                    'retornados' => count($retornados) > 0 ? $retornados : null,
 
                     /* Todas las solicitudes finalizadas */
                     'finalizados' => count($finalizados) > 0 ? $finalizados : null,
@@ -106,6 +113,10 @@ trait GettersDataTrait
     private static function getLibretasanitariaData($id_usuario)
     {
         $libretaSanitaria = self::datosLibretaSanitaria($id_usuario);
+
+        if ($libretaSanitaria && !$libretaSanitaria instanceof ErrorException) {
+            $libretaSanitaria = self::formatLibretaSanitaria($libretaSanitaria);
+        }
 
         $libretaSanitaria = self::formatData($libretaSanitaria, 'Problame al obtener carnet de manipulacion');
         return $libretaSanitaria;

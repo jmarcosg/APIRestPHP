@@ -30,12 +30,12 @@ trait QueryData
             }
         }
 
-        $data['licencia_comercial'] = (FETCH_LEGAJO && $data['licencia_comercial'] != null && $data['licencia_comercial'] != "0") ? true : false;
+        $data['licencia_comercial'] = (FETCH_LICENCIA_COMERCIAl && $data['licencia_comercial'] != null && $data['licencia_comercial'] != "0") ? true : false;
         $data['muniEventos'] = FETCH_LEGAJO && self::getMuniEventosFetch($dni) ? true : false;
         $data['legajo'] = $data['legajo'] != null && FETCH_LEGAJO ? true : false;
         $data['libreta'] = $data['libreta'] != null && FETCH_LIBRETA ? true : false;
         $data['libretaDos'] = FETCH_LIBRETA ? true : false;
-        $data['licencia'] = ($data['licencia'] == null || $data['licencia'] == -1) && FETCH_LICENCIA ? false : true;
+        $data['licencia'] = ($data['licencia'] != null && $data['licencia'] != -1) && FETCH_LICENCIA ? true : false;
 
         return $data;
     }
@@ -245,11 +245,11 @@ trait QueryData
                 -- sol.tiene_local as tiene_local,
                 -- sol.nomenclatura as nomenclatura,
                 -- sol.m2 as m2,
-                -- sol.nombre_fantasia as nombre_fantasia,
+                sol.nombre_fantasia as nombre_fantasia,
                 -- sol.direccion_comercial as direccion_comercial,
                 -- sol.descripcion_actividad as descripcion_actividad,
                 sol.estado as estado,
-                -- sol.observacion as observacion,
+                sol.observacion as observacion,
                 -- sol.ver_inicio as ver_inicio,
                 -- sol.ver_rubros as ver_rubros,
                 -- sol.ver_catastro as ver_catastro,
@@ -262,6 +262,26 @@ trait QueryData
                 (select count(id) from dbo.lc_solicitudes_historial where id_solicitud = sol.id and visto = '0') as cant_historial
             FROM dbo.lc_solicitudes sol
                 LEFT JOIN dbo.wapPersonas persol ON sol.id_wappersonas_tercero = persol.ReferenciaID
+            WHERE $where
+            ORDER BY id DESC";
+
+        $model = new Weblogin();
+        $result = $model->executeSqlQuery($sql, $asocc);
+        return $result;
+    }
+
+    public static function datosLicComercialHistorial($where, $asocc = true)
+    {
+        $sql =
+            "SELECT
+                sol.id as id,
+                sol.id_solicitud as id_solicitud,
+                sol.estado as estado,
+                sol.observacion as observacion,
+                sol.tipo_registro as tipo_registro,
+                sol.visto as visto,
+                sol.fecha_alta as fecha_alta
+            FROM dbo.lc_solicitudes_historial sol
             WHERE $where
             ORDER BY id DESC";
 

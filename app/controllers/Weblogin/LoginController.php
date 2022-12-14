@@ -96,7 +96,7 @@ class LoginController
                 'muniEventos' => $ps->muniEventos->fetch ? self::getMuniEventos($_POST['dni']) : false,
                 'licencia_comercial' => $ps->licencia_comercial->fetch ? self::getLicenciaComercial($_POST['id_usuario']) : false,
                 'libreta' => $ps->libreta->fetch ? self::getLibretasanitariaData($_POST['id_usuario']) : false,
-                'libretaDos' => $ps->libretaDos->fetch ? self::getLibretasanitariaData($_POST['id_usuario']) : false,
+                'libretaDos' => $ps->libretaDos->fetch ? self::getLibretasanitariaData(88526) : false,
             ]
         ];
 
@@ -125,6 +125,17 @@ class LoginController
         $where =  substr($where, 0, -3);
 
         $data = self::datosLicComercial($where, false);
+
+        sendResError($data, "Problema al obtener los datos de las licencias");
+
+        sendRes($data);
+    }
+    public static function getLicComercialHistorial()
+    {
+
+        $id = $_GET['id'];
+        $where = "id_solicitud = '$id' AND visto = 0";
+        $data = self::datosLicComercialHistorial($where, false);
 
         sendResError($data, "Problema al obtener los datos de las licencias");
 

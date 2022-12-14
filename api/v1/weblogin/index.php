@@ -21,6 +21,9 @@ if ($url['method'] == 'GET') {
 		case 'getLicComercialId':
 			LoginController::getLicComercialId();
 
+		case 'getLicComercialHistorial':
+			LoginController::getLicComercialHistorial();
+
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
