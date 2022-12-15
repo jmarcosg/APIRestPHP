@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controllers\Weblogin;
+namespace App\Traits\WebLogin;
 
 use DateTime;
 use ErrorException;
 
-trait FormatTrait
+trait Format
 {
     private static function formatLicConducir(array $result)
     {
@@ -60,7 +60,6 @@ trait FormatTrait
 
         return $result;
     }
-
     private static function formatLibretaSanitaria(array $result)
     {
         $date = DateTime::createFromFormat('d/m/Y', $result['venc'])->format('Y-m-d H:i:s');
@@ -89,7 +88,6 @@ trait FormatTrait
 
         return $result;
     }
-
     private static function formatLicenciaComercial(array $result)
     {
         $data = [

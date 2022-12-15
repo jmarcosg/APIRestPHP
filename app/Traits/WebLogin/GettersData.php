@@ -2,12 +2,12 @@
 
 namespace App\Traits\WebLogin;
 
-use App\Controllers\Weblogin\QueryData;
+use App\Traits\WebLogin\QueryData;
 use ErrorException;
 
-trait GettersDataTrait
+trait GettersData
 {
-    use QueryData;
+    use QueryData, Format;
     /** Obtenemos los datos del legajo en funcion del sexo y documento */
     private static function getLegajoData($genero, $dni)
     {
@@ -117,15 +117,6 @@ trait GettersDataTrait
         if ($libretaSanitaria && !$libretaSanitaria instanceof ErrorException) {
             $libretaSanitaria = self::formatLibretaSanitaria($libretaSanitaria);
         }
-
-        $libretaSanitaria = self::formatData($libretaSanitaria, 'Problame al obtener carnet de manipulacion');
-        return $libretaSanitaria;
-    }
-
-    /** Obtenemos los datos de Carnet de manipulacion */
-    private static function getLibretasanitariaDataDos()
-    {
-        $libretaSanitaria = self::datosLibretaSanitaria(37216);
 
         $libretaSanitaria = self::formatData($libretaSanitaria, 'Problame al obtener carnet de manipulacion');
         return $libretaSanitaria;

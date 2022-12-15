@@ -6,6 +6,7 @@ class BaseDatos
 {
     private $conn_string;
     private $user;
+    private $host;
     private $pass;
     public $db;
     private $conn;
@@ -26,13 +27,6 @@ class BaseDatos
         $this->conn = odbc_connect($this->conn_string, $this->user, $this->pass);
     }
 
-    /**
-     * Permite realizar la busqueda de un objeto por multiples campos y si se especifica, con operadores
-     * específicos.
-     * @param array $param arreglo del direccion 'campo' => 'valor buscado' o vacio si se necesitan listar todos
-     * @param array $ops arreglo opcional del direccion 'campo' => 'operador', por defecto el operador es '='
-     * @return Usuario[]
-     */
     public function search($table, $param = [], $ops = [])
     {
         try {

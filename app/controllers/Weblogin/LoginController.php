@@ -3,15 +3,20 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\Weblogin\Weblogin;
-use App\Traits\WebLogin\GettersDataTrait;
+use App\Traits\LicenciaComercial\FormatTrait;
+use App\Traits\WebLogin\GettersData;
+use App\Traits\WebLogin\ValidacionesWebLogin;
 use ErrorException;
 
 class LoginController
 {
-    use FormatTrait, GettersDataTrait;
-
-    public static function getUserData($user, $pass)
+    use FormatTrait, GettersData, ValidacionesWebLogin;
+    public static function getUserData()
     {
+        self::checkParams(__FUNCTION__);
+
+        $user = $_POST['user'];
+        $pass = $_POST['pass'];
         $userData = self::fetchUserData($user, $pass);
 
         if ($userData instanceof ErrorException) {
@@ -84,6 +89,8 @@ class LoginController
     /** Obtenemos todos los datos para mostrar al usuario */
     public static function getAllData()
     {
+        self::checkParams(__FUNCTION__);
+
         $ps =  json_decode($_POST['procedures_started']);
         $response = [
             'appsRecientes' => WapAppsRecientesController::getAppsRecientes($_POST['id_usuario']),
@@ -96,7 +103,7 @@ class LoginController
                 'muniEventos' => $ps->muniEventos->fetch ? self::getMuniEventos($_POST['dni']) : false,
                 'licencia_comercial' => $ps->licencia_comercial->fetch ? self::getLicenciaComercial($_POST['id_usuario']) : false,
                 'libreta' => $ps->libreta->fetch ? self::getLibretasanitariaData($_POST['id_usuario']) : false,
-                'libretaDos' => $ps->libretaDos->fetch ? self::getLibretasanitariaData(88526) : false,
+                'libretaDos' => $ps->libretaDos->fetch ? self::getLibretasanitariaData(37216) : false,
             ]
         ];
 
@@ -104,16 +111,6 @@ class LoginController
     }
 
     /* licencia comercial */
-    public static function getLicComercialId()
-    {
-        $id = $_GET['id'];
-        $data = self::datosLicComercial("id = '$id");
-
-        sendResError($data, 'Al obtener los datos de la licencia comercial número: ' . $id);
-
-        sendRes($data);
-    }
-
     public static function getLicComercialInfo()
     {
         $data = json_decode($_POST['data'], true);
@@ -134,7 +131,7 @@ class LoginController
     {
 
         $id = $_GET['id'];
-        $where = "id_solicitud = '$id' AND visto = 0";
+        $where = "id_solicitud = '$id'";
         $data = self::datosLicComercialHistorial($where, false);
 
         sendResError($data, "Problema al obtener los datos de las licencias");

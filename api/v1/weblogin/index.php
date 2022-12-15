@@ -18,9 +18,6 @@ if ($url['method'] == 'GET') {
 		case 'aplicaciones':
 			WlAppController::getApps();
 
-		case 'getLicComercialId':
-			LoginController::getLicComercialId();
-
 		case 'getLicComercialHistorial':
 			LoginController::getLicComercialHistorial();
 

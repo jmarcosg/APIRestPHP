@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Weblogin;
+namespace App\Traits\WebLogin;
 
 use App\Controllers\Common\ImponiblesController;
 use App\Models\Weblogin\Weblogin;
@@ -16,7 +16,6 @@ trait QueryData
      */
     public static function viewFetch($referenciaId, $dni)
     {
-
         $data = self::sqlViewFetch($referenciaId, $dni);
 
         $data['acarreo'] = false;
@@ -152,11 +151,7 @@ trait QueryData
         return $result;
     }
 
-    /**
-     * Summary of datosLicConducir
-     * @param mixed $id
-     * @return string
-     */
+    /* Licencia de conducir */
     public static function datosLicConducir($id)
     {
         $sql =
@@ -177,21 +172,7 @@ trait QueryData
         return $result;
     }
 
-    /**
-     * Summary of datosHistorialLicComercial
-     * @param mixed $id
-     * @return string
-     */
-    public static function datosHistorialLicComercial($id)
-    {
-        $sql = "SELECT * FROM lc_solicitudes_historial WHERE id_usuario = $id AND visto = 0";
-
-        $model = new Weblogin();
-        $result = $model->executeSqlQuery($sql);
-        return $result;
-    }
-
-    /*  */
+    /* Licencia Comercial */
     public static function resumenLicComercial($id)
     {
         $sql =
@@ -290,6 +271,7 @@ trait QueryData
         return $result;
     }
 
+    /* Carnet Manipulación de alimentos */
     public static function datosLibretaSanitaria($id)
     {
         $sql =
@@ -315,6 +297,7 @@ trait QueryData
         return $result;
     }
 
+    /* Muni eventos */
     public static function getMuniEventosFetch($dni)
     {
         $curl = curl_init();
@@ -339,13 +322,6 @@ trait QueryData
         return $response['data'];
     }
 
-    /* wlFotosPerfil */
-
-    /**
-     * Summary of getPersonsSql
-     * @param mixed $where
-     * @return string
-     */
     public static function getPersonsSql($where)
     {
         $sql =
