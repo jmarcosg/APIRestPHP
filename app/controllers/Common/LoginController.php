@@ -2,7 +2,6 @@
 
 namespace App\Controllers\Common;
 
-use App\Models\Login;
 use Exception;
 
 class LoginController

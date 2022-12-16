@@ -13,8 +13,8 @@ if ($url['method'] == 'GET') {
 
 	switch ($action) {
 
-		/* case 'getToken':
-			LoginController::getToken(); */
+		case 'getToken':
+			LoginController::getUserByToken();
 
 		default:
 			$error = new ErrorException('El action no es valido');
