@@ -45,11 +45,11 @@ class Lc_SolicitudHistorialController
         sendRes(['id' => $id]);
     }
 
-    public static function getHistorialById($id)
+    public static function getHistorialByQuery($where)
     {
         $solicitud = new Lc_SolicitudHistorial();
 
-        $sql = self::getSqlHistorial("id_solicitud = $id");
+        $sql = self::getSqlHistorial($where);
         $data = $solicitud->executeSqlQuery($sql, false);
 
         if ($data) {

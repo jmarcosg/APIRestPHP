@@ -43,20 +43,21 @@ class Lc_SolicitudController
 
             /* Obtenemos los rubros cargados */
             $rubro = new Lc_SolicitudRubroController();
-            $data['rubros'] = $rubro->getRubrosBySolicitud($data['id']);
+            $data['rubros'] = $rubro->getRubrosBySolicitud($id);
 
             /* Obtenemos los documentos de la tercera etapa */
-            $data['documentos'] = self::getDocumentsData($data['id']);
+            $data['documentos'] = self::getDocumentsData($id);
 
             /* Obtenemos los documentos de la tercera etapa */
             $documento = new Lc_DocumentoController();
-            $data['documentosSelect'] = $documento->getDocumentosBySolicitud($data['id']);
+            $data['documentosSelect'] = $documento->getDocumentosBySolicitud($id);
 
             /* Obtenemos las notas de catastro y ambiente */
             $data['notas_catastro'] = Lc_Documento::getNota($data, 'notas_catastro');
             $data['notas_ambiente'] = Lc_Documento::getNota($data, 'notas_ambiente');
 
-            $data['historial'] = Lc_SolicitudHistorialController::getHistorialById($id);
+            $query = "id_solicitud = $id AND NOT tipo_registro = 'ingreso_licencia_comercial' AND NOT tipo_registro = 'ingreso_expediente'";
+            $data['historial'] = Lc_SolicitudHistorialController::getHistorialByQuery($query);
         } else {
             sendRes(null, 'No se encontro la solicitud', $_GET);
         }
@@ -100,7 +101,9 @@ class Lc_SolicitudController
                 $data['documentos'] = self::getDocumentsData($data['id']);
 
                 /* Obtenemos el hostorial */
-                $data['historial'] = Lc_SolicitudHistorialController::getHistorialById($data['id']);
+                $id = $data['id'];
+                $query = "id_solicitud = $id AND NOT tipo_registro = 'ingreso_licencia_comercial' AND NOT tipo_registro = 'ingreso_expediente''";
+                $data['historial'] = Lc_SolicitudHistorialController::getHistorialByQuery($query);
             }
         } else {
             $data = false;
@@ -532,6 +535,11 @@ class Lc_SolicitudController
         $solicitud['estado'] = $estado;
         $solicitud['tipo_registro'] = $tipo;
         $solicitud['visto'] = 0;
+
+        if ($tipo == "ingreso_licencia_comercial" || $tipo == "ingreso_expediente") {
+            /* El usuario no tiene porque enterarse de este cambio en su solicitud */
+            $solicitud['visto'] = 1;
+        }
 
         $solhistorial = new Lc_SolicitudHistorial();
         $solhistorial->set($solicitud);
