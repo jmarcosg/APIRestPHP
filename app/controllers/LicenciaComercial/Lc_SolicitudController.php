@@ -2,8 +2,6 @@
 
 namespace App\Controllers\LicenciaComercial;
 
-use App\Controllers\RenaperController;
-
 use App\Models\LicenciaComercial\Lc_Solicitud;
 use App\Models\LicenciaComercial\Lc_SolicitudHistorial;
 use App\Models\LicenciaComercial\Lc_SolicitudRubro;
@@ -19,11 +17,6 @@ class Lc_SolicitudController
 {
     use QuerysSql, TemplateEmailSolicitud, Reportes, FormatTrait;
 
-    public function __construct()
-    {
-        $GLOBALS['exect'][] = 'lc_solicitud';
-    }
-
     public static function index($where)
     {
         $solicitud = new Lc_Solicitud();
@@ -32,13 +25,9 @@ class Lc_SolicitudController
         $data = $solicitud->executeSqlQuery($sql, false);
         $data = self::formatSolicitudDataArray($data);
 
-        if (!$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            sendRes(null, $data->getMessage(), $_GET);
-        };
+        sendResError($data, 'Problema para encontrar las solicitudes');
 
-        exit;
+        sendRes($data);
     }
 
     public static function getById()
@@ -46,8 +35,9 @@ class Lc_SolicitudController
         $id = $_GET['id'];
         $data = self::getSolicitudByQuery("id = $id");
 
-        if ($data) {
+        sendResError($data, '[01] - No se encuentra la solicitud');
 
+        if ($data) {
             /* Si la solicitud tiene cargado un tercero, lo buscamos por renaper */
             $data = self::formatEsTerceroSolicitud($data);
 
@@ -63,38 +53,28 @@ class Lc_SolicitudController
             $data['documentosSelect'] = $documento->getDocumentosBySolicitud($data['id']);
 
             /* Obtenemos las notas de catastro y ambiente */
-            $data['notas_catastro'] = self::getNota($data, 'notas_catastro');
-            $data['notas_ambiente'] = self::getNota($data, 'notas_ambiente');
+            $data['notas_catastro'] = Lc_Documento::getNota($data, 'notas_catastro');
+            $data['notas_ambiente'] = Lc_Documento::getNota($data, 'notas_ambiente');
 
             $data['historial'] = Lc_SolicitudHistorialController::getHistorialById($id);
+        } else {
+            sendRes(null, 'No se encontro la solicitud', $_GET);
         }
 
-        if (!$data instanceof ErrorException) {
-            if ($data !== false) {
-                sendRes($data);
-            } else {
-                sendRes(null, 'No se encontro la solicitud', $_GET);
-            }
-        } else {
-            sendRes(null, $data->getMessage(), $_GET);
-        };
-        exit;
+        sendRes($data);
     }
 
-    public static function indexById()
+    public static function getSolicitudesUsuario()
     {
         $id = $_GET['id_usuario'];
         $data = self::getSolicitudByQuery("id_usuario = $id", false);
 
-        if (!$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            sendRes(null, $data->getMessage(), $_GET);
-        };
-        exit;
+        sendResError($data, '[] - No se pudo obtener la solicitud');
+
+        sendRes($data);
     }
 
-    public static function get()
+    public static function getLastSolicitud()
     {
         $data = new Lc_Solicitud();
 
@@ -138,6 +118,7 @@ class Lc_SolicitudController
         exit;
     }
 
+    /** 1° Paso: Guardamos los datos principales */
     public static function store()
     {
         /* Guardamos la solicitud */
@@ -159,6 +140,8 @@ class Lc_SolicitudController
         $data->set($_POST);
         $id = $data->save();
 
+        sendResError($id, '[01] - Hubo un error al guardar la solicitud', $_POST);
+
         $solicitud =  self::getSolicitudByQuery("id = $id");
 
         /* Guardamos un registro de reserva para los documentos */
@@ -168,20 +151,12 @@ class Lc_SolicitudController
         /* Obtenemos los documentos para que el usuario los cargue */
         $documentos = self::getDocumentsData($id);
 
-        if (!$id instanceof ErrorException) {
+        self::sendEmail($id, 'inicio', $solicitud);
 
-            self::sendEmail($id, 'inicio', $solicitud);
-
-            sendRes([
-                'id' => $id,
-                'documentos' => $documentos
-            ]);
-        } else {
-            sendRes(null, $id->getMessage(), [$id]);
-        };
-        exit;
+        sendRes(['id' => $id, 'documentos' => $documentos]);
     }
 
+    /** 1° Paso: Modificamos los datos principales */
     public static function datosPersonales($req, $id)
     {
         $data = new Lc_Solicitud();
@@ -197,84 +172,27 @@ class Lc_SolicitudController
 
         $solicitud =  $data->update($req, $id);
 
+        sendResError($solicitud, '[01] - Hubo un error al querer actualualizar la solicitud', $req);
+
         /* Obtenemos los documentos  */
         $documentos = self::getDocumentsData($id);
 
-        if (!$solicitud instanceof ErrorException) {
-            sendRes([
-                'id' => $id,
-                'documentos' => $documentos
-            ]);
-        } else {
-            sendRes(null, $solicitud->getMessage(), ['id' => $id]);
-        };
-        exit;
+        sendRes(['id' => $id, 'documentos' => $documentos]);
     }
 
+    /** 2° Paso: Datos de la actvidad */
     public static function actividad($req, $id)
     {
         $data = new Lc_Solicitud();
 
         $data = $data->update($req, $id);
 
-        if (!$data instanceof ErrorException) {
-            $_PUT['id'] = $id;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
+        sendResError($data, '[01] - Hubo un error al querer actualizar la actividad');
+
+        sendRes(['id' => $id]);
     }
 
-    /**
-     * Modulo Verificacion de rubros
-     * Realiza Cambios en los rubros
-     */
-    public static function rubrosUpdate($req, $id)
-    {
-        $rubros = explode(",", $req['rubros']);
-        unset($req['rubros']);
-
-        /* Borramos los rubros viejos */
-        $rubro = new Lc_SolicitudRubroController();
-        $rubro->deleteBySolicitudId($id);
-
-        /* Actualizamos los nuevos rubros */
-        $rubro = new Lc_SolicitudRubro();
-        $rubro->set(['id_solicitud' => $id, 'codigo' => $rubros[0], 'principal' => 1]);
-        $rubro->save();
-        unset($rubros[0]);
-        foreach ($rubros as $r) {
-            $rubro->set(['id_solicitud' => $id, 'codigo' => $r]);
-            $rubro->save();
-        }
-    }
-
-    /**
-     * Modulo Verificacion de rubros
-     * Realiza Cambios en los rubros
-     */
-    public static function documentosUpdate($req, $id)
-    {
-        $documentos = explode(",", $req['documentos']);
-        unset($req['documentos']);
-
-        /* Borramos los documentos con id mayor a 10 */
-        $documentoController = new Lc_DocumentoController();
-        $documentoController->deleteBySolicitudId($id);
-
-        /* Actualizamos los nuevos documentos */
-        $documento = new Lc_Documento();
-        foreach ($documentos as $d) {
-            $documento->set(['id_solicitud' => $id, 'id_tipo_documento' => $d, 'verificado' => 0]);
-            $documento->save();
-        }
-    }
-
-    /**
-     * Modulo Verificacion de rubros
-     * Evalua la solicitud en funcion de los rubros / descripción actividad
-     */
+    /** 3° Paso: Verificacion inicial */
     public static function initVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
@@ -312,24 +230,14 @@ class Lc_SolicitudController
             /* Registramos un historial de la solicitud  */
             self::setHistory($id, 'verificacion_inicio', $admin, $estado);
         } else {
-            $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
+            sendRes(null, 'Esta solicitud ya no se encuentra en el area');
         }
 
-        if (!$data instanceof ErrorException) {
-            $_PUT['id'] = $id;
-            $_PUT['estado'] = $estado;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-
-        exit;
+        sendResError($data, '[VI] - Problema a querer actualizar la solicitud');
+        sendRes(['id' => $id, 'estado' => $estado]);
     }
 
-    /**
-     * Modulo Catastro
-     * Evalua la solicitud en funcion de los rubros / nomenclatura
-     */
+    /** 4° Paso: Verificación de domicilio */
     public static function catastroVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
@@ -367,23 +275,14 @@ class Lc_SolicitudController
             /* Registramos un historial de la solicitud  */
             self::setHistory($id, 'verificacion_catastro', $admin, $estado);
         } else {
-            $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
+            sendRes(null, 'Esta solicitud ya no se encuentra en el area');
         }
 
-        if (!$data instanceof ErrorException) {
-            $_PUT['id'] = $id;
-            $_PUT['estado'] = $estado;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
+        sendResError($data, '[VD] - Problema a querer actualizar la solicitud');
+        sendRes(['id' => $id, 'estado' => $estado]);
     }
 
-    /**
-     * Modulo Catastro - Verificación Ambiental
-     * Evalua la solicitud en funcion de los rubros / nomenclatura
-     */
+    /** 5° Paso: Verificacion ambiental */
     public static function ambientalVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
@@ -402,7 +301,7 @@ class Lc_SolicitudController
                 $req['estado'] = 'ver_rubros';
                 $req['ver_ambiental'] = '1';
 
-                self::documentosUpdate($req, $id);
+                Lc_Documento::documentosUpdate($req, $id);
                 self::sendEmail($id, 'ambiental_aprobado', $solicitud);
             }
 
@@ -424,39 +323,28 @@ class Lc_SolicitudController
             /* Registramos un historial de la solicitud  */
             self::setHistory($id, 'verificacion_ambiental', $admin, $estado);
         } else {
-            $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
+            sendRes(null, 'Esta solicitud ya no se encuentra en el area');
         }
 
-        if (!$data instanceof ErrorException) {
-            $_PUT['id'] = $id;
-            $_PUT['estado'] = $estado;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
+        sendResError($data, '[VA] - Problema al querer actualizar la solicitud');
+        sendRes(['id' => $id, 'estado' => $estado]);
     }
 
-    /**
-     * Modulo Verificacion de rubros
-     * Evalua la solicitud en funcion de los rubros / descripción actividad
-     */
+    /** 6° Paso: Seleccion de rubros y documentacion */
     public static function rubrosVeriUpdate($req, $id)
     {
-
         $data = new Lc_Solicitud();
         $solicitud = $data->get(['id' => $id])->value;
 
         if ($solicitud['estado'] == 'ver_rubros') {
-
             /* Guaramos el ID del admin para generar registro de auditoria */
             $admin =  $req['id_wappersonas_admin'];
             unset($req['id_wappersonas_admin']);
 
             $estado = $req['estado'];
             if ($estado == 'aprobado' || $estado === 'retornado') {
-                self::rubrosUpdate($req, $id);
-                self::documentosUpdate($req, $id);
+                Lc_SolicitudRubro::rubrosUpdate($req, $id);
+                Lc_Documento::documentosUpdate($req, $id);
             }
 
             /* Si se aprueba y no tiene local lo mandamos a pedir los archivos */
@@ -479,7 +367,7 @@ class Lc_SolicitudController
                 $req['estado'] = 'rubros_rechazado';
             }
 
-            /* Guardamos la solcitidu */
+            /* Guardamos la solicitud */
             unset($req['rubros']);
             unset($req['documentos']);
             $data = $data->update($req, $id);
@@ -487,48 +375,33 @@ class Lc_SolicitudController
             /* Registramos un historial de la solicitud  */
             self::setHistory($id, 'verificacion_rubros', $admin, $estado);
         } else {
-            $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
+            sendResError('Esta solicitud ya no se encuentra en el area');
         }
 
-        if (!$data instanceof ErrorException) {
+        $solicitud =  self::getSolicitudByQuery("id = $id");
 
-            $solicitud =  self::getSolicitudByQuery("id = $id");
+        if ($estado == 'aprobado') self::sendEmail($id, 'rubros_aprobado', $solicitud);
+        if ($estado == 'rechazado') self::sendEmail($id, 'rubros_rechazado', $solicitud);
 
-            if ($estado == 'aprobado') self::sendEmail($id, 'rubros_aprobado', $solicitud);
-            if ($estado == 'rechazado') self::sendEmail($id, 'rubros_rechazado', $solicitud);
-
-            $_PUT['id'] = $id;
-            $_PUT['estado'] = $estado;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-
-        exit;
+        sendRes(['id' => $id, 'estado' => $estado]);
     }
 
+    /** 7° Paso: Usuario carga la documentacion */
     public static function documentacion($req, $id)
     {
         $data = new Lc_Solicitud();
 
         $data = $data->update($req, $id);
 
-        if (!$data instanceof ErrorException) {
-            $solicitud =  self::getSolicitudByQuery("id = $id");
-            self::sendEmail($id, 'documentacion', $solicitud);
+        sendResError($data, 'Problema para guardar los documentos');
 
-            $_PUT['id'] = $id;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
+        $solicitud =  self::getSolicitudByQuery("id = $id");
+        self::sendEmail($id, 'documentacion', $solicitud);
+
+        sendRes(['id' => $id]);
     }
 
-    /**
-     * Modulo Verificacion de documentos
-     * Evalua la solicitud en funcion de documentos
-     */
+    /** 8° Paso: Verificación de documentación */
     public static function documentosVeriUpdate($req, $id)
     {
         $data = new Lc_Solicitud();
@@ -565,24 +438,18 @@ class Lc_SolicitudController
             /* Registramos un historial de la solicitud  */
             self::setHistory($id, 'verificador_documentos', $admin, $estado);
         } else {
-            $data = new ErrorException('Esta solicitud ya no se encuentra en el area');
+            sendRes(null, 'Esta solicitud ya no se encuentra en el area');
         }
 
-        if (!$data instanceof ErrorException) {
+        sendResError($data, '[VD] - Problema a querer actualizar la solicitud');
 
-            $solicitud =  self::getSolicitudByQuery("id = $id");
+        $solicitud =  self::getSolicitudByQuery("id = $id");
 
-            if ($estado === 'aprobado') self::sendEmail($id, 'documentos_aprobado', $solicitud);
-            if ($estado === 'rechazado') self::sendEmail($id, 'documentos_rechazado', $solicitud);
-            if ($estado === 'retornado') self::sendEmail($id, 'documentos_retornado', $solicitud);
+        if ($estado === 'aprobado') self::sendEmail($id, 'documentos_aprobado', $solicitud);
+        if ($estado === 'rechazado') self::sendEmail($id, 'documentos_rechazado', $solicitud);
+        if ($estado === 'retornado') self::sendEmail($id, 'documentos_retornado', $solicitud);
 
-            $_PUT['id'] = $id;
-            $_PUT['estado'] = $estado;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
+        sendRes(['id' => $id, 'estado' => $estado]);
     }
 
     /**
@@ -602,13 +469,8 @@ class Lc_SolicitudController
         /* Registramos un historial de la solicitud  */
         self::setHistory($id, 'ingreso_expediente', $admin, $solicitud['estado']);
 
-        if (!$data instanceof ErrorException) {
-            $_PUT['id'] = $id;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
+        sendResError($data, '[EXP] - Problema para insertar el expediente');
+        sendRes(['id' => $id]);
     }
 
     /**
@@ -628,13 +490,8 @@ class Lc_SolicitudController
         /* Registramos un historial de la solicitud  */
         self::setHistory($id, 'ingreso_licencia_comercial', $admin, $solicitud['estado']);
 
-        if (!$data instanceof ErrorException) {
-            $_PUT['id'] = $id;
-            sendRes($_PUT);
-        } else {
-            sendRes(null, $data->getMessage(), ['id' => $id]);
-        };
-        exit;
+        sendResError($data, '[EXP] - Problema para insertar la lic comercial');
+        sendRes(['id' => $id]);
     }
 
     /**
@@ -653,12 +510,9 @@ class Lc_SolicitudController
         $params = ['verificado' => $req['estado'], 'id_wap_personas_admin' => $req['id_wappersonas_admin']];
         $result = $data->update($params, $documento['id']);
 
-        if ($result) {
-            sendRes(['id' => $id]);
-        } else {
-            sendRes(null, 'No se pudo actualizar el estado del documento', ['id' => $id]);
-        }
-        exit;
+        sendResError($result, 'No se pudo actualizar el estado del documento', ['id' => $id]);
+
+        sendRes(['id' => $id]);
     }
 
     /**
@@ -714,26 +568,12 @@ class Lc_SolicitudController
         $sql = self::getSqlSolicitudes($query);
         $data = $solicitud->executeSqlQuery($sql, $fetch);
 
+        sendResError($data, '[02] - Hubo un error al guardar la solicitud', $_POST);
+
         if ($fetch) {
             return self::formatSolicitudData($data);
         } else {
             return self::formatSolicitudDataArray($data);
         }
-    }
-
-    private static function getNota($data, $nota)
-    {
-        $id = $data['id'];
-        if ($data[$nota]) {
-            $documento = new Lc_Documento();
-            $filesUrl = $documento->filesUrl;
-            $url = $filesUrl . $id . "/" . $nota  . '/' .  $data[$nota];
-            return [
-                'url' => getBase64String($url, $data[$nota]),
-                'loading' =>  false,
-                'error' => false
-            ];
-        }
-        return null;
     }
 }

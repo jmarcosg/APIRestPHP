@@ -138,7 +138,6 @@ trait QuerysSql
 
     private static function formatSolicitudData($solicitud)
     {
-
         /* Obtenemos los elementos que contienen per_ini_ en la key */
         $personaInicio = self::filterByIncludeKey($solicitud, 'perini_');
 

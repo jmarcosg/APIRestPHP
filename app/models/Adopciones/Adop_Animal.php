@@ -92,7 +92,6 @@ class Adop_Animal extends BaseModel
         }
 
         return $fileCopied;
-        exit;
     }
 
     public function getPath()

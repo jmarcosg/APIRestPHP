@@ -503,8 +503,8 @@ if ($url['method'] == "POST") {
 					$mensaje = "exito adopcion";
 					sendRes($mensaje);
 				} else {
-					$mensaje = $id->getMessage();
-					logFileEE('prueba', $id, null, null);
+					$mensaje = $adopcionGenerada->getMessage();
+					logFileEE('prueba', $adopcionGenerada, null, null);
 				}
 			} else {
 				$mensaje = "error adopcion";
@@ -531,8 +531,8 @@ if ($url['method'] == "POST") {
 			if (!$animalAdoptado instanceof ErrorException) {
 				$mensaje = "exito desadopcion";
 			} else {
-				$mensaje = $id->getMessage();
-				logFileEE('prueba', $id, null, null);
+				$mensaje = $animalAdoptado->getMessage();
+				logFileEE('prueba', $animalAdoptado, null, null);
 			}
 
 			echo $mensaje;

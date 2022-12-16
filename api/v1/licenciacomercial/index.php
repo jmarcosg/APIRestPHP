@@ -23,19 +23,19 @@ if ($url['method'] == 'GET') {
 
 		case '2':
 			/* Contribuyente - Ultima solicitud */
-			Lc_SolicitudController::get();
+			Lc_SolicitudController::getLastSolicitud();
 
 		case '3':
 			/* Listado de Rubros */
-			Lc_RubroController::index();
+			Lc_RubroController::getAllRubros();
 
 		case '4':
 			/* Listado de Tipos de documentos */
-			TipoDocumentoController::index();
+			TipoDocumentoController::getAllTiposDocumentos();
 
 		case '5':
-			/* Listado de Tipos de documentos */
-			Lc_SolicitudController::indexById();
+			/* Lista todas las solicitudes del usuario */
+			Lc_SolicitudController::getSolicitudesUsuario();
 
 			/* ################################### */
 
@@ -140,7 +140,6 @@ if ($url['method'] == 'GET') {
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
 			exit;
-			break;
 	}
 }
 
@@ -148,18 +147,13 @@ if ($url['method'] == 'GET') {
 if ($url['method'] == 'POST') {
 	switch ($_POST['action']) {
 		case '1':
-			Lc_SolicitudController::store($_POST);
-			break;
+			Lc_SolicitudController::store();
 		case '3':
-			Lc_DocumentoController::update();
-			break;
+			Lc_DocumentoController::updateDocumentacion();
 		case '4':
-			Lc_SolicitudHistorialController::setView($_POST['id']);
-			break;
+			Lc_SolicitudHistorialController::setViewHistorial($_POST['id']);
 		case '5':
 			Lc_DocumentoController::updateNotas();
-		default:
-			break;
 	}
 }
 
