@@ -3,13 +3,15 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\WebLogin\WapAppsRecientes;
+use App\Traits\WebLogin\Format;
+
 use DateInterval;
 use DateTime;
 use ErrorException;
 
 class WapAppsRecientesController
 {
-    use FormatTrait;
+    use Format;
     /** Cuando se ingresa a una APP, se debe sumar 1 ingreso */
     public static function getIntoApp()
     {

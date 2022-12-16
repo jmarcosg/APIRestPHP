@@ -3,6 +3,7 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\Weblogin\WlFotoPerfil;
+use App\Traits\WebLogin\QueryData;
 
 class WlFotoPerfilController
 {
