@@ -2,18 +2,11 @@
 
 namespace App\Controllers\Common;
 
-use App\Connections\BaseDatos;
 use App\Models\Common\TipoDocumento;
-use ErrorException;
 
 class TipoDocumentoController
 {
-    public function __construct()
-    {
-        $GLOBALS['exect'][] = 'lc_solicitud_rubros';
-    }
-
-    public static function index()
+    public static function getAllTiposDocumentos()
     {
         $data = new TipoDocumento();
         $sql =
@@ -27,13 +20,9 @@ class TipoDocumentoController
 
         $data = $data->executeSqlQuery($sql, false);
 
-        if (!$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            sendRes(null, $data->getMessage(), $_GET);
-        };
+        sendResError($data, 'Problema para obtener los tipos de documentos');
 
-        exit;
+        sendRes($data);
     }
 
     public function get($params)
@@ -48,12 +37,6 @@ class TipoDocumentoController
         $data = new TipoDocumento();
         $data->set($res);
         return $data->save();
-    }
-
-    public function updateFirts($req, $id)
-    {
-        $data = new TipoDocumento();
-        return $data->update($req, $id);
     }
 
     public function delete($id)

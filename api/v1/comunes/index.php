@@ -13,14 +13,13 @@ if ($url['method'] == 'GET') {
 
 	switch ($action) {
 
-		case 'getToken':
-			LoginController::getToken();
+		/* case 'getToken':
+			LoginController::getToken(); */
 
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
 			exit;
-			break;
 	}
 }
 

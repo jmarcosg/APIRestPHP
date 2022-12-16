@@ -8,11 +8,6 @@ use App\Models\LicenciaComercial\Lc_Solicitud;
 
 class Lc_DocumentoController
 {
-    public function __construct()
-    {
-        $GLOBALS['exect'][] = 'lc_documento';
-    }
-
     public function index($param = [], $ops = [])
     {
         $data = new Lc_Documento();
@@ -46,14 +41,8 @@ class Lc_DocumentoController
         return $data;
     }
 
-    public function store($res)
-    {
-        $data = new Lc_Documento();
-        $data->set($res);
-        return $data->save();
-    }
-
-    public static function update()
+    /** Actualizamos la documentacion */
+    public static function updateDocumentacion()
     {
         $id_solicitud = $_POST['id_solicitud'];
 
@@ -61,12 +50,11 @@ class Lc_DocumentoController
         $file = $_FILES['file'];
 
         $nameFile = uniqid() . getExtFile($file);
-        /* $_POST[$columnFile] = $nameFile; */
 
         /* Borramos la carpeta del docuemento si existe */
         deleteDir(FILE_PATH . "licencia_comercial/solicitud/$id_solicitud/$docType/");
 
-        /* Generamops la carpeta y obtenemos el path para copiar el archivo */
+        /* Generamos la carpeta y obtenemos el path para copiar el archivo */
         $path = getPathFile($file, FILE_PATH . "licencia_comercial/solicitud/$id_solicitud/$docType/", $nameFile);
 
         /* Capiamos el archivo */
@@ -87,7 +75,6 @@ class Lc_DocumentoController
         } else {
             sendRes(null, 'Hubo un error a subir un archivo', ['id' => $id_solicitud]);
         };
-        exit;
     }
 
     public static function updateNotas()
@@ -122,20 +109,12 @@ class Lc_DocumentoController
         } else {
             sendRes(null, 'Hubo un error a subir un archivo', ['id' => $id_solicitud]);
         };
-        exit;
     }
 
     public function delete($id)
     {
         $data = new Lc_Documento();
         return $data->delete($id);
-    }
-
-    public function deleteBySolicitudId($id)
-    {
-        $sql = "DELETE FROM lc_documentos WHERE id_solicitud = $id AND id_tipo_documento >= 11";
-        $conn = new BaseDatos();
-        return $conn->query($sql);
     }
 
     public static function getSqlDocumentos($where)

@@ -11,6 +11,9 @@ class BaseModel
     /** Nombre de la tabla en el cual va operar el modelo */
     protected $table;
 
+    /** Indica el nombre de la clave primaria del modelo */
+    protected $identity;
+
     /** Indica si es un borrado logico o fisico */
     protected $softDeleted = false;
 
@@ -133,6 +136,7 @@ class BaseModel
     public function delete($id)
     {
         /* Verificamos si el recurso existe */
+        $result = null;
         $search = $this->get([$this->identity => $id])->value;
         if ($search) {
             $conn = new BaseDatos();

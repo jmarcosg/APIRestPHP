@@ -63,39 +63,4 @@ class LoginController
         }
         return false;
     }
-
-    public static function getToken()
-    {
-        $login = new Login();
-
-        $dni = isset($_GET['dni']) ? $_GET['dni'] : "";
-        $usuario = isset($_GET['usuario']) ? $_GET['usuario'] : "";
-        $id_usuario = isset($_GET['id_usuario']) ? $_GET['id_usuario'] : "";
-
-
-        $sql =
-            "SELECT 
-                usu.ReferenciaID as id,
-                usu.Usuario as usuario,
-                wap_per.Documento as dni,
-                usu.PersonaID as id_persona,
-                usu.Clave as clave,
-                usu.SecurityToken as token
-            FROM wapUsuarios as usu            
-            LEFT JOIN dbo.wapPersonas wap_per ON wap_per.ReferenciaID  = usu.PersonaID                
-            WHERE 
-                wap_per.Documento = '$dni' OR 
-                usu.Usuario = '$usuario' OR 
-                usu.ReferenciaID = '$id_usuario'";
-
-        $data = $login->executeSqlQuery($sql);
-
-        sendResError($data, 'Problema al obtener los registros', $_GET);
-
-        if ($data) {
-            sendRes($data, null, $_GET);
-        } else {
-            sendRes(null, 'No se encontraron registros', $_GET);
-        }
-    }
 }

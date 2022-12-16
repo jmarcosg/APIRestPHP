@@ -315,8 +315,6 @@ class Arb_PodadorController
         } else {
             sendRes(null, $data->getMessage(), $_GET);
         };
-
-        exit;
     }
 
     /** Obtenemos todos los deshabilitados */
@@ -446,7 +444,7 @@ class Arb_PodadorController
     public function getPodadoresPdf()
     {
         $params = ['estado' => 'aprobado', 'TOP' => 10000];
-        $podadores = $this->getAprobadosPdf($params, ['order' => ' ORDER BY id DESC ']);
+        $podadores = $this->getAprobadosPdf();
         $header = array('Nro', 'DNI', 'NOMBRE', 'TELEFONO', 'INFO');
 
         /* Filtramos los no vencidos */

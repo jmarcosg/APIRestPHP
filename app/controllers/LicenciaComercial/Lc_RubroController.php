@@ -4,16 +4,11 @@ namespace App\Controllers\LicenciaComercial;
 
 use App\Connections\BaseDatos;
 use App\Models\LicenciaComercial\Lc_Rubro;
-use ErrorException;
 
 class Lc_RubroController
 {
-    public function __construct()
-    {
-        $GLOBALS['exect'][] = 'lc_solicitud_rubros';
-    }
 
-    public static function index()
+    public static function getAllRubros()
     {
         $data = new Lc_Rubro();
         $sql =
@@ -24,13 +19,8 @@ class Lc_RubroController
 
         $data = $data->executeSqlQuery($sql, false);
 
-        if (!$data instanceof ErrorException) {
-            sendRes($data);
-        } else {
-            sendRes(null, $data->getMessage(), $_GET);
-        };
-
-        exit;
+        sendResError($data, 'Problema para obtener los rubros');
+        sendRes($data);
     }
 
     public function get($params)
@@ -38,19 +28,6 @@ class Lc_RubroController
         $data = new Lc_Rubro();
         $data = $data->get($params)->value;
         return $data;
-    }
-
-    public function store($res)
-    {
-        $data = new Lc_Rubro();
-        $data->set($res);
-        return $data->save();
-    }
-
-    public function updateFirts($req, $id)
-    {
-        $data = new Lc_Rubro();
-        return $data->update($req, $id);
     }
 
     public function delete($id)
