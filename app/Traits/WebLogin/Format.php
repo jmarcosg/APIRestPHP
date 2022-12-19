@@ -114,7 +114,7 @@ trait Format
      * @param mixed $msgErrorArray
      * @return array
      */
-    private static function formatData(array $data, string $msgError = null, string $msgErrorArray = null): array
+    private static function formatDataWithError(array $data, string $msgError = null, string $msgErrorArray = null): array
     {
         $error = null;
         if ($data && $data instanceof ErrorException) {
