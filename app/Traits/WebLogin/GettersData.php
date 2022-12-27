@@ -3,6 +3,7 @@
 namespace App\Traits\WebLogin;
 
 use App\Traits\WebLogin\QueryData;
+use DateTime;
 use ErrorException;
 
 trait GettersData
@@ -32,7 +33,35 @@ trait GettersData
     {
         $licencia = self::datosLicConducir($dni);
 
+        $licencia = self::formatLicenciaConducir($licencia);
+
         $licencia = self::formatDataWithError($licencia, 'Problame al obtener la licencia de conducir');
+        return $licencia;
+    }
+
+    private static function formatLicenciaConducir($licencia)
+    {
+        $hoy = new DateTime();
+        $vencimiento = new DateTime($licencia["venc"]);
+        $diff = $hoy->diff($vencimiento)->days;
+        $vigente = $vencimiento > $hoy;
+
+        $licencia['show_init_tramite'] = false;
+        if ($vigente) {
+            $licencia['estado'] = 'Licencia Vigente';
+            $licencia['show_renovacion_b'] = false;
+
+            if ($diff <= 7) $licencia['show_init_tramite'] = true;
+        } elseif (!$vigente) {
+            $licencia['estado'] = 'Licencia Vencida';
+            $licencia['show_renovacion_b'] = true;
+            $licencia['show_init_tramite'] = true;
+        }
+
+        $licencia['dif'] = $diff;
+        $licencia['vigente'] = $vigente;
+        $licencia['donante'] = !!$licencia['donante'];
+
         return $licencia;
     }
 
