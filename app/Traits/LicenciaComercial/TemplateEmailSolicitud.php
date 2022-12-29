@@ -43,11 +43,12 @@ trait TemplateEmailSolicitud
 
         if ($type == 'rechazado') $body = self::templateSolicitudRechazadaEmail($data);
 
-        $response = sendEmail($data['correo'], $subject, $body, $attachments);
-
-        if ($response['error']) {
-            $error = new ErrorException($response['error']);
-            logFileEE('v1/arbolado', $error, get_class(), __FUNCTION__);
+        if (PROD) {
+            $response = sendEmail($data['correo'], $subject, $body, $attachments);
+            if ($response['error']) {
+                $error = new ErrorException($response['error']);
+                logFileEE('v1/arbolado', $error, get_class(), __FUNCTION__);
+            }
         }
     }
 

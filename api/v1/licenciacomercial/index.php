@@ -144,7 +144,10 @@ if ($url['method'] == 'GET') {
 
 /* Metodo POST */
 if ($url['method'] == 'POST') {
-	switch ($_POST['action']) {
+	$action = $_POST['action'];
+	unset($_POST['action']);
+
+	switch ($action) {
 		case 'store_solicitud':
 			Lc_SolicitudController::store();
 		case 'update_documentacion':
@@ -154,70 +157,55 @@ if ($url['method'] == 'POST') {
 		case 'update_notas':
 			Lc_DocumentoController::updateNotas();
 
-		default:
-			$error = new ErrorException('El action no es valido');
-			sendRes(null, $error->getMessage(), $_POST);
-	}
-}
-
-/* Metodo PUT */
-if ($url['method'] == 'PUT') {
-	parse_str(file_get_contents('php://input'), $_PUT);
-	$id = $url['id'];
-
-	$action = $_PUT['action'];
-	unset($_PUT['action']);
-
-	switch ($action) {
 		case 'datos_personales':
 			/* Datos personales */
-			Lc_SolicitudController::datosPersonales($_PUT, $id);
+			Lc_SolicitudController::datosPersonales();
 
 		case 'actividad':
 			/* Nomenclatura y rubros */
-			Lc_SolicitudController::actividad($_PUT, $id);
-
-		case '3':
-			/* Documentacion */
-			Lc_SolicitudController::documentacion($_PUT, $id);
-
-		case 'rubros_veri_update':
-			/* Verificacion de rubros - Aprobacion */
-			Lc_SolicitudController::rubrosVeriUpdate($_PUT, $id);
-
-		case 'catastro_veri_update':
-			/* Catastro - Aprobacion */
-			Lc_SolicitudController::catastroVeriUpdate($_PUT, $id);
-
-		case 'ambiental_veri_update':
-			/* Catastro - Verificacion ambiental */
-			Lc_SolicitudController::ambientalVeriUpdate($_PUT, $id);
-
-		case 'documentos_veri_update':
-			/* Catastro - Verificacion ambiental */
-			Lc_SolicitudController::documentosVeriUpdate($_PUT, $id);
-
-		case 'eval_documento':
-			/* GeneralDocumentos - Evauluacion de documento */
-			Lc_SolicitudController::evalDocumento($_PUT, $id);
-			break;
+			Lc_SolicitudController::actividad();
 
 		case 'init_veri_update':
 			/* Verificacion inicial - Evaluacion */
-			Lc_SolicitudController::initVeriUpdate($_PUT, $id);
+			Lc_SolicitudController::initVeriUpdate();
+			break;
+
+		case 'documentacion':
+			/* Documentacion */
+			Lc_SolicitudController::documentacion();
+
+		case 'rubros_veri_update':
+			/* Verificacion de rubros - Aprobacion */
+			Lc_SolicitudController::rubrosVeriUpdate();
+
+		case 'catastro_veri_update':
+			/* Catastro - Aprobacion */
+			Lc_SolicitudController::catastroVeriUpdate();
+
+		case 'ambiental_veri_update':
+			/* Catastro - Verificacion ambiental */
+			Lc_SolicitudController::ambientalVeriUpdate();
+
+		case 'documentos_veri_update':
+			/* Catastro - Verificacion ambiental */
+			Lc_SolicitudController::documentosVeriUpdate();
+
+		case 'eval_documento':
+			/* GeneralDocumentos - Evauluacion de documento */
+			Lc_SolicitudController::evalDocumento();
 			break;
 
 		case 'set_expediente':
 			/* Auditoria - Set Expediente */
-			Lc_SolicitudController::setExpediente($_PUT, $id);
+			Lc_SolicitudController::setExpediente();
 
 		case 'set_licencia':
 			/* Auditoria - Set Expediente */
-			Lc_SolicitudController::setLicenciaComercial($_PUT, $id);
+			Lc_SolicitudController::setLicenciaComercial();
 
 		default:
 			$error = new ErrorException('El action no es valido');
-			sendRes(null, $error->getMessage(), $_PUT);
+			sendRes(null, $error->getMessage(), $_POST);
 	}
 }
 
