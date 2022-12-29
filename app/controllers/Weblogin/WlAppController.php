@@ -21,7 +21,7 @@ class WlAppController
             'categorias' => $apps['categorias']
         ];
 
-        $data = self::formatData($data);
+        $data = self::formatDataWithError($data);
 
         return $data;
     }

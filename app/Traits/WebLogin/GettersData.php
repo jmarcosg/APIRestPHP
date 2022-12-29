@@ -3,6 +3,7 @@
 namespace App\Traits\WebLogin;
 
 use App\Traits\WebLogin\QueryData;
+use DateTime;
 use ErrorException;
 
 trait GettersData
@@ -13,7 +14,7 @@ trait GettersData
     {
         $legajo = self::datosLegajo($genero, $dni);
 
-        $legajo = self::formatData($legajo, 'Problame al obtener el legajo');
+        $legajo = self::formatDataWithError($legajo, 'Problame al obtener el legajo');
         return $legajo;
     }
 
@@ -23,7 +24,7 @@ trait GettersData
         /* Arreglo de datos */
         $acarreo = self::datosAccareo($id_usuario);
 
-        $acarreo = self::formatData($acarreo, 'Problame al obtener el acarreo');
+        $acarreo = self::formatDataWithError($acarreo, 'Problame al obtener el acarreo');
         return $acarreo;
     }
 
@@ -32,7 +33,35 @@ trait GettersData
     {
         $licencia = self::datosLicConducir($dni);
 
-        $licencia = self::formatData($licencia, 'Problame al obtener la licencia de conducir');
+        $licencia = self::formatLicenciaConducir($licencia);
+
+        $licencia = self::formatDataWithError($licencia, 'Problame al obtener la licencia de conducir');
+        return $licencia;
+    }
+
+    private static function formatLicenciaConducir($licencia)
+    {
+        $hoy = new DateTime();
+        $vencimiento = new DateTime($licencia["venc"]);
+        $diff = $hoy->diff($vencimiento)->days;
+        $vigente = $vencimiento > $hoy;
+
+        $licencia['show_init_tramite'] = false;
+        if ($vigente) {
+            $licencia['estado'] = 'Licencia Vigente';
+            $licencia['show_renovacion_b'] = false;
+
+            if ($diff <= 7) $licencia['show_init_tramite'] = true;
+        } elseif (!$vigente) {
+            $licencia['estado'] = 'Licencia Vencida';
+            $licencia['show_renovacion_b'] = true;
+            $licencia['show_init_tramite'] = true;
+        }
+
+        $licencia['dif'] = $diff;
+        $licencia['vigente'] = $vigente;
+        $licencia['donante'] = !!$licencia['donante'];
+
         return $licencia;
     }
 
@@ -41,7 +70,7 @@ trait GettersData
     {
         $muniEventos = self::getMuniEventosFetch($dni);
 
-        $muniEventos = self::formatData($muniEventos, 'Problame al obtener los eventos');
+        $muniEventos = self::formatDataWithError($muniEventos, 'Problame al obtener los eventos');
         return $muniEventos;
     }
 
@@ -52,7 +81,7 @@ trait GettersData
 
         $data = self::filterLicComercial($licComercial);
 
-        $licComercial = self::formatData($data, 'Problema al obtener la licencia comercial', 'No se encontraron licencias comerciales');
+        $licComercial = self::formatDataWithError($data, 'Problema al obtener la licencia comercial', 'No se encontraron licencias comerciales');
         return $licComercial;
     }
 
@@ -118,7 +147,7 @@ trait GettersData
             $libretaSanitaria = self::formatLibretaSanitaria($libretaSanitaria);
         }
 
-        $libretaSanitaria = self::formatData($libretaSanitaria, 'Problame al obtener carnet de manipulacion');
+        $libretaSanitaria = self::formatDataWithError($libretaSanitaria, 'Problame al obtener carnet de manipulacion');
         return $libretaSanitaria;
     }
 }

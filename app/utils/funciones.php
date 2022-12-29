@@ -130,7 +130,6 @@ function createJsonError($subPath, ErrorException $e, $class = null, $function =
         'line' =>  $e->getLine(),
         'class' => $class,
         'object' => $obj,
-        'trace' => $e->getTrace(),
         'function' => $function,
         'data' => $data,
         'globals' => [

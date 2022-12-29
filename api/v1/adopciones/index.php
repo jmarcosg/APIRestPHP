@@ -503,8 +503,8 @@ if ($url['method'] == "POST") {
 					$mensaje = "exito adopcion";
 					sendRes($mensaje);
 				} else {
-					$mensaje = $adopcionGenerada->getMessage();
-					logFileEE('prueba', $adopcionGenerada, null, null);
+					$mensaje = $id->getMessage();
+					logFileEE('prueba', $id, null, null);
 				}
 			} else {
 				$mensaje = "error adopcion";
@@ -531,8 +531,8 @@ if ($url['method'] == "POST") {
 			if (!$animalAdoptado instanceof ErrorException) {
 				$mensaje = "exito desadopcion";
 			} else {
-				$mensaje = $animalAdoptado->getMessage();
-				logFileEE('prueba', $animalAdoptado, null, null);
+				$mensaje = $id->getMessage();
+				logFileEE('prueba', $id, null, null);
 			}
 
 			echo $mensaje;
@@ -601,7 +601,6 @@ if ($url['method'] == "POST") {
 			echo $mensaje;
 			exit;
 		case 'v3':
-			//* Deshabilitar empleado
 			$idEmpleadoDeshabilitar = $_POST['id'];
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));

@@ -68,7 +68,7 @@ class WapAppsRecientesController
         $wapAppsRecientes = new WapAppsRecientes();
 
         $listadoApps = $wapAppsRecientes->list(['id_usuario' => $id_usuario])->value;
-        $listadoApps = self::formatData($listadoApps, '[01] - Hubo un error al obtener listado de apps recientes - ');
+        $listadoApps = self::formatDataWithError($listadoApps, '[01] - Hubo un error al obtener listado de apps recientes - ');
 
         if (!$listadoApps['error']) {
             /* Obtenemos las apps que ya pasaron 30 dias desde su ultimo ingreso */
@@ -102,7 +102,7 @@ class WapAppsRecientesController
             }
 
             $listadoApps = self::getAppsRecientesQuery($id_usuario);
-            $listadoApps = self::formatData($listadoApps, '[02] - Hubo un error al obtener listado de apps recientes');
+            $listadoApps = self::formatDataWithError($listadoApps, '[02] - Hubo un error al obtener listado de apps recientes');
         }
 
         return $listadoApps;
