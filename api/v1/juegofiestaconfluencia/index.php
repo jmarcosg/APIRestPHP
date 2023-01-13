@@ -18,7 +18,7 @@ if ($url['method'] == "GET") {
 
 		switch ($_GET['action']) {
 			case 't':
-				echo "hola get";
+				echo "hola get juego";
 				exit;
 
 			default:
@@ -47,7 +47,7 @@ if ($url['method'] == "GET") {
 if ($url['method'] == "POST") {
 	switch ($_POST['action']) {
 		case 't':
-			echo "test post";
+			echo "test post juego";
 			exit;
 
 		default:
