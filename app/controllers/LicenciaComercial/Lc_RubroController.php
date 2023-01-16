@@ -7,7 +7,6 @@ use App\Models\LicenciaComercial\Lc_Rubro;
 
 class Lc_RubroController
 {
-
     public static function getAllRubros()
     {
         $data = new Lc_Rubro();

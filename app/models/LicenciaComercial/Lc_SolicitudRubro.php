@@ -19,21 +19,23 @@ class Lc_SolicitudRubro extends BaseModel
 
     public static function rubrosUpdate($req, $id)
     {
-        $rubros = explode(",", $req['rubros']);
-        unset($req['rubros']);
+        if ($req['rubros'] != "") {
+            $rubros = explode(",", $req['rubros']);
+            unset($req['rubros']);
 
-        /* Borramos los rubros viejos */
-        self::deleteBySolicitudId($id);
+            /* Borramos los rubros viejos */
+            self::deleteBySolicitudId($id);
 
-        /* Actualizamos los nuevos rubros */
-        $rubro = new Lc_SolicitudRubro();
-        $rubro->set(['id_solicitud' => $id, 'codigo' => $rubros[0], 'principal' => 1]);
-        $rubro->save();
-
-        unset($rubros[0]);
-        foreach ($rubros as $r) {
-            $rubro->set(['id_solicitud' => $id, 'codigo' => $r]);
+            /* Actualizamos los nuevos rubros */
+            $rubro = new Lc_SolicitudRubro();
+            $rubro->set(['id_solicitud' => $id, 'codigo' => $rubros[0], 'principal' => 1]);
             $rubro->save();
+
+            unset($rubros[0]);
+            foreach ($rubros as $r) {
+                $rubro->set(['id_solicitud' => $id, 'codigo' => $r]);
+                $rubro->save();
+            }
         }
     }
 
