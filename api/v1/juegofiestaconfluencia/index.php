@@ -36,8 +36,7 @@ if ($url['method'] == "GET") {
 				break;
 			case 'u2':
 				//* Listado de usuarios
-				$animalesController = new MEMCONF_UsuarioController();
-				$data = $MEMCONF_UsuarioController->index();
+				$data = MEMCONF_UsuarioController::index();
 
 				if (count($data) == 0) {
 					$data = [
@@ -46,7 +45,7 @@ if ($url['method'] == "GET") {
 					];
 				} else {
 					$data = [
-						'usuario' => $data[0],
+						'usuario' => $data,
 						'error' => null,
 					];
 				}
@@ -69,7 +68,7 @@ if ($url['method'] == "GET") {
 				break;
 
 			case 'c2':
-				//* Listado de configuraciones
+				//* Obtener configuracion activa
 				$configController = new MEMCONF_ConfiguracionController();
 				$data = $configController::index(['activa' => 1]);
 
@@ -84,6 +83,58 @@ if ($url['method'] == "GET") {
 					];
 				}
 
+				break;
+
+			case 'm1':
+				//* Listado de partidas
+				$data = MEMCONF_PartidaController::index();
+
+				if (count($data) == 0) {
+					$data = [
+						'partida' => null,
+						'error' => "No hay registros de usuarios"
+					];
+				} else {
+					$data = [
+						'partida' => $data,
+						'error' => null,
+					];
+				}
+				break;
+
+			case 'm2':
+				//* Listado de partidas ganadas
+				$fechaSeleccionada = $_GET['fecha_seleccionada'];
+				$data = MEMCONF_PartidaController::getGamesWon($fechaSeleccionada);
+
+				if (count($data) == 0) {
+					$data = [
+						'usuario' => null,
+						'error' => "No hay registros de usuarios ganadores"
+					];
+				} else {
+					$data = [
+						'usuario' => $data,
+						'error' => null,
+					];
+				}
+				break;
+
+			case 'm3':
+				//* Obtener partida por id
+				$data = MEMCONF_PartidaController::index(['id' => $_GET['id']]);
+
+				if (count($data) == 0) {
+					$data = [
+						'partida' => null,
+						'error' => "No hay registros de esa partida"
+					];
+				} else {
+					$data = [
+						'partida' => $data,
+						'error' => null,
+					];
+				}
 				break;
 
 			case 't':
@@ -119,13 +170,39 @@ if ($url['method'] == "POST") {
 			//* Cargar usuario
 			$partidas = MEMCONF_PartidaController::index();
 			$usuarios = MEMCONF_PartidaController::index();
-			$fechaModificado = $date->format('Y-m-d H:i:s');
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$fechaHoy = $date->format('Y-m-d');
 
-			// Verifico que el usuario a jugar no haya jugado en el dia de la fecha
+			/**
+			 * Indexo al usuario para verificar existencia
+			 * Si existe, verifico si jugo el dia de la fecha
+			 * De lo contrario, lo carga como nuevo usuario
+			 */
 			$usuario = MEMCONF_UsuarioController::index(['usuario_instagram' => $_POST['usuario_instagram']]);
-			$partidaDistinta = MEMCONF_PartidaController::index(['id_usuario' => $usuario[0]['id'], 'fecha_partida' => date('Y-m-d')]);
 
-			if (count($partidaDistinta) == 0) {
+			if ($usuario) {
+				// Verifico que el usuario a jugar no haya jugado en el dia de la fecha
+				$partidaDistinta = MEMCONF_PartidaController::getUserIfUserHasPlayedToday($usuario[0]['id'], $fechaHoy);
+
+				if (count($partidaDistinta) == 0) {
+					$data = [
+						'usuario_instagram' => $_POST['usuario_instagram']
+					];
+
+					$id = MEMCONF_UsuarioController::store($data);
+
+					if (!$id instanceof ErrorException) {
+						$mensaje = "Exito carga usuario";
+					} else {
+						$mensaje = $id->getMessage();
+						// $mensaje = "prueba error";
+						logFileEE('prueba', $id, null, null);
+					}
+				} else {
+					$mensaje = "Este usuario ya jugo hoy";
+				}
+			} else {
 				$data = [
 					'usuario_instagram' => $_POST['usuario_instagram']
 				];
@@ -139,8 +216,35 @@ if ($url['method'] == "POST") {
 					// $mensaje = "prueba error";
 					logFileEE('prueba', $id, null, null);
 				}
+			}
+
+
+			sendRes($mensaje);
+			exit;
+
+		case 'p1':
+			//* Cargar partida
+			$partida = MEMCONF_PartidaController::index();
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$fechaHoy = $date->format('Y-m-d H:i:s');
+
+			$data = [
+				'id_usuario' => $_POST['id_usuario'],
+				'id_configuracion' => $_POST['id_configuracion'],
+				'aciertos' => $_POST['aciertos'],
+				'movimientos_totales' => $_POST['movimientos_totales'],
+				'gano' => $_POST['gano'],
+				'fecha_jugada' => $fechaHoy
+			];
+
+			$id = MEMCONF_PartidaController::store($data);
+
+			if (!$id instanceof ErrorException) {
+				$mensaje = "Exito al cargar partida";
 			} else {
-				$mensaje = "Este usuario ya jugo hoy";
+				$mensaje = $id->getMessage();
+				logFileEE('prueba', $id, null, null);
 			}
 
 			sendRes($mensaje);
@@ -179,7 +283,7 @@ if ($url['method'] == "POST") {
 
 		case 'c2':
 			//* Activar configuracion
-			$idConfiguracionActivar = MEMCONF_ConfiguracionController::index(['id' => $_POST['id']])[0];
+			$idConfiguracionActivar = $_POST['id'];
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
 			$fechaActivacion = $date->format('Y-m-d H:i:s');
