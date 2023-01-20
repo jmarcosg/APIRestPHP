@@ -18,8 +18,8 @@ if ($url['method'] == 'GET') {
 		case 'aplicaciones':
 			WlAppController::getApps();
 
-		case 'getLicComercialId':
-			LoginController::getLicComercialId();
+		case 'getLicComercialHistorial':
+			LoginController::getLicComercialHistorial();
 
 		default:
 			$error = new ErrorException('El action no es valido');
@@ -38,6 +38,9 @@ if ($url['method'] == 'POST') {
 
 		case 'getIntoApp':
 			WapAppsRecientesController::getIntoApp();
+
+		case 'getLicComercialInfo':
+			LoginController::getLicComercialInfo();
 
 		default:
 			$error = new ErrorException('El action no es valido');

@@ -3,7 +3,6 @@
 namespace App\Models\LicenciaComercial;
 
 use App\Models\BaseModel;
-use App\Models\WapPersona;
 
 class Lc_Solicitud extends BaseModel
 {

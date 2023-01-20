@@ -2,12 +2,12 @@
 
 namespace App\Controllers\Weblogin;
 
-use App\Controllers\LicenciaComercial\Lc_SolicitudController;
 use App\Models\Weblogin\Weblogin;
+use App\Traits\WebLogin\Format;
 
 class WlAppController
 {
-    use FormatTrait;
+    use Format;
     public static function getApps()
     {
         $apps = self::getSqlApps();
@@ -21,7 +21,7 @@ class WlAppController
             'categorias' => $apps['categorias']
         ];
 
-        $data = self::formatData($data);
+        $data = self::formatDataWithError($data);
 
         return $data;
     }

@@ -118,17 +118,6 @@ function logFileEE($subPath, ErrorException $e, $class, $function, $data = [])
     fclose($logFile);
 }
 
-/**
- * It takes an error, and creates a json file with the error message, line number, class, function,
- * data, and all the global variables.
- * 
- * @param subPath The sub-directory to store the log file in.
- * @param ErrorException e The error object
- * @param class The class that the error occurred in.
- * @param function createJsonError
- * @param data The data that was being processed when the error occurred.
- * @param obj the object that threw the error
- */
 function createJsonError($subPath, ErrorException $e, $class = null, $function = null, $data = null, $obj = null)
 {
     $path = LOG_PATH . $subPath . "/";
@@ -141,7 +130,6 @@ function createJsonError($subPath, ErrorException $e, $class = null, $function =
         'line' =>  $e->getLine(),
         'class' => $class,
         'object' => $obj,
-        'trace' => $e->getTrace(),
         'function' => $function,
         'data' => $data,
         'globals' => [
@@ -200,60 +188,6 @@ function is_multi_array(array $a)
         if (is_array($v)) return true;
     }
     return false;
-}
-
-/**
- * Chequea que el tamaño y tipo de archivos subidos sean los correctos
- * JS Alert si no lo son
- * @param int maxsize en mb del archivo, default 200mb
- * @param array formatos aceptados
- * @return bool false si hubo un error en el chequeo de archivos
- */
-function checkFile($maxsize = 15)
-{
-    $acceptable = array('application/pdf', 'image/jpeg', 'image/jpg', 'image/gif', 'image/png', 'video/mp4', 'video/mpeg');
-    if (isset($_FILES) && !empty($_FILES)) {
-        $errors = array();
-
-        $phpFileUploadErrors = array(
-            0 => 'There is no error, the file uploaded with success',
-            1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
-            2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
-            3 => 'The uploaded file was only partially uploaded',
-            4 => 'No file was uploaded',
-            6 => 'Missing a temporary folder',
-            7 => 'Failed to write file to disk.',
-            8 => 'A PHP extension stopped the file upload.',
-        );
-
-        $maxsize_multiplied = $maxsize * 1000000;
-
-        foreach ($_FILES as $key => $value) {
-            if (($value['size'] >= $maxsize_multiplied) && ($value['size'] != 0)) {
-                $errors[] = "$key Archivo adjunto muy grande. Debe pesar menos de $maxsize megabytes.";
-            }
-            if ((!in_array($value['type'], $acceptable)) && !empty($value['type'])) {
-                $error = "$key Tipo de archivo invalido. Solamente tipos ";
-                foreach ($acceptable as $val) {
-                    $error .= $val . ', ';
-                }
-                $error .= "se aceptan.";
-                $errors[] = $error;
-            }
-            if ($value['error'] != 0 && !empty($value['type'])) {
-                $errors[] = $phpFileUploadErrors[$value['error']];
-            }
-        }
-
-        if (count($errors) === 0) {
-            return true;
-        } else {
-            foreach ($errors as $error) {
-                echo '<script>alert("' . $error . '");</script>';
-            }
-            return false;
-        }
-    }
 }
 
 function getPathFile($file, $path, $fileName)

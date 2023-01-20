@@ -3,13 +3,15 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\WebLogin\WapAppsRecientes;
+use App\Traits\WebLogin\Format;
+
 use DateInterval;
 use DateTime;
 use ErrorException;
 
 class WapAppsRecientesController
 {
-    use FormatTrait;
+    use Format;
     /** Cuando se ingresa a una APP, se debe sumar 1 ingreso */
     public static function getIntoApp()
     {
@@ -66,7 +68,7 @@ class WapAppsRecientesController
         $wapAppsRecientes = new WapAppsRecientes();
 
         $listadoApps = $wapAppsRecientes->list(['id_usuario' => $id_usuario])->value;
-        $listadoApps = self::formatData($listadoApps, '[01] - Hubo un error al obtener listado de apps recientes - ');
+        $listadoApps = self::formatDataWithError($listadoApps, '[01] - Hubo un error al obtener listado de apps recientes - ');
 
         if (!$listadoApps['error']) {
             /* Obtenemos las apps que ya pasaron 30 dias desde su ultimo ingreso */
@@ -100,7 +102,7 @@ class WapAppsRecientesController
             }
 
             $listadoApps = self::getAppsRecientesQuery($id_usuario);
-            $listadoApps = self::formatData($listadoApps, '[02] - Hubo un error al obtener listado de apps recientes');
+            $listadoApps = self::formatDataWithError($listadoApps, '[02] - Hubo un error al obtener listado de apps recientes');
         }
 
         return $listadoApps;
