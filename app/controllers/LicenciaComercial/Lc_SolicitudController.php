@@ -527,13 +527,6 @@ class Lc_SolicitudController
         sendRes(['id' => $id]);
     }
 
-    /**
-     * Genera un registro de historial de la solicitud
-     * @param String $id      Id de la solicitud
-     * @param String $tipo    Tipo de historial
-     * @param String $admin   Id del admin que genera el historial 
-     * @return void 
-     */
     private static function setHistory($id, $tipo, $admin, $estado)
     {
         $data = new Lc_Solicitud();

@@ -82,17 +82,19 @@ class Lc_Documento extends BaseModel
 
     public static function documentosUpdate($req, $id)
     {
-        $documentos = explode(",", $req['documentos']);
-        unset($req['documentos']);
+        if ($req['documentos'] != "") {
+            $documentos = explode(",", $req['documentos']);
+            unset($req['documentos']);
 
-        /* Borramos los documentos con id mayor a 10 */
-        self::deleteBySolicitudId($id);
+            /* Borramos los documentos con id mayor a 10 */
+            self::deleteBySolicitudId($id);
 
-        /* Actualizamos los nuevos documentos */
-        $documento = new Lc_Documento();
-        foreach ($documentos as $d) {
-            $documento->set(['id_solicitud' => $id, 'id_tipo_documento' => $d, 'verificado' => 0]);
-            $documento->save();
+            /* Actualizamos los nuevos documentos */
+            $documento = new Lc_Documento();
+            foreach ($documentos as $d) {
+                $documento->set(['id_solicitud' => $id, 'id_tipo_documento' => $d, 'verificado' => 0]);
+                $documento->save();
+            }
         }
     }
 
