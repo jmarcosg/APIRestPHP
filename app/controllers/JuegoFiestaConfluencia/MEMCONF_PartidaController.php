@@ -4,6 +4,7 @@ namespace App\Controllers\JuegoFiestaConfluencia;
 
 use App\Connections\BaseDatos;
 use App\Models\JuegoFiestaConfluencia\MEMCONF_Partida;
+use App\Traits\JuegoFiestaConfluencia\QuerysSql;
 
 class MEMCONF_PartidaController
 {
@@ -23,6 +24,24 @@ class MEMCONF_PartidaController
     {
         $data = new MEMCONF_Partida();
         $data = $data->get($params)->value;
+        return $data;
+    }
+
+    public static function getUserIfUserHasPlayedToday($idUsuario, $fechaHoy)
+    {
+        $memconf_partida = new MEMCONF_Partida();
+        $sql = QuerysSql::getUserIfUserHasPlayedToday($idUsuario, $fechaHoy);
+        $data = $memconf_partida->executeSqlQuery($sql, false);
+
+        return $data;
+    }
+
+    public static function getGamesWon($fechaSeleccionada)
+    {
+        $memconf_partida = new MEMCONF_Partida();
+        $sql = QuerysSql::getGamesWon($fechaSeleccionada);
+        $data = $memconf_partida->executeSqlQuery($sql, false);
+
         return $data;
     }
 

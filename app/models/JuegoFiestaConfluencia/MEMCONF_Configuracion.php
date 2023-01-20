@@ -14,5 +14,6 @@ class MEMCONF_Configuracion extends BaseModel
         'descripcion',
         'tiempo',
         'activa',
+        'fecha_activacion',
     ];
 }

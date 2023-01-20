@@ -16,6 +16,6 @@ class MEMCONF_Partida extends BaseModel
         'aciertos',
         'movimientos_totales',
         'gano',
-        'fecha_partida'
+        'fecha_jugada'
     ];
 }
