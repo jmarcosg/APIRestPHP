@@ -34,6 +34,7 @@ if ($url['method'] == "GET") {
 					];
 				}
 				break;
+
 			case 'u2':
 				//* Listado de usuarios
 				$data = MEMCONF_UsuarioController::index();
@@ -50,6 +51,7 @@ if ($url['method'] == "GET") {
 					];
 				}
 				break;
+
 			case 'c1':
 				//* Listado de configuraciones
 				$data = MEMCONF_ConfiguracionController::index();
@@ -137,6 +139,31 @@ if ($url['method'] == "GET") {
 				}
 				break;
 
+			case 'vupt':
+				//* Verificar si el usuario jugo en el dia
+				$date = new DateTime('now');
+				$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+				$fechaHoy = $date->format('Y-m-d');
+				$usuario = MEMCONF_UsuarioController::index(['usuario_instagram' => $_GET['usuario_instagram']]);
+
+				/**
+				 * Indexo al usuario para verificar existencia
+				 * Si existe, verifico si jugo el dia de la fecha
+				 * De existir, avisa al usuario
+				 * De lo contrario, retorna Ok
+				 */
+				if ($usuario) {
+					// Verifico que el usuario a jugar no haya jugado en el dia de la fecha
+					$partidaDistinta = MEMCONF_PartidaController::getUserIfUserHasPlayedToday($usuario[0]['id'], $fechaHoy);
+
+					if (count($partidaDistinta) != 0) {
+						sendRes(null, 'Este usuario ya jugó hoy');
+					} else {
+						sendRes(null, 'Ok');
+					}
+				}
+				break;
+
 			case 't':
 				echo "hola get juego";
 				exit;
@@ -176,33 +203,11 @@ if ($url['method'] == "POST") {
 
 			/**
 			 * Indexo al usuario para verificar existencia
-			 * Si existe, verifico si jugo el dia de la fecha
-			 * De lo contrario, lo carga como nuevo usuario
+			 * Si no existe, lo carga como nuevo usuario
 			 */
 			$usuario = MEMCONF_UsuarioController::index(['usuario_instagram' => $_POST['usuario_instagram']]);
 
-			if ($usuario) {
-				// Verifico que el usuario a jugar no haya jugado en el dia de la fecha
-				$partidaDistinta = MEMCONF_PartidaController::getUserIfUserHasPlayedToday($usuario[0]['id'], $fechaHoy);
-
-				if (count($partidaDistinta) == 0) {
-					$data = [
-						'usuario_instagram' => $_POST['usuario_instagram']
-					];
-
-					$id = MEMCONF_UsuarioController::store($data);
-
-					if (!$id instanceof ErrorException) {
-						$mensaje = "Exito carga usuario";
-					} else {
-						$mensaje = $id->getMessage();
-						// $mensaje = "prueba error";
-						logFileEE('prueba', $id, null, null);
-					}
-				} else {
-					$mensaje = "Este usuario ya jugo hoy";
-				}
-			} else {
+			if (!$usuario) {
 				$data = [
 					'usuario_instagram' => $_POST['usuario_instagram']
 				];
@@ -218,11 +223,10 @@ if ($url['method'] == "POST") {
 				}
 			}
 
-
 			sendRes($mensaje);
 			exit;
 
-		case 'p1':
+		case 'm1':
 			//* Cargar partida
 			$partida = MEMCONF_PartidaController::index();
 			$date = new DateTime('now');
