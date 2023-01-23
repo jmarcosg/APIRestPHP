@@ -29,13 +29,31 @@ if ($_SERVER["REQUEST_METHOD"] == 'GET') {
                     'configuracion' => null,
                     'error' => "No hay configuraciones activas"
                 ];
-            } else {
-                $data = [
-                    'configuracion' => $data,
-                ];
             }
 
+            if (!$data instanceof ErrorException) {
+                sendRes($data);
+            } else {
+                sendRes(null, "No se encuentra el registro buscado");
+            }
+            exit;
 
+        case 'u1':
+            //* Obtener usuario con todos sus datos por usuario de instagram
+            $animalesController = new MEMCONF_UsuarioController();
+            $data = MEMCONF_UsuarioController::index(['usuario_instagram' => $_GET['usuario_instagram']]);
+
+            if (count($data) == 0) {
+                $data = [
+                    'usuario' => null,
+                    'error' => "Usuario no encontrado"
+                ];
+            } else {
+                $data = [
+                    'usuario' => $data[0],
+                    'error' => null,
+                ];
+            }
             if (!$data instanceof ErrorException) {
                 sendRes($data);
             } else {
@@ -107,19 +125,11 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 
             /**
              * Indexo al usuario para verificar existencia
-             * Si existe, verifico si jugo el dia de la fecha
-             * De lo contrario, lo carga como nuevo usuario
+             * Si no existe, lo carga como nuevo usuario
              */
             $usuario = MEMCONF_UsuarioController::index(['usuario_instagram' => $_POST['usuario_instagram']]);
 
-            if ($usuario) {
-                // Verifico que el usuario a jugar no haya jugado en el dia de la fecha
-                $partidaDistinta = MEMCONF_PartidaController::getUserIfUserHasPlayedToday($usuario[0]['id'], $fechaHoy);
-
-                if (count($partidaDistinta) != 0) {
-                    $mensaje = "Este usuario ya jugo hoy";
-                }
-            } else {
+            if (!$usuario) {
                 $data = [
                     'usuario_instagram' => $_POST['usuario_instagram']
                 ];
