@@ -2,8 +2,6 @@
 
 namespace App\Traits\WebLogin;
 
-use App\Models\Weblogin\WlFotoPerfil;
-
 trait ValidacionesWlFotos
 {
     public static function checkParams($scope)
