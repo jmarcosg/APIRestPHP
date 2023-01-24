@@ -12,7 +12,7 @@ trait Validaciones
         if (count($errors) != 0) sendRes(null, 'Problema con los parametros', $errors);
     }
 
-    private static function validatesaveSolicitud()
+    private static function validatetipoPersona()
     {
         $errors = [];
 

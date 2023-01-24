@@ -27,14 +27,11 @@ if ($url['method'] == 'POST') {
 	$action = $_POST['action'];
 	unset($_POST['action']);
 
-	switch ($action) {
-
-		case 'saveSolicitud':
-			Pro_SolicitudController::saveSolicitud();
-
-		default:
-			$error = new ErrorException('El action no es valido');
-			sendRes(null, $error->getMessage(), $_GET);
+	if (method_exists(Pro_SolicitudController::class, $action)) {
+		Pro_SolicitudController::$action();
+	} else {
+		$error = new ErrorException('El action no es valido');
+		sendRes(null, $error->getMessage(), $_POST);
 	}
 }
 

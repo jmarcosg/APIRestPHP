@@ -8,7 +8,7 @@ use App\Traits\Proveedor\Validaciones;
 class Pro_SolicitudController
 {
     use Validaciones;
-    public static function saveSolicitud()
+    public static function tipoPersona()
     {
         self::checkParams(__FUNCTION__);
 
