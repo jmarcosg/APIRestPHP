@@ -287,23 +287,36 @@ if ($url['method'] == "POST") {
 
 		case 'c2':
 			//* Activar configuracion
+			$configController = new MEMCONF_ConfiguracionController();
 			$idConfiguracionActivar = $_POST['id'];
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
 			$fechaActivacion = $date->format('Y-m-d H:i:s');
 
-			$data = [
-				'activa' => 1,
-				'fecha_activacion' => $fechaActivacion
+			$configDesactivar = $configController::index(['activa' => 1]);
+
+			$dataDesactivar = [
+				'activa' => 0,
+				'fecha_activacion' => null
 			];
 
-			$configuracionController = new MEMCONF_ConfiguracionController();
-			$config = MEMCONF_ConfiguracionController::update($data, $idConfiguracionActivar);
+			$configVieja = MEMCONF_ConfiguracionController::update($dataDesactivar, $configDesactivar[0]['id']);
 
-			if (!$config instanceof ErrorException) {
-				$mensaje = "Configuracion habilitada correctamente";
+			if (!$configVieja instanceof ErrorException) {
+				$dataActivar = [
+					'activa' => 1,
+					'fecha_activacion' => $fechaActivacion
+				];
+
+				$configNueva = MEMCONF_ConfiguracionController::update($dataActivar, $idConfiguracionActivar);
+
+				if (!$configNueva instanceof ErrorException) {
+					$mensaje = "Configuracion habilitada correctamente";
+				} else {
+					sendRes(null, $configNueva->getMessage(), null);
+				};
 			} else {
-				sendRes(null, $config->getMessage(), null);
+				sendRes(null, $configVieja->getMessage(), null);
 			};
 
 			sendRes($mensaje);
