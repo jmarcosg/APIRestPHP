@@ -8,15 +8,17 @@ use App\Traits\Proveedor\Validaciones;
 class Pro_SolicitudController
 {
     use Validaciones;
-    public static function tipoPersona()
+    public static function saveTipoPersona()
     {
         self::checkParams(__FUNCTION__);
 
-        sendRes($_POST);
         $data = new Proveedor();
         $data->set($_POST);
 
         $id = $data->save();
-        sendRes('ok');
+
+        sendResError($id, 'Problema al guardar el registro - intente nuevamente mas tarde', $data->req);
+
+        sendRes(['id' => $id]);
     }
 }
