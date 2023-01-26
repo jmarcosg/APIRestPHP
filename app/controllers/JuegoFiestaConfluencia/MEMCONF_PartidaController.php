@@ -36,6 +36,15 @@ class MEMCONF_PartidaController
         return $data;
     }
 
+    public static function getGames()
+    {
+        $memconf_partida = new MEMCONF_Partida();
+        $sql = QuerysSql::getGames();
+        $data = $memconf_partida->executeSqlQuery($sql, false);
+
+        return $data;
+    }
+
     public static function getGamesWon($fechaSeleccionada)
     {
         $memconf_partida = new MEMCONF_Partida();
@@ -44,6 +53,16 @@ class MEMCONF_PartidaController
 
         return $data;
     }
+
+    public static function getGiveawayWinners($fechaSeleccionada, $cantidadGanadores)
+    {
+        $memconf_partida = new MEMCONF_Partida();
+        $sql = QuerysSql::getGiveawayWinners($fechaSeleccionada, $cantidadGanadores);
+        $data = $memconf_partida->executeSqlQuery($sql, false);
+
+        return $data;
+    }
+
 
     public static function store($res)
     {
