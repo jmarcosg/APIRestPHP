@@ -8,6 +8,22 @@ use App\Traits\Proveedor\Validaciones;
 class Pro_SolicitudController
 {
     use Validaciones;
+    public static function getSolicitudesUser()
+    {
+        $id = $_POST['id_usuario'];
+        $data = new Proveedor();
+
+        $solicitudes = $data->list(['id_usuario' => $id])->value;
+
+        sendResError($id, 'Problema para obtener las solicitudes', $data->req);
+
+        if (count($solicitudes)) {
+            sendRes($solicitudes);
+        } else {
+            sendRes(null, 'No se encontraron solicitudes', $_GET);
+        }
+    }
+
     public static function saveTipoPersona()
     {
         self::checkParams(__FUNCTION__);
