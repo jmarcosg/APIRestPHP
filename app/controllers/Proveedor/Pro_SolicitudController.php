@@ -19,6 +19,37 @@ class Pro_SolicitudController
 
         sendResError($id, 'Problema al guardar el registro - intente nuevamente mas tarde', $data->req);
 
-        sendRes(['id' => $id]);
+        $solicitud = $data->get(['id' => $id])->value;
+        sendResError($id, 'Problema al obtener el registro - deberá recargar el sistema', $data->req);
+
+        sendRes($solicitud);
+    }
+    public static function saveDatosComerciales()
+    {
+        self::checkParams(__FUNCTION__);
+
+        $data = new Proveedor();
+        $data->set($_POST);
+        $id = $_POST['id_solicitud'];
+
+        $solicitud = $data->get(['id' => $id])->value;
+
+        sendResError($solicitud, 'Problema al guardar el registro - intente nuevamente mas tarde', $data->req);
+
+        $update = $data->update($_POST, $id);
+
+        sendResError($solicitud, 'Problema al guardar el registro - intente nuevamente mas tarde', $data->req);
+
+        if ($update) {
+            $solicitud = $data->get(['id' => $id])->value;
+        } else {
+            sendRes(null, 'Problema al actualizar el registro');
+        }
+
+        $solicitud = $data->get(['id' => $id])->value;
+
+        sendResError($id, 'Problema al obtener el registro - deberá recargar el sistema', $data->req);
+
+        sendRes($solicitud);
     }
 }
