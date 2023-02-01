@@ -374,3 +374,12 @@ function group_by($key, $data)
 
     return $result;
 }
+
+function cleanPost()
+{
+    foreach ($_POST as $key => $value) {
+        if ($value == '') {
+            unset($_POST[$key]);
+        }
+    }
+}
