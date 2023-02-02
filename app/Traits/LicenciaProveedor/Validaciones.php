@@ -32,6 +32,9 @@ trait Validaciones
                 $errors[] = 'id_wappersonas debe ser numérico';
             }
         }
+        if (!isset($_POST['lugar'])) {
+            $errors[] = 'lugar es requerido';
+        }
 
         if (!isset($_POST['tipo_persona'])) {
             $errors[] = 'tipo_persona es requerido - Puede ser fisica | juridica';

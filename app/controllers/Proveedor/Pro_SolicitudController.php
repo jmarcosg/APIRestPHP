@@ -73,9 +73,9 @@ class Pro_SolicitudController
         $data = new Proveedor();
         $solicitud = $data->get(['id' => $id])->value;
 
-        self::checkParams(__FUNCTION__, $solicitud);
+        self::checkParams(__FUNCTION__);
 
-        $_POST['estado'] = 'habilitacion';
+        $_POST['estado'] = 'notificaciones';
         $data->set($_POST);
 
         sendResError($solicitud, 'Problema al guardar el registro - intente nuevamente mas tarde', $data->req);
