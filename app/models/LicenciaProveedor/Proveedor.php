@@ -16,6 +16,7 @@ class Proveedor extends BaseModel
 
         'tipo_persona',
         'cuit',
+        'lugar',
 
         'razon_social',
         'telefono',
@@ -30,9 +31,6 @@ class Proveedor extends BaseModel
         'clas_actividad',
 
         'actividad_rubro',
-
-        'nombres_firmas',
-        'nombres_miembros',
 
         'reg_comercio_num',
         'reg_comercio_libro',
@@ -50,6 +48,10 @@ class Proveedor extends BaseModel
         'suscribe',
         'dni',
         'caracter',
+
+        'cert_proveedor_num',
+        'email',
+        'email_alternativo',
 
         'estado',
 
