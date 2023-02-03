@@ -14,6 +14,24 @@ trait QuerysSql
         return $sql;
     }
 
+    public static function getGames()
+    {
+        $sql =
+            "SELECT dbo.MEMCONF_partida.id, 
+            dbo.MEMCONF_partida.id_usuario, 
+            dbo.MEMCONF_partida.id_configuracion, 
+            dbo.MEMCONF_partida.aciertos, 
+            dbo.MEMCONF_partida.movimientos_totales, 
+            dbo.MEMCONF_partida.gano, 
+            dbo.MEMCONF_partida.fecha_jugada, 
+            dbo.MEMCONF_usuario.usuario_instagram 
+            FROM dbo.MEMCONF_partida
+            LEFT JOIN dbo.MEMCONF_usuario
+            ON dbo.MEMCONF_partida.id_usuario = dbo.MEMCONF_usuario.id";
+
+        return $sql;
+    }
+
     public static function getGamesWon($fechaSeleccionada)
     {
         $sql =
@@ -28,7 +46,29 @@ trait QuerysSql
             FROM dbo.MEMCONF_partida
             LEFT JOIN dbo.MEMCONF_usuario
             ON dbo.MEMCONF_partida.id_usuario = dbo.MEMCONF_usuario.id
-            WHERE infoprueba.dbo.MEMCONF_partida.gano = 1 AND infoprueba.dbo.MEMCONF_partida.fecha_jugada LIKE '%$fechaSeleccionada%'";
+            WHERE dbo.MEMCONF_partida.gano = 1 AND dbo.MEMCONF_partida.fecha_jugada LIKE '%$fechaSeleccionada%'";
+
+        return $sql;
+    }
+
+    public static function getGiveawayWinners($cantidadGanadores, $fechaSeleccionada)
+    {
+
+        $sql =
+            "SELECT TOP $cantidadGanadores 
+            dbo.MEMCONF_partida.id, 
+            dbo.MEMCONF_partida.id_usuario, 
+            dbo.MEMCONF_partida.id_configuracion, 
+            dbo.MEMCONF_partida.aciertos, 
+            dbo.MEMCONF_partida.movimientos_totales, 
+            dbo.MEMCONF_partida.gano, 
+            dbo.MEMCONF_partida.fecha_jugada, 
+            dbo.MEMCONF_usuario.usuario_instagram 
+            FROM dbo.MEMCONF_partida
+            LEFT JOIN dbo.MEMCONF_usuario
+            ON dbo.MEMCONF_partida.id_usuario = dbo.MEMCONF_usuario.id
+            WHERE dbo.MEMCONF_partida.gano = 1 AND dbo.MEMCONF_partida.fecha_jugada LIKE '%$fechaSeleccionada%'
+            ORDER BY NEWID()";
 
         return $sql;
     }

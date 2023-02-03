@@ -89,17 +89,12 @@ if ($url['method'] == "GET") {
 
 			case 'm1':
 				//* Listado de partidas
-				$data = MEMCONF_PartidaController::index();
+				$data = MEMCONF_PartidaController::getGames();
 
 				if (count($data) == 0) {
 					$data = [
 						'partida' => null,
-						'error' => "No hay registros de usuarios"
-					];
-				} else {
-					$data = [
-						'partida' => $data,
-						'error' => null,
+						'error' => "No hay registros de partidas"
 					];
 				}
 				break;
@@ -111,13 +106,8 @@ if ($url['method'] == "GET") {
 
 				if (count($data) == 0) {
 					$data = [
-						'usuario' => null,
-						'error' => "No hay registros de usuarios ganadores"
-					];
-				} else {
-					$data = [
-						'usuario' => $data,
-						'error' => null,
+						'partidas' => null,
+						'error' => "No hay registros de partidas ganadas en esta fecha"
 					];
 				}
 				break;
@@ -162,6 +152,32 @@ if ($url['method'] == "GET") {
 						sendRes(null, 'Ok');
 					}
 				}
+				break;
+
+			case 'smw':
+				//* Sortea una n cantidad de ganadores y suplentes
+				$totalusuarioSorteados = $_GET['cantidad_ganadores'] * 2;
+				$fechaSeleccionada = $_GET['fecha_seleccionada'];
+
+				$data = MEMCONF_PartidaController::getGiveawayWinners($totalusuarioSorteados, $fechaSeleccionada);
+
+				if (count($data) == 0) {
+					$data = [
+						'partida' => null,
+						'error' => "No hay registros de ganadores en esa fecha"
+					];
+				} else if (count($data) >= $_GET['cantidad_ganadores']) {
+					$data = array_chunk($data, $_GET['cantidad_ganadores']);
+					$titulares = $data[0];
+					$suplentes = $data[1];
+
+					$data = [
+						'titulares' => $titulares,
+						'suplentes' => $suplentes,
+						'error' => null,
+					];
+				}
+
 				break;
 
 			case 't':
