@@ -49,6 +49,10 @@ class Proveedor extends BaseModel
         'dni',
         'caracter',
 
+        'cert_proveedor_num',
+        'email',
+        'email_alternativo',
+
         'estado',
 
         'observacion',

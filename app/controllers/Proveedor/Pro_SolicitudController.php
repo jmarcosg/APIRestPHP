@@ -37,10 +37,12 @@ class Pro_SolicitudController
 
         $solicitud = $data->get(['id' => $id, 'id_usuario' => $id_usuario])->value;
 
+        sendResError($solicitud, 'Problema para obtener las solicitudes', $_POST);
+
+        if (!$solicitud) sendRes(null, "No se encontro la soliditud: $id");
+
         if (!$solicitud['condicion_iva']) $solicitud['condicion_iva'] = 'DEFAULT';
         if (!$solicitud['naturaleza_juridica']) $solicitud['naturaleza_juridica'] = 'DEFAULT';
-
-        sendResError($solicitud, 'Problema para obtener las solicitudes', $_POST);
 
         if (!$solicitud) sendRes(null, "No se encontro la solicitud $id");
 
@@ -76,6 +78,37 @@ class Pro_SolicitudController
         self::checkParams(__FUNCTION__);
 
         $_POST['estado'] = 'notificaciones';
+        $data->set($_POST);
+
+        sendResError($solicitud, 'Problema al guardar el registro - intente nuevamente mas tarde', $data->req);
+
+        $update = $data->update($_POST, $id);
+
+        sendResError($solicitud, 'Problema al guardar el registro - intente nuevamente mas tarde', $data->req);
+
+        if ($update) {
+            $solicitud = $data->get(['id' => $id])->value;
+        } else {
+            sendRes(null, 'Problema al actualizar el registro');
+        }
+
+        $solicitud = $data->get(['id' => $id])->value;
+
+        sendResError($id, 'Problema al obtener el registro - deberá recargar el sistema', $data->req);
+
+        sendRes($solicitud);
+    }
+
+    /** Guardamos la segunda parte de la solicitud - Datos Comerciales */
+    public static function saveNotificaciones()
+    {
+        $id = $_POST['id_solicitud'];
+        $data = new Proveedor();
+        $solicitud = $data->get(['id' => $id])->value;
+
+        //self::checkParams(__FUNCTION__);
+
+        $_POST['estado'] = 'pdf';
         $data->set($_POST);
 
         sendResError($solicitud, 'Problema al guardar el registro - intente nuevamente mas tarde', $data->req);
