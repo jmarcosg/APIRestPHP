@@ -91,9 +91,9 @@ trait GettersData
             $count = count($licComercial);
             if ($count > 0) {
 
-                usort($licComercial, function ($a, $b) {
+                /* usort($licComercial, function ($a, $b) {
                     return intval($a['cant_historial']) < intval($b['cant_historial']);
-                });
+                }); */
 
                 $rechazadas = array_values(array_filter($licComercial, function ($sol) {
                     return str_contains($sol['estado'], 'rechazado');

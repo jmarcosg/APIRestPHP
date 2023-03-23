@@ -15,13 +15,8 @@ class Proveedor extends BaseModel
         'id_wappersonas',
 
         'tipo_persona',
-        'titular',
         'cuit',
-
-        'id_wappersonas_tercero',
-        'dni_tercero',
-        'tramite_tercero',
-        'genero_tercero',
+        'lugar',
 
         'razon_social',
         'telefono',
@@ -31,15 +26,16 @@ class Proveedor extends BaseModel
         'direccion_legal',
         'cp_legal',
 
-        'nombres_firmas',
-        'nombres_miembros',
+        'direccion_local_venta',
+        'naturaleza_juridica',
+        'clas_actividad',
+
+        'actividad_rubro',
 
         'reg_comercio_num',
         'reg_comercio_libro',
         'reg_comercio_folio',
         'reg_comercio_anio',
-        'es_socio',
-        'nombres_socios',
 
         'hab_comercial_num',
         'cuit_num',
@@ -52,6 +48,10 @@ class Proveedor extends BaseModel
         'suscribe',
         'dni',
         'caracter',
+
+        'cert_proveedor_num',
+        'email',
+        'email_alternativo',
 
         'estado',
 

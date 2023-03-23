@@ -8,7 +8,7 @@ $dotenv = \Dotenv\Dotenv::createImmutable('./weblogin/');
 $dotenv->load();
 
 include './weblogin/config.php';
-
+header("Access-Control-Allow-Origin: *");
 if ($url['method'] == 'GET') {
 	$action = $_GET['action'];
 	unset($_GET['action']);

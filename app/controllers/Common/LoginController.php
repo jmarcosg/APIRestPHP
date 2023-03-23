@@ -15,7 +15,6 @@ class LoginController
     {
         try {
             $senssionKey = self::getSessionKey($token);
-
             $curl = curl_init();
             curl_setopt_array($curl, array(
                 CURLOPT_URL => BASE_WEB_LOGIN_API . "/getUserByToken/$senssionKey",

@@ -13,10 +13,10 @@ class LoginController
     use FormatTrait, GettersData, ValidacionesWebLogin;
     public static function getUserData()
     {
-        self::checkParams(__FUNCTION__);
+        //self::checkParams(__FUNCTION__);
 
-        $user = $_POST['user'];
-        $pass = $_POST['pass'];
+        $user = $_GET['email'];
+        $pass = $_GET['password'];
         $userData = self::fetchUserData($user, $pass);
 
         if ($userData instanceof ErrorException) {
@@ -93,8 +93,8 @@ class LoginController
 
         $ps =  json_decode($_POST['procedures_started']);
         $response = [
-            'appsRecientes' => WapAppsRecientesController::getAppsRecientes($_POST['id_usuario']),
-            'tramites' => WlAppController::getApps(),
+            /* 'appsRecientes' => WapAppsRecientesController::getAppsRecientes($_POST['id_usuario']),
+            'tramites' => WlAppController::getApps(), */
 
             'procedures_started' => [
                 'legajo' => $ps->legajo->fetch ? self::getLegajoData($_POST['genero'], $_POST['dni']) : false,

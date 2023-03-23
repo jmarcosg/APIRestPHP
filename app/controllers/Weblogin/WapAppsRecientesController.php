@@ -138,11 +138,11 @@ class WapAppsRecientesController
         $result = $model->executeSqlQuery($sql, false);
 
         /* Ordenamos */
-        if (!$result instanceof ErrorException) {
+        /* if (!$result instanceof ErrorException) {
             usort($result, function ($a, $b) {
                 return (int) $a['ingresos'] < (int) $b['ingresos'];
             });
-        }
+        } */
 
         return $result;
     }
