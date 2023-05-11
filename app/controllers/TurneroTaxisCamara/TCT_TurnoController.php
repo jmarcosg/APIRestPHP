@@ -11,9 +11,8 @@ class TCT_TurnoController
         $turnoMananaObj = new TCT_Turno();
         $turnoTardeObj = new TCT_Turno();
 
-        $turnosDisponibles = 8;
-        $turnosManana = 4;
-        $turnosTarde = 4;
+        $turnosManana = 8;
+        $turnosTarde = 8;
 
         $turnoMananaObj->list(["fecha_id" => $fecha_id, "turno" => "M"]);
         $turnoTardeObj->list(["fecha_id" => $fecha_id, "turno" => "T"]);
