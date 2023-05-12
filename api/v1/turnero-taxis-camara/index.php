@@ -45,6 +45,10 @@ if ($url['method'] == "POST") {
                 $data = TCT_TurnoController::store($_POST);
                 break;
 
+            case "delete":
+                $data = TCT_TurnoController::delete($_POST);
+                break;
+
             default:
                 sendRes(null, "Acción inválida");
                 break;
@@ -53,6 +57,5 @@ if ($url['method'] == "POST") {
         sendRes($data["success"], $data["error"]);
     }
 }
-
 
 sendRes(null, "Método inválido");

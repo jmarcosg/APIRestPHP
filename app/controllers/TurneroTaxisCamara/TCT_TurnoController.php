@@ -39,12 +39,15 @@ class TCT_TurnoController
     public static function store($req)
     {
         $turnosPersona = new TCT_Turno();
-        $turnosPersona->list(["fecha_id" => $req['fecha_id'], "usuario_id" => $req['usuario_id']]);
-        if (count($turnosPersona->value) > 0) return ["success" => null, "error" => "Ya tiene un turno asignado para esta fecha"];
-
         $turnosPersona->list(["usuario_id" => $req['usuario_id']]);
         if (count($turnosPersona->value) > 0) {
-            if ($turnosPersona->value[count($turnosPersona->value) - 1]['fecha_id'] > $req['fecha_id']) return ["success" => null, "error" => "Ya tiene un turno asignado para una fecha posterior"];
+            $turnoUpdate = new TCT_Turno();
+            $turnoUpdate->update($req, $turnosPersona->value[0]['id']);
+
+            if ($turnoUpdate)
+                return ["success" => true, "error" => null];
+
+            return ["success" => null, "error" => "Error en la actualización del turno"];
         }
 
         $turnosGuardados = new TCT_Turno();
@@ -62,5 +65,19 @@ class TCT_TurnoController
         }
 
         return ["success" => null, "error" => "Error al guardar el turno"];
+    }
+
+    public static function delete($req)
+    {
+        $turnoPersona = new TCT_Turno();
+        $turnosPersona = $turnoPersona->list(["usuario_id" => $req['usuario_id']])->value;
+        $turnoObj = new TCT_Turno();
+        $turnoObj->delete($turnosPersona[0]['id']);
+
+        if ($turnoObj) {
+            return ["success" => true, "error" => null];
+        }
+
+        return ["success" => null, "error" => "Error al eliminar el turno"];
     }
 }
