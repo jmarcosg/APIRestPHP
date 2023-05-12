@@ -3,10 +3,10 @@
 use App\Controllers\TurneroTaxisCamara\TCT_FechaController;
 use App\Controllers\TurneroTaxisCamara\TCT_TurnoController;
 
-$dotenv = \Dotenv\Dotenv::createImmutable(('./credencialesempleados'));
+$dotenv = \Dotenv\Dotenv::createImmutable(('./turnero-taxis-camara'));
 $dotenv->load();
 
-include './credencialesempleados/config.php';
+include './turnero-taxis-camara/config.php';
 
 if ($url['method'] == "GET") {
     if (isset($_GET['action'])) {
@@ -25,8 +25,34 @@ if ($url['method'] == "GET") {
             case "turnos":
                 $data = TCT_TurnoController::getTurnos($_GET['fecha_id']);
                 break;
+
+            default:
+                sendRes(null, "Acción inválida");
+                break;
         }
 
-        sendRes($data, $data != null ? null : "Error en la obtención de los datos");
+        sendRes($data["success"], $data["error"]);
     }
 }
+
+if ($url['method'] == "POST") {
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
+        unset($_POST['action']);
+
+        switch ($action) {
+            case "store":
+                $data = TCT_TurnoController::store($_POST);
+                break;
+
+            default:
+                sendRes(null, "Acción inválida");
+                break;
+        }
+
+        sendRes($data["success"], $data["error"]);
+    }
+}
+
+
+sendRes(null, "Método inválido");
