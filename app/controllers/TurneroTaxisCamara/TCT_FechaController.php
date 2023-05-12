@@ -50,6 +50,6 @@ class TCT_FechaController
             $fechaExplode = explode("-", $fecha['codigo']);
             $newArray[] = ["id" => $fecha['id'], "codigo" => $fechaExplode[1] . '-' . $fechaExplode[0]];
         }
-        return $newArray;
+        return ["success" => $newArray, "error" => null];
     }
 }
