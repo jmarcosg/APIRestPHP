@@ -89,7 +89,11 @@ class TCT_TurnoController
         if (count($turnosPersona) > 0) {
             $fechaObj = new TCT_Fecha();
             $fechaTurno = $fechaObj->list(["id" => $turnosPersona[0]['fecha_id']])->value;
-            $turnosPersona[0]['fecha'] = $fechaTurno[0];
+
+            $fechaExplode = explode("-", $fechaTurno[0]['codigo']);
+            $fechaTurno = $fechaExplode[1] . '-' . $fechaExplode[0];
+
+            $turnosPersona[0]['fecha'] = $fechaTurno;
             unset($turnosPersona[0]['fecha_id']);
             return ["success" => $turnosPersona[0], "error" => null];
         }
