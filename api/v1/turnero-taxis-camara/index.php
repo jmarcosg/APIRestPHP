@@ -27,7 +27,7 @@ if ($url['method'] == "GET") {
                 break;
 
             case "turnoUsuario":
-                $data = TCT_TurnoController::getTurnoUsuario($_GET['id']);
+                $data = TCT_TurnoController::getTurnoUsuario($_GET['usuario_id']);
                 break;
 
             default:

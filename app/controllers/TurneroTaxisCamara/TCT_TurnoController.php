@@ -84,7 +84,7 @@ class TCT_TurnoController
     public static function getTurnoUsuario($req)
     {
         $turnoPersona = new TCT_Turno();
-        $turnosPersona = $turnoPersona->list(["usuario_id" => $req['usuario_id']])->value;
+        $turnosPersona = $turnoPersona->list(["usuario_id" => $req])->value;
 
         if (count($turnosPersona) > 0) {
             return ["success" => $turnosPersona[0], "error" => null];
