@@ -26,6 +26,10 @@ if ($url['method'] == "GET") {
                 $data = TCT_TurnoController::getTurnos($_GET['fecha_id']);
                 break;
 
+            case "turno":
+                $data = TCT_TurnoController::getTurno($_GET['id']);
+                break;
+
             default:
                 sendRes(null, "Acción inválida");
                 break;

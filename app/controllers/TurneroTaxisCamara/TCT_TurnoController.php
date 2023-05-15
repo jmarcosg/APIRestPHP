@@ -80,4 +80,16 @@ class TCT_TurnoController
 
         return ["success" => null, "error" => "Error al eliminar el turno"];
     }
+
+    public static function getTurnoUsuario($req)
+    {
+        $turnoPersona = new TCT_Turno();
+        $turnosPersona = $turnoPersona->list(["usuario_id" => $req['usuario_id']])->value;
+
+        if (count($turnosPersona) > 0) {
+            return ["success" => $turnosPersona[0], "error" => null];
+        }
+
+        return ["success" => null, "error" => "No se encontró el turno"];
+    }
 }
