@@ -13,6 +13,9 @@ class TCT_Turno extends BaseModel
     protected $fillable = [
         'fecha_id',
         'usuario_id',
-        'turno' // M-T
+        'licencia',
+        'turno', // M-T
+        'telefono',
+        'verificado'
     ];
 }

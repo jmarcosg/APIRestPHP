@@ -2,6 +2,7 @@
 
 use App\Controllers\TurneroTaxisCamara\TCT_FechaController;
 use App\Controllers\TurneroTaxisCamara\TCT_TurnoController;
+use App\Traits\TurneroTaxisCamara\VerificarUsuario;
 
 $dotenv = \Dotenv\Dotenv::createImmutable(('./turnero-taxis-camara'));
 $dotenv->load();
@@ -26,9 +27,14 @@ if ($url['method'] == "GET") {
                 $data = TCT_TurnoController::getTurnos($_GET['fecha_id']);
                 break;
 
-            case "turnoUsuario":
-                $data = TCT_TurnoController::getTurnoUsuario($_GET['usuario_id']);
+            case "turnosUsuario":
+                $data = TCT_TurnoController::getTurnosUsuario($_GET['usuario_id']);
                 break;
+
+            case "turnosAdmin":
+                $data = TCT_TurnoController::getTurnosAdmin();
+                break;
+
 
             default:
                 sendRes(null, "Acción inválida");
@@ -45,12 +51,20 @@ if ($url['method'] == "POST") {
         unset($_POST['action']);
 
         switch ($action) {
+            case "verificarUsuario":
+                $data = VerificarUsuario::verificarUsuario($_POST['dni']);
+                break;
+
             case "store":
                 $data = TCT_TurnoController::store($_POST);
                 break;
 
             case "delete":
                 $data = TCT_TurnoController::delete($_POST);
+                break;
+
+            case "verificarTurno":
+                $data = TCT_TurnoController::verificarTurno($_POST['turno_id']);
                 break;
 
             default:
