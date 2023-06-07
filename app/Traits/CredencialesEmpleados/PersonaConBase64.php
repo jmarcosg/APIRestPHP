@@ -17,7 +17,7 @@ trait PersonaConBase64
 
         $qr = CREDEMP_CodigoQRController::index(['id_persona_identificada' => $data['id']])[0];
         $number = explode(".", explode("-", $qr['qr_path'])[1])[0];
-        $base64path = FILE_PATH . "$number\\";
+        $base64path = FILE_PATH . "$number/";
         $imgQrBase64 = getBase64String($base64path . $qr['qr_path'], $qr['qr_path']);
 
         $imagesBase64 = [$imgQrBase64, $personImg->imagen];
