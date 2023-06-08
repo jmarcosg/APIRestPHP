@@ -9,7 +9,7 @@ trait RequestGenerarQR
         if (ENV == "local") {
             $urlQR = "http://localhost:5173/#/tarjeta-de-contacto/?token=$param[qr_token]";
             $urlApi = "http://200.85.183.194:90/apps/generador_credenciales_api/api/index.php/credencial/generarCUERRE";
-            $urlApi = "https://weblogin.muninqn.gov.ar/apps/generador_credenciales_api/api/index.php/credencial/generarCUERRE";
+            // $urlApi = "https://weblogin.muninqn.gov.ar/apps/generador_credenciales_api/api/index.php/credencial/generarCUERRE";
         } else {
             $urlQR = (PROD == "true") ? "https://weblogin.muninqn.gov.ar/apps/credenciales_personal/index.html#/tarjeta-de-contacto/?token=$param[qr_token]" : "http://200.85.183.194:90/apps/credenciales_personal/index.html#/tarjeta-de-contacto/?token=$param[qr_token]";
             $urlApi = (PROD == "true") ? "https://weblogin.muninqn.gov.ar/apps/generador_credenciales_api/api/index.php/credencial/generarCUERRE" : "http://200.85.183.194:90/apps/generador_credenciales_api/api/index.php/credencial/generarCUERRE";
@@ -17,7 +17,11 @@ trait RequestGenerarQR
 
         // $path = (ENV == "produccion") ? "E:\Dataserver\Produccion\projects_files\credenciales-empleados\\$param[id_solicitud]\\" : "E:\Dataserver\Replica\projects_files\credenciales-empleados\\$param[id_solicitud]\\";
 
-        $path = FILE_PATH . "$param[id_solicitud]\\";
+        if (ENV == "local") {
+            $path = "E:\\Dataserver\\Replica\\projects_files\\credenciales-empleados\\$param[id_solicitud]\\";
+        } else {
+            $path = FILE_PATH . "$param[id_solicitud]\\";
+        }
 
         $postParams = [
             "SESSIONKEY" => $param["sessionkey"],
@@ -45,10 +49,13 @@ trait RequestGenerarQR
             CURLOPT_SSL_VERIFYPEER => false,
         ]);
         $response = curl_exec($curl);
+        print_r($response);
         curl_close($curl);
 
         $serverOutput = json_decode($response, true);
         $serverOutput["data"]["urlQR"] = $postParams["urlQR"];
+
+        print_r($serverOutput);
 
         return $serverOutput;
     }

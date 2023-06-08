@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Controllers\Weblogin;
+namespace App\Traits\WebLogin;
 
 use DateTime;
+use ErrorException;
 
-trait FormatTrait
+trait Format
 {
     private static function formatLicConducir(array $result)
     {
@@ -59,7 +60,6 @@ trait FormatTrait
 
         return $result;
     }
-
     private static function formatLibretaSanitaria(array $result)
     {
         $date = DateTime::createFromFormat('d/m/Y', $result['venc'])->format('Y-m-d H:i:s');
@@ -87,5 +87,51 @@ trait FormatTrait
 
 
         return $result;
+    }
+    private static function formatLicenciaComercial(array $result)
+    {
+        $data = [
+            'count_not' => count($result),
+            'data' => group_by("id_solicitud", $result)
+        ];
+
+        foreach ($data['data'] as $key => $d) {
+            $data['data'][$key] = [
+                'count' => count($d),
+                'solicitud' => $key,
+                'data' => $d
+            ];
+        }
+        $data['data'] = array_values($data['data']);
+
+        return $data;
+    }
+
+    /**
+     * Genera un formato para una respuesta, si requiere enviar un error array vacio se debe ingresar @param mixed $msgErrorArray
+     * @param mixed $data
+     * @param mixed $msgError
+     * @param mixed $msgErrorArray
+     * @return array
+     */
+    private static function formatDataWithError(array $data, string $msgError = null, string $msgErrorArray = null): array
+    {
+        $error = null;
+        if ($data && $data instanceof ErrorException) {
+            $error = $msgError;
+            $data = null;
+        }
+
+        if (is_array($data) && count($data) == 0 && $msgError) {
+            $error = $msgErrorArray;
+            $data = null;
+        }
+
+        return [
+            'data' => $data,
+            'fetch' => true,
+            'loading' => false,
+            'error' => $error
+        ];
     }
 }

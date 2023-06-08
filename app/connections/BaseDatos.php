@@ -6,6 +6,7 @@ class BaseDatos
 {
     private $conn_string;
     private $user;
+    private $host;
     private $pass;
     public $db;
     private $conn;
@@ -26,13 +27,6 @@ class BaseDatos
         $this->conn = odbc_connect($this->conn_string, $this->user, $this->pass);
     }
 
-    /**
-     * Permite realizar la busqueda de un objeto por multiples campos y si se especifica, con operadores
-     * específicos.
-     * @param array $param arreglo del direccion 'campo' => 'valor buscado' o vacio si se necesitan listar todos
-     * @param array $ops arreglo opcional del direccion 'campo' => 'operador', por defecto el operador es '='
-     * @return Usuario[]
-     */
     public function search($table, $param = [], $ops = [])
     {
         try {
@@ -43,10 +37,10 @@ class BaseDatos
                 if ($key == 'TOP') continue;
                 $op = "=";
                 if (isset($value)) {
-                    /* if (isset($ops[$key])) {
+                    if (isset($ops[$key])) {
                         $op = $ops[$key];
-                    } */
-                    $where .= " AND " . $key . $op . "'$value'";
+                    }
+                    $where .= " AND " . $key . " " .  $op . " '$value'";
                     $values[] = $value;
                 } else {
                     $where .= " AND " . $key . " is null";
@@ -57,6 +51,8 @@ class BaseDatos
             $order = array_key_exists('order', $ops) ? $ops['order'] : '';
 
             $sql = "SELECT $limit * FROM " . $table . " WHERE " . $where . $order;
+            // echo $sql;
+            // exit;
             $query = odbc_exec($this->conn, $sql);
             return $query;
         } catch (\Throwable $th) {

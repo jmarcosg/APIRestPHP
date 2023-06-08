@@ -18,228 +18,195 @@ if ($url['method'] == 'GET') {
 
 	switch ($action) {
 
-		case '1':
+		case 'get_by_id':
 			Lc_SolicitudController::getById();
 
-		case '2':
+		case 'get_last_solicitud':
 			/* Contribuyente - Ultima solicitud */
-			Lc_SolicitudController::get();
+			Lc_SolicitudController::getLastSolicitud();
 
-		case '3':
+		case 'get_all_rubros':
 			/* Listado de Rubros */
-			Lc_RubroController::index();
+			Lc_RubroController::getAllRubros();
 
-		case '4':
+		case 'get_all_tipos_documentos':
 			/* Listado de Tipos de documentos */
-			TipoDocumentoController::index();
+			TipoDocumentoController::getAllTiposDocumentos();
 
-		case '5':
-			/* Listado de Tipos de documentos */
-			Lc_SolicitudController::indexById();
+		case 'get_solicitudes_usuario':
+			/* Lista todas las solicitudes del usuario */
+			Lc_SolicitudController::getSolicitudesUsuario();
 
 			/* ################################### */
 
-		case '10':
+		case 'nuevas_verificacion_inicio':
 			/* Verificación Inicio Tramite - Nuevas */
 			Lc_SolicitudController::index("estado = 'ver_inicio' AND ver_inicio = 0 AND estado NOT LIKE '%rechazado%'");
 
-		case '11':
+		case 'aprobadas_verificacion_inicio':
 			/* Verificación Inicio Tramite  - Aprobadas */
 			Lc_SolicitudController::index("ver_inicio = 1 AND estado NOT LIKE '%rechazado%'");
 
-		case '12':
+		case 'rechazadas_verificacion_inicio':
 			/* Verificación Inicio Tramite  - Rechazadas */
 			Lc_SolicitudController::index("estado = 'inicio_rechazado'");
 
-		case '13':
+		case 'retornadas_verificacion_inicio':
 			/* Verificación Inicio Tramite  - Retornado */
 			Lc_SolicitudController::index("estado LIKE '%retornado_inicio%'");
 
 			/* ################################### */
 
-		case '20':
+		case 'nuevas_verificacion_domicilio':
 			/* Catastro - Nuevas */
 			Lc_SolicitudController::index("estado = 'cat' AND ver_catastro = 0 AND estado NOT LIKE '%rechazado%'");
 
-		case '21':
+		case 'aprobadas_verificacion_domicilio':
 			/* Catastro - Aprobadas */
 			Lc_SolicitudController::index("ver_catastro = 1 AND estado NOT LIKE '%rechazado%'");
 
-		case '22':
+		case 'rechazadas_verificacion_domicilio':
 			/* Catastro - Rechazadas   */
 			Lc_SolicitudController::index("estado = 'cat_rechazado'");
 
-		case '23':
+		case 'retornadas_verificacion_domicilio':
 			/* Catastro - Retornado   */
 			Lc_SolicitudController::index("estado LIKE '%retornado_cat%'");
 
 			/* ################################### */
 
-		case '30':
+		case 'nuevas_verificacion_ambiental':
 			/* Verificación ambiental - Nuevas */
 			Lc_SolicitudController::index("estado = 'ver_amb' AND ver_ambiental = 0 AND estado NOT LIKE '%rechazado%'");
 
-		case '31':
+		case 'aprobadas_verificacion_ambiental':
 			/* Verificación ambiental - Aprobadas */
 			Lc_SolicitudController::index("ver_ambiental = 1 AND estado NOT LIKE '%rechazado%'");
 
-		case '32':
+		case 'rechazadas_verificacion_ambiental':
 			/* Verificación ambiental - Rechazadas */
 			Lc_SolicitudController::index("estado = 'ambiental_rechazado'");
 
 			/* ################################### */
 
-		case '40':
+		case 'nuevas_verificacion_rubros':
 			/* Verificador Rubros - Nuevas */
 			Lc_SolicitudController::index("estado = 'ver_rubros' AND ver_rubros = 0 AND estado NOT LIKE '%rechazado%'");
 
-		case '41':
+		case 'aprobadas_verificacion_rubros':
 			/* Verificador Rubros - Aprobadas */
 			Lc_SolicitudController::index("ver_rubros = '1' AND estado NOT LIKE '%rechazado%'");
 
-		case '42':
+		case 'rechazadas_verificacion_rubros':
 			/* Verificador Rubros - Rechazadas  */
 			Lc_SolicitudController::index("estado = 'rubros_rechazado'");
 
 			/* ################################### */
 
-		case '50':
+		case 'nuevas_verificacion_documentos':
 			/* Verificación documentos - Nuevas */
 			Lc_SolicitudController::index("estado = 'ver_doc' AND ver_documentos = 0 AND estado NOT LIKE '%rechazado%'");
 
-		case '51':
+		case 'aprobadas_verificacion_documentos':
 			/* Verificación documentos - Aprobadas */
 			Lc_SolicitudController::index("ver_documentos = 1 AND estado NOT LIKE '%rechazado%'");
 
-		case '52':
+		case 'rechazadas_verificacion_documentos':
 			/* Verificación documentos - Rechazadas */
 			Lc_SolicitudController::index("estado = 'doc_rechazado'");
 
-		case '53':
+		case 'retornadas_verificacion_documentos':
 			/* Verificación documentos - Retornado */
 			Lc_SolicitudController::index("estado LIKE '%retornado_documentos%'");
 
 			/* ################################### */
 
-		case '70':
+		case 'admin_todos':
 			/* Administrador - Todos */
 			Lc_SolicitudController::index("1 = 1");
 
-		case '80':
+		case 'auditoria_todos':
 			/* Auditoria - Todos */
 			Lc_SolicitudController::index("estado = 'finalizado'");
 
-		case '81':
+		case 'get_sol_pdf':
 			Lc_SolicitudController::getSolicitudPdf($_GET['id']);
 
-		case '100':
+		case 'get_historial_sol':
 			/* Administrador */
 			Lc_SolicitudHistorialController::getHistorialBySol($_GET['id']);
 
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
-			exit;
-			break;
 	}
 }
 
 /* Metodo POST */
 if ($url['method'] == 'POST') {
-	switch ($_POST['action']) {
-		case '1':
-			Lc_SolicitudController::store($_POST);
-			break;
-		case '3':
-			Lc_DocumentoController::update();
-			break;
-		case '4':
-			Lc_SolicitudHistorialController::setView($_POST['id']);
-			break;
-		case '5':
-			Lc_DocumentoController::updateNotas();
-		default:
-			break;
-	}
-}
-
-/* Metodo PUT */
-if ($url['method'] == 'PUT') {
-	parse_str(file_get_contents('php://input'), $_PUT);
-	$id = $url['id'];
-
-	$action = $_PUT['action'];
-	unset($_PUT['action']);
+	$action = $_POST['action'];
+	unset($_POST['action']);
 
 	switch ($action) {
-		case '1':
+		case 'store_solicitud':
+			Lc_SolicitudController::store();
+		case 'update_documentacion':
+			Lc_DocumentoController::updateDocumentacion();
+		case 'set_view_historial':
+			Lc_SolicitudHistorialController::setViewHistorial($_POST['id']);
+		case 'update_notas':
+			Lc_DocumentoController::updateNotas();
+
+		case 'datos_personales':
 			/* Datos personales */
-			Lc_SolicitudController::datosPersonales($_PUT, $id);
-			break;
+			Lc_SolicitudController::datosPersonales();
 
-		case '2':
+		case 'actividad':
 			/* Nomenclatura y rubros */
-			Lc_SolicitudController::actividad($_PUT, $id);
+			Lc_SolicitudController::actividad();
+
+		case 'init_veri_update':
+			/* Verificacion inicial - Evaluacion */
+			Lc_SolicitudController::initVeriUpdate();
 			break;
 
-		case '3':
+		case 'documentacion':
 			/* Documentacion */
-			Lc_SolicitudController::documentacion($_PUT, $id);
-			break;
+			Lc_SolicitudController::documentacion();
 
-		case '6':
+		case 'rubros_veri_update':
 			/* Verificacion de rubros - Aprobacion */
-			Lc_SolicitudController::rubrosVeriUpdate($_PUT, $id);
-			break;
+			Lc_SolicitudController::rubrosVeriUpdate();
 
-		case '7':
+		case 'catastro_veri_update':
 			/* Catastro - Aprobacion */
-			Lc_SolicitudController::catastroVeriUpdate($_PUT, $id);
-			break;
+			Lc_SolicitudController::catastroVeriUpdate();
 
-		case '8':
+		case 'ambiental_veri_update':
 			/* Catastro - Verificacion ambiental */
-			Lc_SolicitudController::ambientalVeriUpdate($_PUT, $id);
-			break;
+			Lc_SolicitudController::ambientalVeriUpdate();
 
-		case '9':
+		case 'documentos_veri_update':
 			/* Catastro - Verificacion ambiental */
-			Lc_SolicitudController::documentosVeriUpdate($_PUT, $id);
-			break;
+			Lc_SolicitudController::documentosVeriUpdate();
 
-		case '10':
+		case 'eval_documento':
 			/* GeneralDocumentos - Evauluacion de documento */
-			Lc_SolicitudController::evalDocumento($_PUT, $id);
+			Lc_SolicitudController::evalDocumento();
 			break;
 
-		case '11':
-			/* GeneralDocumentos - Evauluacion de documento */
-			Lc_SolicitudController::initVeriUpdate($_PUT, $id);
-			break;
-
-		case '13':
+		case 'set_expediente':
 			/* Auditoria - Set Expediente */
-			Lc_SolicitudController::setExpediente($_PUT, $id);
-			break;
+			Lc_SolicitudController::setExpediente();
 
-		case '14':
+		case 'set_licencia':
 			/* Auditoria - Set Expediente */
-			Lc_SolicitudController::setLicenciaComercial($_PUT, $id);
-			break;
+			Lc_SolicitudController::setLicenciaComercial();
 
 		default:
-			# code...
-			break;
+			$error = new ErrorException('El action no es valido');
+			sendRes(null, $error->getMessage(), $_POST);
 	}
-
-
-	if (!$lc instanceof ErrorException) {
-		$_PUT['id'] = $id;
-		sendRes($_PUT);
-	} else {
-		sendRes(null, $arbolado->getMessage(), ['id' => $id]);
-	};
-	eClean();
 }
 
 /* Metodo DELETE */
@@ -255,5 +222,3 @@ if ($url['method'] == 'DELETE') {
 }
 
 header("HTTP/1.1 200 Bad Request");
-
-eClean();

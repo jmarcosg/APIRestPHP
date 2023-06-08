@@ -57,7 +57,7 @@ class IdeasPropuestasController
     {
         $data = new IdeasPropuestas();
 
-        $params = ['content' => $_POST['content'], 'id_categoria' => $_POST['id_categoria']];
+        $params = ['content' => $_POST['content'], 'id_categoria' => $_POST['id_categoria'], 'barrio' => $_POST['barrio']];
         $data = $data->update($params, $_POST['id']);
 
         if ($data) {

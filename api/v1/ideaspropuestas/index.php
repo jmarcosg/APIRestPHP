@@ -41,7 +41,6 @@ if ($url['method'] == 'GET') {
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
 			exit;
-			break;
 	}
 }
 
@@ -68,8 +67,6 @@ if ($url['method'] == 'POST') {
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
-			exit;
-			break;
 	}
 }
 

@@ -2,12 +2,12 @@
 
 namespace App\Controllers\Weblogin;
 
-use App\Models\BaseModel;
 use App\Models\Weblogin\Weblogin;
-use ErrorException;
+use App\Traits\WebLogin\Format;
 
 class WlAppController
 {
+    use Format;
     public static function getApps()
     {
         $apps = self::getSqlApps();
@@ -15,11 +15,15 @@ class WlAppController
         sendResError($apps, 'Problema para listar las aplicaciones');
 
         $apps = self::formatApps($apps);
-        sendRes([
+
+        $data = [
             'aplicaciones' => $apps['aplicaciones'],
             'categorias' => $apps['categorias']
-        ]);
-        exit;
+        ];
+
+        $data = self::formatDataWithError($data);
+
+        return $data;
     }
 
     public static function formatApps($apps)

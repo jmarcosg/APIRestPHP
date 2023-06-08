@@ -3,11 +3,11 @@
 namespace App\Controllers\Weblogin;
 
 use App\Models\Weblogin\WlFotoPerfil;
+use App\Traits\WebLogin\QueryData;
 
 class WlFotoPerfilController
 {
-    use SqlTrait;
-
+    use QueryData;
     public static function getPersonasSinVerificar()
     {
         $wlFotoPerfil = new WlFotoPerfil();

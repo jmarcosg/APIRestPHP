@@ -40,19 +40,6 @@ class Lc_SolicitudRubroController
         return $rubro->executeSqlQuery($sql, false);
     }
 
-    public function store($res)
-    {
-        $data = new Lc_SolicitudRubro();
-        $data->set($res);
-        return $data->save();
-    }
-
-    public function updateFirts($req, $id)
-    {
-        $data = new Lc_SolicitudRubro();
-        return $data->update($req, $id);
-    }
-
     public function delete($id)
     {
         $data = new Lc_SolicitudRubro();
@@ -62,6 +49,6 @@ class Lc_SolicitudRubroController
     public function deleteBySolicitudId($id)
     {
         $conn = new BaseDatos();
-        $result = $conn->delete('lc_solicitud_rubros', ['id_solicitud' => $id]);
+        $conn->delete('lc_solicitud_rubros', ['id_solicitud' => $id]);
     }
 }

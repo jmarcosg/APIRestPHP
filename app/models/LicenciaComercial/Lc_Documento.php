@@ -2,6 +2,7 @@
 
 namespace App\Models\LicenciaComercial;
 
+use App\Connections\BaseDatos;
 use App\Models\BaseModel;
 
 class Lc_Documento extends BaseModel
@@ -77,5 +78,47 @@ class Lc_Documento extends BaseModel
         foreach ($documentos as $doc) {
             $this->delete($doc['id']);
         }
+    }
+
+    public static function documentosUpdate($req, $id)
+    {
+        if ($req['documentos'] != "") {
+            $documentos = explode(",", $req['documentos']);
+            unset($req['documentos']);
+
+            /* Borramos los documentos con id mayor a 10 */
+            self::deleteBySolicitudId($id);
+
+            /* Actualizamos los nuevos documentos */
+            $documento = new Lc_Documento();
+            foreach ($documentos as $d) {
+                $documento->set(['id_solicitud' => $id, 'id_tipo_documento' => $d, 'verificado' => 0]);
+                $documento->save();
+            }
+        }
+    }
+
+    public static function deleteBySolicitudId($id)
+    {
+        /* Los primeros 10 documentos son fijos segun corresponde, persona fisica o persona jurifica */
+        $sql = "DELETE FROM lc_documentos WHERE id_solicitud = $id AND id_tipo_documento >= 11";
+        $conn = new BaseDatos();
+        return $conn->query($sql);
+    }
+
+    public static function getNota($data, $nota)
+    {
+        $id = $data['id'];
+        if ($data[$nota]) {
+            $documento = new Lc_Documento();
+            $filesUrl = $documento->filesUrl;
+            $url = $filesUrl . $id . "/" . $nota  . '/' .  $data[$nota];
+            return [
+                'url' => getBase64String($url, $data[$nota]),
+                'loading' =>  false,
+                'error' => false
+            ];
+        }
+        return null;
     }
 }

@@ -89,7 +89,7 @@ if ($url['method'] == 'GET') {
 
 			case '14':
 				/* Solicitud de podador por ID */
-				Arb_PodadorController::getById($_GET['id']);
+				Arb_PodadorController::getById();
 				break;
 
 			case '15':

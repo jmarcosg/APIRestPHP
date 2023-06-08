@@ -8,7 +8,6 @@ use App\Traits\WebLogin\ValidacionesWlFotos;
 class WlFotoPerfil extends BaseModel
 {
     use ValidacionesWlFotos;
-
     protected $table = 'wlFotosUsuarios';
     protected $identity = 'id';
     protected $logPath = 'v1/wlFotosUsuarios';
@@ -29,7 +28,9 @@ class WlFotoPerfil extends BaseModel
     /** Guarda los arhivos fisicamente */
     public function saveFotos($uniqid)
     {
+
         $this->saveFotoPerfil($uniqid);
+
         $this->saveFotoDni($uniqid);
         unset($_POST['nombre_archivo']);
     }

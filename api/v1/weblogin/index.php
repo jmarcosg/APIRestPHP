@@ -8,39 +8,23 @@ $dotenv = \Dotenv\Dotenv::createImmutable('./weblogin/');
 $dotenv->load();
 
 include './weblogin/config.php';
-
+header("Access-Control-Allow-Origin: *");
 if ($url['method'] == 'GET') {
 	$action = $_GET['action'];
 	unset($_GET['action']);
 
 	switch ($action) {
 
-		case 'legajo':
-			LoginController::getLegajoData();
-
-		case 'acarreo':
-			LoginController::getAcarreoData();
-
-		case 'licenciaconducir':
-			LoginController::getLicConducirData();
-
-		case 'muniEventos':
-			LoginController::getMuniEventos();
-
-		case 'libretasanitaria':
-			LoginController::getLibretasanitariaData();
-
-		case 'libretasanitariaDos':
-			LoginController::getLibretasanitariaDataDos();
-
 		case 'aplicaciones':
 			WlAppController::getApps();
+
+		case 'getLicComercialHistorial':
+			LoginController::getLicComercialHistorial();
 
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
 			exit;
-			break;
 	}
 }
 
@@ -49,18 +33,19 @@ if ($url['method'] == 'POST') {
 	unset($_POST['action']);
 
 	switch ($action) {
+		case 'getAllData':
+			LoginController::getAllData();
 
 		case 'getIntoApp':
 			WapAppsRecientesController::getIntoApp();
 
-		case 'checkIncomingApps':
-			WapAppsRecientesController::checkIncomingApps();
+		case 'getLicComercialInfo':
+			LoginController::getLicComercialInfo();
 
 		default:
 			$error = new ErrorException('El action no es valido');
 			sendRes(null, $error->getMessage(), $_GET);
 			exit;
-			break;
 	}
 }
 

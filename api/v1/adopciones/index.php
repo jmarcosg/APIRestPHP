@@ -601,7 +601,6 @@ if ($url['method'] == "POST") {
 			echo $mensaje;
 			exit;
 		case 'v3':
-			//* Deshabilitar empleado
 			$idEmpleadoDeshabilitar = $_POST['id'];
 			$date = new DateTime('now');
 			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
