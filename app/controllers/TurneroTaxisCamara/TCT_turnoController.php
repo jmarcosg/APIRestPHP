@@ -110,16 +110,8 @@ class TCT_TurnoController
     {
         $turnoObj = new TCT_Turno();
         $turnos = $turnoObj->list()->value;
-        $data = [];
-        foreach ($turnos as $turno) {
-            $fecha = new TCT_Fecha();
-            $fechaTurno = $fecha->list(["id" => $turno['fecha_id']])->value[0];
-            $turno['fecha'] = $fechaTurno['codigo'];
-            unset($turno['fecha_id']);
-            $data[] = $turno;
-        }
 
-        return ["success" => $data, "error" => null];
+        return ["success" => $turnos, "error" => null];
     }
 
     public static function verificarTurno($req)
