@@ -334,7 +334,50 @@ if ($url['method'] == "POST") {
 			exit;
 
 		case 'an3':
-			//* Eliminar animal
+			//* Deshabilitar animal
+			$idAnimalDeshabilitar = $_POST['id'];
+			$date = new DateTime('now');
+			$date->setTimezone(new DateTimeZone('America/Argentina/Buenos_Aires'));
+			$fechaOcultado = $date->format('Y-m-d H:i:s');
+
+			$data = [
+				'ocultado_at' => $fechaOcultado,
+			];
+
+			$animalesController = new Adop_AnimalesController();
+			$animal = Adop_AnimalesController::update($data, $idAnimalDeshabilitar);
+
+			if (!$animal instanceof ErrorException) {
+				$mensaje = "Animal deshabilitado correctamente";
+			} else {
+				sendRes(null, $animal->getMessage(), null);
+			};
+
+			echo $mensaje;
+			exit;
+
+		case 'an4':
+			//* Habilitar animal
+			$idAnimalHabilitar = $_POST['id'];
+
+			$data = [
+				'ocultado_at' => null
+			];
+
+			$animalesController = new Adop_AnimalesController();
+			$animal = Adop_AnimalesController::update($data, $idAnimalHabilitar);
+
+			if (!$animal instanceof ErrorException) {
+				$mensaje = "Animal habilitado correctamente";
+			} else {
+				sendRes(null, $animal->getMessage(), null);
+			};
+
+			echo $mensaje;
+			exit;
+
+		case 'an66':
+			//* Eliminar animal. Execute order 66
 			$idAnimalEliminar = $_POST['id'];
 
 			$animalesController = new Adop_AnimalesController();

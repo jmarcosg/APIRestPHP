@@ -25,6 +25,7 @@ class Adop_Animal extends BaseModel
         'adoptado',
         'fecha_ingreso',
         'fecha_modificacion',
+        'ocultado_at',
     ];
 
 
